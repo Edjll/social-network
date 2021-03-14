@@ -1,5 +1,11 @@
 # social-network
 
+Command to build backend: `mvn clean install`
+
+Command to build docker images: `docker-compose build`
+
+Command to start docker containers: `docker-compose up`
+
 <table>
   <tr>
     <th>#</th>
