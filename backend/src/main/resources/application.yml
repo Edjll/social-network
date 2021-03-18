@@ -1,9 +1,28 @@
 server:
-  port: 8080
+  port: 8085
 
 spring:
+  profiles:
+    active: docker
+
+---
+
+spring:
+  profiles: dev
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8085/auth/realms/social-network
+          issuer-uri: http://localhost:8080/auth/realms/social-network
+          jwk-set-uri: http://localhost:8080/auth/realms/social-network/protocol/openid-connect/certs
+
+---
+
+spring:
+  profiles: docker
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/auth/realms/social-network
+          jwk-set-uri: http://keycloak:8080/auth/realms/social-network/protocol/openid-connect/certs

@@ -1,4 +1,4 @@
-FROM jboss/keycloak:7.0.1
+FROM jboss/keycloak:11.0.3
 COPY *.json social-network-realm.json
 
 ENV KEYCLOAK_USER admin

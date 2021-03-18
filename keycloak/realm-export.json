@@ -20,7 +20,7 @@
   "actionTokenGeneratedByUserLifespan": 300,
   "enabled": true,
   "sslRequired": "external",
-  "registrationAllowed": false,
+  "registrationAllowed": true,
   "registrationEmailAsUsername": false,
   "rememberMe": false,
   "verifyEmail": false,
@@ -336,6 +336,7 @@
   "groups": [],
   "defaultRoles": [
     "uma_authorization",
+    "USER",
     "offline_access"
   ],
   "requiredCredentials": [
@@ -352,19 +353,6 @@
     "Google Authenticator"
   ],
   "scopeMappings": [
-    {
-      "clientScope": "VIEW",
-      "roles": [
-        "ADMIN",
-        "USER"
-      ]
-    },
-    {
-      "clientScope": "VIEW_ADMIN",
-      "roles": [
-        "ADMIN"
-      ]
-    },
     {
       "clientScope": "offline_access",
       "roles": [
@@ -459,15 +447,17 @@
     {
       "id": "d58fc566-1bc2-4c24-a083-853917f23149",
       "clientId": "spring-boot",
-      "rootUrl": "http://localhost:8080",
+      "rootUrl": "http://localhost:3000",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://localhost:8080/*"
+        "http://localhost:3000/*"
       ],
-      "webOrigins": [],
+      "webOrigins": [
+        "+"
+      ],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -475,8 +465,7 @@
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": true,
       "serviceAccountsEnabled": true,
-      "authorizationServicesEnabled": true,
-      "publicClient": false,
+      "publicClient": true,
       "frontchannelLogout": false,
       "protocol": "openid-connect",
       "attributes": {
@@ -564,8 +553,6 @@
         "role_list",
         "roles",
         "profile",
-        "VIEW_ADMIN",
-        "VIEW",
         "email"
       ],
       "optionalClientScopes": [
@@ -573,50 +560,7 @@
         "phone",
         "offline_access",
         "microprofile-jwt"
-      ],
-      "authorizationSettings": {
-        "allowRemoteResourceManagement": true,
-        "policyEnforcementMode": "ENFORCING",
-        "resources": [
-          {
-            "name": "Default Resource",
-            "type": "urn:spring-boot:resources:default",
-            "ownerManagedAccess": false,
-            "attributes": {},
-            "_id": "0b9692bc-8d79-4c93-878c-98acc55c0c14",
-            "uris": [
-              "/*"
-            ]
-          }
-        ],
-        "policies": [
-          {
-            "id": "0ccffd63-38b4-4555-ba33-21d59464dd20",
-            "name": "Default Policy",
-            "description": "A policy that grants access only for users within this realm",
-            "type": "js",
-            "logic": "POSITIVE",
-            "decisionStrategy": "AFFIRMATIVE",
-            "config": {
-              "code": "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
-            }
-          },
-          {
-            "id": "b39d636c-4dd7-48c6-bb32-06713354bdc5",
-            "name": "Default Permission",
-            "description": "A permission that applies to the default resource type",
-            "type": "resource",
-            "logic": "POSITIVE",
-            "decisionStrategy": "UNANIMOUS",
-            "config": {
-              "defaultResourceType": "urn:spring-boot:resources:default",
-              "applyPolicies": "[\"Default Policy\"]"
-            }
-          }
-        ],
-        "scopes": [],
-        "decisionStrategy": "UNANIMOUS"
-      }
+      ]
     },
     {
       "id": "b3cb5c24-4e64-4e51-8ce0-7695b4926bd1",
@@ -754,24 +698,6 @@
     }
   ],
   "clientScopes": [
-    {
-      "id": "dd992c16-88ea-4083-b6b2-93c650da6665",
-      "name": "VIEW",
-      "protocol": "openid-connect",
-      "attributes": {
-        "include.in.token.scope": "true",
-        "display.on.consent.screen": "true"
-      }
-    },
-    {
-      "id": "8cfbec03-bd21-4372-ba7c-13fe6965d970",
-      "name": "VIEW_ADMIN",
-      "protocol": "openid-connect",
-      "attributes": {
-        "include.in.token.scope": "true",
-        "display.on.consent.screen": "true"
-      }
-    },
     {
       "id": "7d2361e7-a61b-4030-93ba-390155e8c888",
       "name": "address",
@@ -1329,14 +1255,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
+            "oidc-full-name-mapper",
             "saml-user-property-mapper",
             "oidc-address-mapper",
+            "oidc-sha256-pairwise-sub-mapper",
             "oidc-usermodel-property-mapper",
             "saml-role-list-mapper",
             "oidc-usermodel-attribute-mapper",
-            "saml-user-attribute-mapper",
-            "oidc-sha256-pairwise-sub-mapper",
-            "oidc-full-name-mapper"
+            "saml-user-attribute-mapper"
           ]
         }
       },
@@ -1360,14 +1286,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "oidc-address-mapper",
-            "oidc-usermodel-attribute-mapper",
-            "saml-role-list-mapper",
-            "oidc-full-name-mapper",
             "oidc-usermodel-property-mapper",
+            "oidc-address-mapper",
+            "oidc-full-name-mapper",
             "oidc-sha256-pairwise-sub-mapper",
-            "saml-user-attribute-mapper",
-            "saml-user-property-mapper"
+            "saml-user-property-mapper",
+            "saml-role-list-mapper",
+            "oidc-usermodel-attribute-mapper",
+            "saml-user-attribute-mapper"
           ]
         }
       },
@@ -1438,7 +1364,7 @@
   "supportedLocales": [],
   "authenticationFlows": [
     {
-      "id": "b1d3c1fa-0e95-4fc0-ab00-426a117eb267",
+      "id": "4700e75f-9064-418c-8de7-f2f2863fb0ca",
       "alias": "Handle Existing Account",
       "description": "Handle what to do if there is existing account with same email/username like authenticated identity provider",
       "providerId": "basic-flow",
@@ -1469,7 +1395,7 @@
       ]
     },
     {
-      "id": "a192ec8d-120d-4a4a-b7b5-5dc29e85c6e3",
+      "id": "d1fbac3c-907b-43c0-b798-f7082b93f6be",
       "alias": "Verify Existing Account by Re-authentication",
       "description": "Reauthentication of existing account",
       "providerId": "basic-flow",
@@ -1493,7 +1419,7 @@
       ]
     },
     {
-      "id": "13b402f5-fff3-4f08-9426-e221ee6642e4",
+      "id": "d55523e3-16cc-4982-849b-312ad6909b2d",
       "alias": "browser",
       "description": "browser based authentication",
       "providerId": "basic-flow",
@@ -1531,7 +1457,7 @@
       ]
     },
     {
-      "id": "ff3b4ade-6156-4d3e-9cff-64cc7b546df8",
+      "id": "e9fbba63-b7a4-4f36-88e5-ccf804d923b4",
       "alias": "clients",
       "description": "Base authentication for clients",
       "providerId": "client-flow",
@@ -1569,7 +1495,7 @@
       ]
     },
     {
-      "id": "8720d6c5-5479-4ac8-9b33-6a83da79cb59",
+      "id": "bb2c3811-8fa0-4ed5-8493-6977e9db4128",
       "alias": "direct grant",
       "description": "OpenID Connect Resource Owner Grant",
       "providerId": "basic-flow",
@@ -1600,7 +1526,7 @@
       ]
     },
     {
-      "id": "c644fea8-8528-4708-b2a1-58fd37f43be2",
+      "id": "a957789d-16a9-4f34-8e01-36ba5adf07e7",
       "alias": "docker auth",
       "description": "Used by Docker clients to authenticate against the IDP",
       "providerId": "basic-flow",
@@ -1617,7 +1543,7 @@
       ]
     },
     {
-      "id": "4767318d-dd42-40f0-8a93-143359995c5e",
+      "id": "eab18b11-790b-49b8-ad41-d3ed2a53ee79",
       "alias": "first broker login",
       "description": "Actions taken after first broker login with identity provider account, which is not yet linked to any Keycloak account",
       "providerId": "basic-flow",
@@ -1650,7 +1576,7 @@
       ]
     },
     {
-      "id": "9f12fee1-6411-40eb-9778-3f6159115962",
+      "id": "c4b61422-97e6-4524-997f-a8969e25dc3a",
       "alias": "forms",
       "description": "Username, password, otp and other auth forms.",
       "providerId": "basic-flow",
@@ -1674,7 +1600,7 @@
       ]
     },
     {
-      "id": "d490bd0b-f427-452e-9255-cab179d60501",
+      "id": "83dad813-0c0d-4a5e-9181-e9c0ec36f6c3",
       "alias": "http challenge",
       "description": "An authentication flow based on challenge-response HTTP Authentication Schemes",
       "providerId": "basic-flow",
@@ -1712,7 +1638,7 @@
       ]
     },
     {
-      "id": "fad32012-eb0f-4a3f-930b-e0a925d04962",
+      "id": "b0dd601c-999e-4a5d-963a-1ac0a3aacb7a",
       "alias": "registration",
       "description": "registration flow",
       "providerId": "basic-flow",
@@ -1730,7 +1656,7 @@
       ]
     },
     {
-      "id": "98f7555d-728c-4e03-aa3d-da98f4d3924f",
+      "id": "6022d151-7f7a-45d5-a49f-b30a4fc24624",
       "alias": "registration form",
       "description": "registration form",
       "providerId": "form-flow",
@@ -1768,7 +1694,7 @@
       ]
     },
     {
-      "id": "18de7708-5052-4d26-a5d8-40a4f5d943c9",
+      "id": "42801774-2258-4916-80d4-f4fb0c22a37e",
       "alias": "reset credentials",
       "description": "Reset credentials for a user if they forgot their password or something",
       "providerId": "basic-flow",
@@ -1806,7 +1732,7 @@
       ]
     },
     {
-      "id": "3288909c-3411-4ac7-aa60-b38b36c1dd5c",
+      "id": "86d2de65-be8b-4c36-9289-7c5e869db681",
       "alias": "saml ecp",
       "description": "SAML ECP Profile Authentication Flow",
       "providerId": "basic-flow",
@@ -1825,14 +1751,14 @@
   ],
   "authenticatorConfig": [
     {
-      "id": "7d6d6f83-7bf4-4533-adc2-b9e736d4bc27",
+      "id": "21f6c501-0481-4cb0-89a9-e0ac7fc4595e",
       "alias": "create unique user config",
       "config": {
         "require.password.update.after.registration": "false"
       }
     },
     {
-      "id": "a837a692-72cb-432f-bb9d-84f130d4b863",
+      "id": "9248f42c-aa5a-4a7c-b23d-7666303b9798",
       "alias": "review profile config",
       "config": {
         "update.profile.on.first.login": "missing"
