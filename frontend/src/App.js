@@ -1,28 +1,28 @@
 import './App.css';
-import axios from 'axios';
 import React from "react";
+import Header from "./components/header/Header";
+import {PrivateRoute} from "./components/security/PrivateRoute";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
+import {Profile} from "./components/profile/Profile";
+import {Home} from "./components/home/Home";
 
 class App extends React.Component {
-    state = {
-        text: ""
+
+    render() {
+
+        return (
+            <BrowserRouter>
+                <Header/>
+                <main>
+                    <Switch>
+                        <PrivateRoute roles={['USER', 'ADMIN']} path="/profile" component={Profile}/>
+                        <Route path="/" component={Home}/>
+                    </Switch>
+                </main>
+            </BrowserRouter>
+        );
     }
 
-    constructor(props) {
-        super(props);
-        axios.get(`http://localhost:8080/test`)
-            .then(response => {
-                this.setState({ text: response.data });
-            })
-    }
-
-  render() {
-      return (
-          <div className="App">
-              <h1>Social network</h1>
-              <p>{ this.state.text }</p>
-          </div>
-      );
-  }
 }
 
 export default App;

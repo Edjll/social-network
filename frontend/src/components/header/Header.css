@@ -1,0 +1,34 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1280px;
+    padding: .5rem 1rem;
+    align-items: baseline;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+header > nav {
+    display: flex;
+}
+
+.link {
+    font-size: 1.2rem;
+    margin: 0 .5rem;
+}
+
+.link > * {
+    background-color: transparent;
+    font-size: 1.2rem;
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    color: #565cf5;
+    font-family: inherit;
+    cursor: pointer;
+}
