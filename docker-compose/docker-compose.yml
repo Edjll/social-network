@@ -5,14 +5,36 @@ services:
     build: ../backend
     container_name: backend
     ports:
-      - "8085:8085"
+      - 8085:8085
   frontend:
     build: ../frontend
     container_name: frontend
     ports:
-      - "3000:3000"
+      - 3000:3000
   keycloak:
     build: ../keycloak
     container_name: keycloak
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: social-network-realm.json -Dkeycloak.profile.feature.upload_scripts=enabled
+      DB_VENDOR: POSTGRES
+      DB_ADDR: database
+      DB_DATABASE: social_network
+      DB_USER: admin
+      DB_PASSWORD: admin
     ports:
-      - "8080:8080"
+      - 8080:8080
+    depends_on:
+      - database
+  database:
+    image: postgres
+    container_name: database
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: social_network
+    volumes:
+      - ../database:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
