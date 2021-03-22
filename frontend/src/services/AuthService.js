@@ -7,8 +7,7 @@ const initKeycloak = (onAuthenticatedCallback) => {
     keycloak.init({
         onLoad: 'check-sso',
         silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-        pkceMethod: 'S256',
-        checkLoginIframe: false
+        pkceMethod: 'S256'
     })
         .then((authenticated) => {
             onAuthenticatedCallback();
@@ -19,9 +18,9 @@ const login = keycloak.login;
 
 const logout = keycloak.logout;
 
-const token = () => keycloak.token;
+const getToken = () => keycloak.token;
 
-const authenticated = () => keycloak.authenticated;
+const isAuthenticated = () => keycloak.authenticated;
 
 const updateToken = (successCallback) =>
     keycloak.updateToken(5)
@@ -30,23 +29,32 @@ const updateToken = (successCallback) =>
 
 const getUsername = () => keycloak.tokenParsed.preferred_username;
 
+const getId = () => keycloak.tokenParsed.sub;
+
 const Role = {
     USER: 'USER',
     ADMIN: 'ADMIN'
 }
 
-const hasRole = (roles) => roles.some((role) => keycloak.hasRealmRole(role));
+const hasRole = (roles) => {
+    if (roles === undefined || roles === null) return true;
+    return roles.some((role) => keycloak.hasRealmRole(role));
+}
+
+const getRealm = keycloak.realm;
 
 const AuthService = {
     initKeycloak,
     login,
     logout,
-    authenticated,
-    token,
+    isAuthenticated,
+    getToken,
     updateToken,
     getUsername,
+    getId,
     hasRole,
-    Role
+    Role,
+    getRealm
 };
 
 export default AuthService;

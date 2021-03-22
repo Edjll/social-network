@@ -9,9 +9,10 @@ export function PrivateRoute({component: Component, roles, ...rest}) {
         <Route {...rest}
                render={
                    props => {
-                       if (AuthService.authenticated()) {
-                           return AuthService.hasRole(roles) ? <Component {...props}/> :
-                               <Redirect to={{pathname: '/',}}/>
+                       if (AuthService.isAuthenticated()) {
+                           return AuthService.hasRole(roles)
+                               ? <Component {...props}/>
+                               : <Redirect to={{pathname: '/',}}/>
                        } else {
                            AuthService.login();
                        }

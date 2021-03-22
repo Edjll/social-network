@@ -1,3 +1,31 @@
-.username {
+.profile {
+    margin: 1rem 0;
+}
+
+.profile__info {
+    padding: .5rem 1rem;
+    border-radius: .25rem;
+    border: 1px solid rgb(62, 68, 70);
+    background-color: #2b2b2b;
+}
+
+.profile__info__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #3e4446;
+}
+
+.profile__info__username {
+    font-size: 1.5rem;
+}
+
+.profile__info__block {
+    display: flex;
+    margin: 1rem 0;
+}
+
+.profile__info__block > span {
+    width: 50%;
     font-size: 1.2rem;
 }

@@ -1,0 +1,30 @@
+.input {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: max-content;
+    margin: .7rem;
+    position: relative;
+    max-width: 350px;
+}
+
+.input__label {
+    font-size: 1.3rem;
+    margin-left: .5rem;
+}
+
+.input__value {
+    width: 350px;
+    font-size: 1.2rem;
+    padding: .5rem .7rem;
+    outline: none;
+    background-color: #181a1b;
+    border-radius: .25rem;
+    box-sizing: border-box;
+    border: 1px solid rgb(62, 68, 70);
+    color: #c8c3bc;
+}
+
+.input__value:focus {
+    box-shadow: 0 0 4px #3e4446;
+}

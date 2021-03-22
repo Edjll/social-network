@@ -1,8 +1,12 @@
 header {
+    background-color: #043882;
+}
+
+.wrapper {
     display: flex;
     justify-content: space-between;
     max-width: 1280px;
-    padding: .5rem 1rem;
+    padding: 1rem 1rem;
     align-items: baseline;
     margin: 0 auto;
 }
@@ -12,23 +16,24 @@ header {
     margin: 0;
 }
 
-header > nav {
+.wrapper > nav {
     display: flex;
 }
 
-.link {
+.header__nav__link {
     font-size: 1.2rem;
     margin: 0 .5rem;
-}
-
-.link > * {
     background-color: transparent;
-    font-size: 1.2rem;
-    margin: 0;
     padding: 0;
     border: none;
     outline: none;
-    color: #565cf5;
+    color: #86b1e0;
     font-family: inherit;
     cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.header__nav__link:hover {
+    color: #b5dbff;
 }
