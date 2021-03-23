@@ -27,7 +27,7 @@ export class Input extends React.Component {
 
     handleChange(value) {
         this.setState({value: value})
-        this.props.handleChange(value);
+        if (this.props.handleChange) this.props.handleChange(value);
     }
 
     render() {

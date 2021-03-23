@@ -129,7 +129,7 @@ export class Search extends React.Component {
                         this.state.loadQueue === 0
                             ? <form onSubmit={this.handleSubmit.bind(this)}>
                                 <Input label={"First name"} handleChange={this.handleChangeFirstName.bind(this)}/>
-                                <Input label={"Last name"}/>
+                                <Input label={"Last name"} handleChange={this.handleChangeLastName.bind(this)}/>
                                 <Select name="country" label="Country" options={this.state.countries}
                                         onChange={this.handleChangeCountry.bind(this)}/>
                                 {this.state.selectedCountry ? <Select name="city" label="City" options={this.state.cities}
