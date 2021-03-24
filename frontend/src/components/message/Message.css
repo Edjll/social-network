@@ -1,0 +1,73 @@
+.message {
+    width: max-content;
+    margin: .5rem;
+    display: flex;
+}
+
+.message-right {
+    align-self: flex-end;
+}
+
+.message__wrapper {
+    padding: .5rem;
+    max-width: 350px;
+    background-color: #2b2b2b;
+    border-radius: .25rem;
+}
+
+.message__wrapper > p {
+    margin: 0;
+}
+
+.message__info {
+    padding-bottom: .5rem;
+}
+
+.message__info__user {
+    font-size: 1.1rem;
+    margin-right: .5rem;
+    color: #86b1e0;
+    text-decoration: none;
+}
+
+.message__info__date {
+    font-size: .9rem;
+    color: #7b8b91;
+}
+
+.message__text {
+    color: #7b8b91;
+    font-size: 1rem;
+    margin: 0;
+    font-family: Roboto,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,sans-serif;
+}
+
+.message__actions {
+    padding: .5rem;
+    display: none;
+    height: max-content;
+    flex-direction: column;
+    justify-content: space-evenly;
+    border-left: 1px solid rgb(48, 52, 53);
+    box-sizing: border-box;
+    align-items: center;
+    background-color: #2b2b2b;
+    border-radius: 0 .25rem .25rem 0;
+}
+
+.message__actions > * {
+    cursor: pointer;
+    margin-bottom: .2rem;
+}
+
+.message__actions > *:last-child {
+    margin-bottom: 0;
+}
+
+.message:hover .message__actions {
+    display: flex;
+}
+
+.message:hover .message__wrapper {
+    border-radius: .25rem 0 .25rem .25rem;
+}

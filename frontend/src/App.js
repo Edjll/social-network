@@ -7,6 +7,7 @@ import {PrivateRoute} from "./components/security/PrivateRoute";
 import {Home} from "./components/home/Home";
 import {Profile} from "./components/profile/Profile";
 import ProfileEdit from "./components/profileEdit/ProfileEdit";
+import {Dialog} from "./components/dialog/Dialog";
 
 class App extends React.Component {
 
@@ -16,7 +17,8 @@ class App extends React.Component {
                 <Header/>
                 <main>
                     <Switch>
-                        <Route path={`/user/search`} component={Search}/>
+                        <PrivateRoute path={`/user/:username/message`} component={Dialog}/>
+                        <Route path={`/search`} component={Search}/>
                         <PrivateRoute path={`/user/edit`} component={ProfileEdit}/>
                         <Route path={"/user/:username"} component={Profile}/>
                         <Route path="/" component={Home}/>

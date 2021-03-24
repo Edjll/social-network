@@ -17,11 +17,9 @@ import java.util.Collection;
 @RequestMapping("/user")
 public class UserController {
 
-    private final UserService userService;
     private final UserInfoService userInfoService;
 
-    public UserController(UserService userService, UserInfoService userInfoService) {
-        this.userService = userService;
+    public UserController(UserInfoService userInfoService) {
         this.userInfoService = userInfoService;
     }
 

@@ -3,17 +3,17 @@
 }
 
 .profile__info {
-    padding: .5rem 1rem;
     border-radius: .25rem;
     border: 1px solid rgb(62, 68, 70);
     background-color: #2b2b2b;
 }
 
 .profile__info__header {
+    padding: .5rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #3e4446;
+    border-bottom: 1px solid #3e4446;
 }
 
 .profile__info__username {
@@ -23,6 +23,7 @@
 .profile__info__block {
     display: flex;
     margin: 1rem 0;
+    padding: 0 .5rem;
 }
 
 .profile__info__block > span {

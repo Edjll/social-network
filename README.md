@@ -6,6 +6,37 @@ Command to build docker images: `docker-compose build`
 
 Command to start docker containers: `docker-compose up`
 
+## frontend endpoints
+
+<table>
+  <tr>
+    <th>URL</th>
+    <th>Описание</th>
+  </tr>
+  <tr>
+    <td><a href="http://localhost:3000">http://localhost:3000</a></td>
+    <td>Домашная страница</td>
+  </tr>
+  <tr>
+    <td><a href="http://localhost:3000/search">http://localhost:3000/search</a></td>
+    <td>Страница поиска пользователей</td>
+  </tr>
+  <tr>
+    <td><a href="http://localhost:3000/user/admin">http://localhost:3000/user/{username}</a></td>
+    <td>Профиль пользователя</td>
+  </tr>
+  <tr>
+    <td><a href="http://localhost:3000/user/edit">http://localhost:3000/user/edit</a></td>
+    <td>Редактирование профиля пользователя</td>
+  </tr>
+  <tr>
+    <td><a href="http://localhost:3000/user/admin/message">http://localhost:3000/user/{username}/message</a></td>
+    <td>Страница диалога авторизованного пользователя с пользователем {username}</td>
+  </tr>
+</table>
+
+## График выполнения
+
 <table>
   <tr>
     <th>#</th>

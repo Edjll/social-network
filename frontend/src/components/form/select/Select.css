@@ -13,10 +13,6 @@
     margin-left: .5rem;
 }
 
-.select:focus-within > .select__options {
-    opacity: 1;
-}
-
 .select__search {
     display: flex;
     font-size: 1.3rem;
@@ -65,7 +61,6 @@
     border: 1px solid rgb(62, 68, 70);
     z-index: 1;
     transition: opacity .1s;
-    opacity: 0;
 }
 
 .select__options__value {

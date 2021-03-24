@@ -1,0 +1,117 @@
+#root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+main {
+    width: 100%;
+    height: calc(100% - 61px);
+    box-sizing: border-box;
+}
+
+.dialog {
+    border: 1px solid rgb(62, 68, 70);
+    background-color: #575b60;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: .25rem;
+}
+
+.dialog__interlocutor-info {
+    padding: 1rem;
+    border-bottom: 1px solid rgb(48, 52, 53);
+    background-color: #2b2b2b;
+    border-radius: .25rem .25rem 0 0;
+}
+
+.dialog__interlocutor-info__name {
+    font-size: 1.2rem;
+    text-decoration: none;
+    color: #7b8b91;
+}
+
+.dialog__messages {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+    width: auto;
+}
+
+::-webkit-scrollbar-track {
+    background: #343437;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #26282b;
+    transition: background .2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #2d2e32;
+}
+
+.dialog__form {
+    border-top: 1px solid rgb(48, 52, 53);
+    background-color: #2b2b2b;
+    display: flex;
+    position: relative;
+    border-radius: 0 0 .25rem .25rem;
+}
+
+.dialog__form__input {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: transparent;
+    border: none;
+    font-size: 1.1rem;
+    color: #a49999;
+    padding: .5rem;
+    outline: none;
+    border-radius: 0 0 .25rem .25rem;
+    resize: none;
+    height: max-content;
+    font-family: Roboto,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,sans-serif;
+}
+
+.dialog__form__button {
+    background-color: transparent;
+    border: none;
+    color: #a49999;
+    font-size: 1.5rem;
+    cursor: pointer;
+    outline: none;
+    width: 56px;
+    padding: 0;
+    transition: background-color .2s;
+}
+
+.dialog__form__button:hover {
+    background-color: #333739;
+}
+
+.dialog__form__message-editing {
+    position: absolute;
+    top: calc(-1.8rem - 1px);
+    left: 0;
+    display: flex;
+    align-items: baseline;
+    font-size: 1rem;
+    background-color: #3b3a3a;
+    padding: .2rem .4rem;
+    border-radius: 0 .25rem 0 0;
+    border-top: 1px solid rgb(48, 52, 53);
+    border-right: 1px solid rgb(48, 52, 53);
+}
+
+.dialog__form__message-editing__button {
+    margin-left: .3rem;
+    cursor: pointer;
+}

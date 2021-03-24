@@ -31,6 +31,12 @@ const getUsername = () => keycloak.tokenParsed.preferred_username;
 
 const getId = () => keycloak.tokenParsed.sub;
 
+const getFirstName = () => keycloak.tokenParsed.given_name;
+
+const getLastName = () => keycloak.tokenParsed.family_name;
+
+const getFullName = () => keycloak.tokenParsed.name;
+
 const Role = {
     USER: 'USER',
     ADMIN: 'ADMIN'
@@ -52,6 +58,9 @@ const AuthService = {
     updateToken,
     getUsername,
     getId,
+    getFirstName,
+    getLastName,
+    getFullName,
     hasRole,
     Role,
     getRealm

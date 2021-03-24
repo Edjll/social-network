@@ -60,5 +60,4 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, String> {
             "from User user left join user.userInfo userInfo left join userInfo.city city left join city.country country  " +
             "where user.username = :username" )
     UserInfoDetailDto getUserInfoDetailByUsername(@Param("username") String username);
-
 }

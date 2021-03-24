@@ -12,12 +12,13 @@ services:
     ports:
       - 3000:3000
   keycloak:
-    build: ../keycloak
+    image: jboss/keycloak:11.0.3
     container_name: keycloak
+    restart: on-failure
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
-      KEYCLOAK_IMPORT: social-network-realm.json -Dkeycloak.profile.feature.upload_scripts=enabled
+      KEYCLOAK_IMPORT: /imports/realm-export.json -Dkeycloak.profile.feature.upload_scripts=enabled
       DB_VENDOR: POSTGRES
       DB_ADDR: database
       DB_DATABASE: social_network
@@ -27,6 +28,8 @@ services:
       - 8080:8080
     depends_on:
       - database
+    volumes:
+      - ../keycloak:/imports
   database:
     image: postgres
     container_name: database

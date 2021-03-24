@@ -17,6 +17,10 @@
     background-color: #2f5387;
 }
 
+.user-cart__info {
+    margin-left: .5rem;
+}
+
 .user-cart__info > p {
     margin: 0;
 }

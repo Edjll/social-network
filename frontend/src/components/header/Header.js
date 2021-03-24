@@ -1,15 +1,16 @@
 import './Header.css';
 import AuthService from "../../services/AuthService";
 import {Link} from "react-router-dom";
+import {ProfileCart} from "../profileCart/ProfileCart";
 
 const Header = () => {
 
-    let button;
+    let element;
 
     if (AuthService.isAuthenticated()) {
-        button = <button className={"header__nav__link"} onClick={() => AuthService.logout({redirectUri: window.location.origin})}>Logout</button>
+        element = <ProfileCart/>
     } else {
-        button = <button className={"header__nav__link"} onClick={() => AuthService.login()}>Login</button>
+        element = <button className={"header__nav__link"} onClick={() => AuthService.login()}>Login</button>
     }
 
     return (
@@ -18,13 +19,8 @@ const Header = () => {
                 <p className="logo">Social-network</p>
                 <nav className={"header__nav"}>
                     <Link to={"/"} className={"header__nav__link"}>Home</Link>
-                    <Link to={"/user/search"} className={"header__nav__link"}>Search</Link>
-                    {
-                        AuthService.isAuthenticated()
-                            ? <Link to={`/user/${AuthService.getUsername()}`} className={"header__nav__link"}>Profile</Link>
-                            : ""
-                    }
-                    {button}
+                    <Link to={"/search"} className={"header__nav__link"}>Search</Link>
+                    {element}
                 </nav>
             </div>
         </header>

@@ -42,9 +42,7 @@ export class Select extends React.Component {
     }
 
     handleBlur() {
-        setTimeout(() => {
-            this.setState({active: false})
-        }, 100)
+        this.setState({active: false});
     }
 
     handleClear() {
@@ -63,15 +61,16 @@ export class Select extends React.Component {
                            onFocus={this.handleFocus.bind(this)}
                            onBlur={this.handleBlur.bind(this)}
                     />
-                    {this.state.search !== "" ? <div className="select__search__clear" onClick={this.handleClear.bind(this)}>×</div> : ""}
+                    {this.state.search !== "" ?
+                        <div className="select__search__clear" onClick={this.handleClear.bind(this)}>×</div> : ""}
                 </div>
                 {
                     this.state.active && this.state.options.length > 0
                         ? <div className="select__options">
                             {
                                 this.state.options.map(option => <span key={option.key}
-                                                                        className="select__options__value"
-                                                                        onClick={() => this.handleClick(option)}>{option.text}</span>)
+                                                                       className="select__options__value"
+                                                                       onMouseDown={() => this.handleClick(option)}>{option.text}</span>)
                             }
                         </div>
                         : ""

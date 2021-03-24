@@ -4,6 +4,12 @@ server:
 spring:
   profiles:
     active: docker
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/auth/realms/social-network
+          jwk-set-uri: http://keycloak:8080/auth/realms/social-network/protocol/openid-connect/certs
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,12 +26,6 @@ spring:
 
 spring:
   profiles: dev
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/auth/realms/social-network
-          jwk-set-uri: http://localhost:8080/auth/realms/social-network/protocol/openid-connect/certs
   datasource:
     url: jdbc:postgresql://localhost:5432/social_network
 
@@ -33,11 +33,5 @@ spring:
 
 spring:
   profiles: docker
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://keycloak:8080/auth/realms/social-network
-          jwk-set-uri: http://keycloak:8080/auth/realms/social-network/protocol/openid-connect/certs
   datasource:
-    url: jdbc:postgresql://localhost:5432/social_network
+    url: jdbc:postgresql://database:5432/social_network
