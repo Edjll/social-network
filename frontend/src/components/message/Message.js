@@ -5,20 +5,7 @@ import {HiddenInfo} from "../hiddenInfo/HiddenInfo";
 
 export const Message = (props) => {
     return (
-        <div className={`message ${AuthService.getId() !== props.data.sender.id ? "message-right" : ""}`}>
-            <div className={"message__wrapper"}>
-                <div className={"message__info"}>
-                    <Link to={`/user/${props.data.sender.username}`}
-                          className={"message__info__user"}>{props.data.sender.firstName} {props.data.sender.lastName}</Link>
-                    <span className={"message__info__date"}>{new Date(props.data.createdDate).toLocaleString()}</span>
-                    {
-                        props.data.modifiedDate
-                            ? <HiddenInfo text={"(ред.)"} hidden={new Date(props.data.modifiedDate).toLocaleString()}/>
-                            : ""
-                    }
-                </div>
-                <pre className={"message__text"}>{props.data.text}</pre>
-            </div>
+        <div className={`message ${AuthService.getId() === props.data.sender.id ? "message-right" : ""}`}>
             {
                 AuthService.getId() === props.data.sender.id
                     ? <div className={"message__actions"}>
@@ -27,6 +14,19 @@ export const Message = (props) => {
                     </div>
                     : ""
             }
+            <div className={"message__wrapper"}>
+                <div className={"message__info"}>
+                    <Link to={`/user/${props.data.sender.username}`}
+                          className={"message__info__user"}>{props.data.sender.firstName} {props.data.sender.lastName}</Link>
+                    <span className={"message__info__date"}>{new Date(props.data.createdDate).toLocaleString()}</span>
+                    {
+                        props.data.modifiedDate
+                            ? <HiddenInfo text={"(edit)"} hidden={new Date(props.data.modifiedDate).toLocaleString()}/>
+                            : ""
+                    }
+                </div>
+                <pre className={"message__text"}>{props.data.text}</pre>
+            </div>
         </div>
     )
 }

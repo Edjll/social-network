@@ -8,7 +8,6 @@ import ru.edjll.backend.dto.EditUserInfoDto;
 import ru.edjll.backend.dto.UserInfoDetailDto;
 import ru.edjll.backend.dto.UserInfoDto;
 import ru.edjll.backend.service.UserInfoService;
-import ru.edjll.backend.service.UserService;
 
 import java.security.Principal;
 import java.util.Collection;

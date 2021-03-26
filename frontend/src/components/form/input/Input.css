@@ -11,6 +11,7 @@
 .input__label {
     font-size: 1.3rem;
     margin-left: .5rem;
+    color:  #b0b0b0;
 }
 
 .input__value {
@@ -22,7 +23,7 @@
     border-radius: .25rem;
     box-sizing: border-box;
     border: 1px solid rgb(62, 68, 70);
-    color: #c8c3bc;
+    color:  #f7f7f7;
 }
 
 .input__value:focus {

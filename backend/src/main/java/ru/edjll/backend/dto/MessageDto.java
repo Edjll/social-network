@@ -4,9 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.edjll.backend.entity.Message;
-import ru.edjll.backend.entity.User;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

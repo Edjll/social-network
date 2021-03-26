@@ -12,7 +12,7 @@ main {
 
 .dialog {
     border: 1px solid rgb(62, 68, 70);
-    background-color: #575b60;
+    background-color: #2b2e34;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -22,15 +22,15 @@ main {
 
 .dialog__interlocutor-info {
     padding: 1rem;
-    border-bottom: 1px solid rgb(48, 52, 53);
-    background-color: #2b2b2b;
+    background-color: #2b2e34;
+    border-bottom: 1px solid rgb(62, 68, 70);
     border-radius: .25rem .25rem 0 0;
 }
 
 .dialog__interlocutor-info__name {
     font-size: 1.2rem;
     text-decoration: none;
-    color: #7b8b91;
+    color: #337fcc;
 }
 
 .dialog__messages {
@@ -59,8 +59,8 @@ main {
 }
 
 .dialog__form {
-    border-top: 1px solid rgb(48, 52, 53);
-    background-color: #2b2b2b;
+    background-color: #2b2e34;
+    border-top: 1px solid rgb(62, 68, 70);
     display: flex;
     position: relative;
     border-radius: 0 0 .25rem .25rem;
@@ -72,7 +72,7 @@ main {
     background-color: transparent;
     border: none;
     font-size: 1.1rem;
-    color: #a49999;
+    color: #91a4ac;
     padding: .5rem;
     outline: none;
     border-radius: 0 0 .25rem .25rem;
@@ -84,7 +84,7 @@ main {
 .dialog__form__button {
     background-color: transparent;
     border: none;
-    color: #a49999;
+    color: #91a4ac;
     font-size: 1.5rem;
     cursor: pointer;
     outline: none;

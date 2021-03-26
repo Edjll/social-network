@@ -1,17 +1,18 @@
 .button {
-    background-color: #084ca9;
+    background-color: #3e424b;
     padding: .5rem 3rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
     border-radius: .25rem;
     border: 1px solid rgb(62, 68, 70);
-    color: #c8c3bc;
+    color: #fcfcfc;
     cursor: pointer;
     transition: background-color .15s;
     outline: none;
     text-decoration: none;
-    margin: .7rem;
+    margin: .3rem;
+    user-select: none;
 }
 
 .button:hover {
-    background-color: #095cc6;
+    opacity: .8;
 }

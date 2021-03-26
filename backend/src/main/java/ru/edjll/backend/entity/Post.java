@@ -8,23 +8,18 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "message")
 @Setter
 @Getter
 @NoArgsConstructor
-public class Message {
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id")
-    private User sender;
-
-    @ManyToOne
-    @JoinColumn(name = "recipient_id")
-    private User recipient;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private String text;
 
@@ -33,5 +28,4 @@ public class Message {
 
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
-
 }

@@ -11,6 +11,7 @@
 .select__label {
     font-size: 1.2rem;
     margin-left: .5rem;
+    color: #b0b0b0;
 }
 
 .select__search {
@@ -29,7 +30,7 @@
     padding: .5rem .5rem;
     outline: none;
     width: 100%;
-    color: #c8c3bc;
+    color: #f7f7f7;
     border-radius: .25rem;
     border: none;
 }
@@ -42,6 +43,7 @@
     cursor: pointer;
     transition: transform .2s;
     font-size: 1.8rem;
+    color: #f7f7f7;
 }
 
 .select__search__clear:hover {
@@ -61,6 +63,7 @@
     border: 1px solid rgb(62, 68, 70);
     z-index: 1;
     transition: opacity .1s;
+    color: #f7f7f7;
 }
 
 .select__options__value {

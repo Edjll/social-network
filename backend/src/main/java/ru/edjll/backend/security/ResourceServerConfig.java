@@ -27,7 +27,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/message**").authenticated()
+                .antMatchers("/message**").permitAll()
                 .and()
                 .cors().configurationSource(corsConfigurationSource()).and()
                 .oauth2ResourceServer()

@@ -6,9 +6,9 @@
     background-color: transparent;
     border: none;
     font-size: 1.1rem;
-    color: inherit;
     cursor: pointer;
     outline: none;
+    color: #fcfcfc;
 }
 
 .profile-cart__actions {
@@ -18,26 +18,44 @@
     top: 40px;
     right: 0;
     width: 100%;
-    background-color: #2a3544;
+    background-color: #2b2e34;
     border-radius: 0 0 .25rem .25rem;
-    padding: 0 .5rem;
     box-sizing: border-box;
     z-index: 1;
     min-width: 150px;
+    border: 1px solid #3e424b;
+    border-top: none;
+    padding: .2rem 0;
 }
 
 .profile-cart__actions > * {
     background-color: transparent;
     border: none;
-    font-size: 1.1rem;
-    color: inherit;
+    font-size: 1rem;
     text-decoration: none;
-    padding: .5rem .5rem;
+    padding: .5rem .7rem;
     text-align: left;
     cursor: pointer;
     outline: none;
+    color: #fcfcfc;
+    position: relative;
+    transition: background-color .1s;
 }
 
-.profile-cart__actions > *:not(:last-child) {
-    border-bottom: 1px solid rgb(62, 68, 70);
+.profile-cart__actions > *:hover {
+    background-color: #474c56;
+}
+
+.profile-cart__actions > *:not(:first-child) {
+    margin-top: .4rem;
+}
+
+.profile-cart__actions > *:not(:last-child)::after {
+    content: '';
+    width: calc(100% - 1.4rem);
+    display: block;
+    border-bottom: 1px solid #3e4446;
+    position: absolute;
+    bottom: calc(-.2rem - 0.5px);
+    left: .7rem;
 }

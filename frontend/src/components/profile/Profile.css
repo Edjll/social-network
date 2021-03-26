@@ -5,28 +5,30 @@
 .profile__info {
     border-radius: .25rem;
     border: 1px solid rgb(62, 68, 70);
-    background-color: #2b2b2b;
+    background-color: #2b2e34;
 }
 
 .profile__info__header {
-    padding: .5rem 1rem;
+    padding: 0 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #3e4446;
 }
 
-.profile__info__username {
-    font-size: 1.5rem;
+.profile__info__name {
+    font-size: 1.3rem;
+    color: #f7f7f7;
 }
 
 .profile__info__block {
     display: flex;
     margin: 1rem 0;
-    padding: 0 .5rem;
+    padding: 0 1rem;
 }
 
 .profile__info__block > span {
     width: 50%;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    color: #b0b0b0;
 }

@@ -134,7 +134,7 @@ export class Search extends React.Component {
                                         onChange={this.handleChangeCountry.bind(this)}/>
                                 {this.state.selectedCountry ? <Select name="city" label="City" options={this.state.cities}
                                                                       onChange={this.handleChangeCity.bind(this)}/> : ""}
-                                <Button text={"Search"}/>
+                                <Button text={"Search"} className={"search__form__button"}/>
                             </form>
                             : <Spinner/>
                     }

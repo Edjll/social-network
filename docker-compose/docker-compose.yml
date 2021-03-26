@@ -6,6 +6,8 @@ services:
     container_name: backend
     ports:
       - 8085:8085
+    depends_on:
+      - database
   frontend:
     build: ../frontend
     container_name: frontend
@@ -31,7 +33,7 @@ services:
     volumes:
       - ../keycloak:/imports
   database:
-    image: postgres
+    image: library/postgres:13.0-alpine
     container_name: database
     environment:
       POSTGRES_USER: admin

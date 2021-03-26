@@ -11,7 +11,8 @@
 .message__wrapper {
     padding: .5rem;
     max-width: 350px;
-    background-color: #2b2b2b;
+    background-color: #363a41;
+    border: 1px solid rgb(62, 68, 70);
     border-radius: .25rem;
 }
 
@@ -26,17 +27,17 @@
 .message__info__user {
     font-size: 1.1rem;
     margin-right: .5rem;
-    color: #86b1e0;
+    color: #337fcc;
     text-decoration: none;
 }
 
 .message__info__date {
     font-size: .9rem;
-    color: #7b8b91;
+    color: #91a4ac;
 }
 
 .message__text {
-    color: #7b8b91;
+    color: #fcfcfc;
     font-size: 1rem;
     margin: 0;
     font-family: Roboto,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,sans-serif;
@@ -48,16 +49,18 @@
     height: max-content;
     flex-direction: column;
     justify-content: space-evenly;
-    border-left: 1px solid rgb(48, 52, 53);
     box-sizing: border-box;
     align-items: center;
-    background-color: #2b2b2b;
-    border-radius: 0 .25rem .25rem 0;
+    background-color: #363a41;
+    border: 1px solid rgb(62, 68, 70);
+    border-right: none;
+    border-radius: .25rem 0 0 .25rem;
 }
 
 .message__actions > * {
     cursor: pointer;
     margin-bottom: .2rem;
+    color: #f7f7f7;
 }
 
 .message__actions > *:last-child {
@@ -69,5 +72,5 @@
 }
 
 .message:hover .message__wrapper {
-    border-radius: .25rem 0 .25rem .25rem;
+    border-radius: 0 .25rem .25rem .25rem;
 }

@@ -4,7 +4,7 @@
     padding: .5rem;
     box-sizing: border-box;
     border-radius: .25rem;
-    background-color: #203c64;
+    background-color: #2b2e34;
     margin: 0.5rem;
     text-decoration: none;
     transition: background-color .2s;
@@ -14,7 +14,7 @@
 }
 
 .user-cart:hover {
-    background-color: #2f5387;
+    background-color: #272a2f;
 }
 
 .user-cart__info {
@@ -27,7 +27,7 @@
 
 .user-cart__info__fio {
     font-size: 1.2rem;
-    color: #86c0da;
+    color: #337fcc;
     text-decoration: none;
 }
 

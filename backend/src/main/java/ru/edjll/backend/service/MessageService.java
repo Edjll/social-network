@@ -5,7 +5,6 @@ import ru.edjll.backend.dto.MessageDto;
 import ru.edjll.backend.entity.Message;
 import ru.edjll.backend.repository.MessageRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 

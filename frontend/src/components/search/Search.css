@@ -18,7 +18,7 @@
     justify-content: center;
     border-radius: .25rem;
     border: 1px solid rgb(62, 68, 70);
-    background-color: #2b2b2b;
+    background-color: #2b2e34;
     min-width: 370px;
     width: max-content;
     min-height: 250px;
@@ -28,4 +28,8 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.search__form__button {
+    margin: .75rem;
 }
