@@ -1,4 +1,5 @@
 FROM openjdk:8-jdk-alpine
-VOLUME /tmp
+
+RUN apk add --no-cache bash
+
 COPY target/*.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
