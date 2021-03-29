@@ -1,6 +1,5 @@
 package ru.edjll.backend.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.MessageDto;
@@ -9,7 +8,6 @@ import ru.edjll.backend.service.MessageService;
 
 import java.security.Principal;
 import java.util.Collection;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/message")
@@ -22,39 +20,35 @@ public class MessageController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<MessageDto>> getAllMessageDtoBetweenUsersById(
+    public Collection<MessageDto> getAllMessageDtoBetweenUsersById(
             @RequestParam String senderId,
             @RequestParam String recipientId,
             @AuthenticationPrincipal Principal principal
     ) {
-        if (!principal.getName().equals(senderId) && !principal.getName().equals(recipientId)) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        return ResponseEntity.ok().body(messageService.getAllMessageDtoBetweenUsersById(senderId, recipientId));
+        return messageService.getAllMessageDtoBetweenUsersById(senderId, recipientId, principal);
     }
 
     @PostMapping("/save")
-    public ResponseEntity<MessageDto> save(@RequestBody Message message, @AuthenticationPrincipal Principal principal) {
-        if (message.getSender() == null || !Objects.equals(message.getSender().getId(), principal.getName())) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        return ResponseEntity.ok().body(messageService.save(message));
+    public MessageDto save(
+            @RequestBody Message message,
+            @AuthenticationPrincipal Principal principal
+    ) {
+        return messageService.save(message, principal);
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<MessageDto> edit(@RequestBody Message message, @AuthenticationPrincipal Principal principal) {
-        if (message.getSender() == null || !Objects.equals(message.getSender().getId(), principal.getName())) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        return ResponseEntity.ok().body(messageService.edit(message));
+    public MessageDto edit(
+            @RequestBody Message message,
+            @AuthenticationPrincipal Principal principal
+    ) {
+        return messageService.edit(message, principal);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Object> delete(@RequestBody Message message, @AuthenticationPrincipal Principal principal) {
-        if (message.getSender() == null || !Objects.equals(message.getSender().getId(), principal.getName())) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        messageService.delete(message);
-        return ResponseEntity.ok().body(null);
+    public void delete(
+            @RequestBody Message message,
+            @AuthenticationPrincipal Principal principal
+    ) {
+        messageService.delete(message, principal);
     }
 }

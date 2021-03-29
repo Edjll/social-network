@@ -1,15 +1,15 @@
 package ru.edjll.backend.entity;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @Table(name = "user_entity")
 public class User {
 
@@ -17,6 +17,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
+    @Column(name = "email")
     private String email;
 
     @Column(name = "email_constraint")
@@ -25,6 +26,7 @@ public class User {
     @Column(name = "email_verified")
     private boolean emailVerified;
 
+    @Column(name = "enabled")
     private boolean enabled;
 
     @Column(name = "federation_link")
@@ -42,6 +44,7 @@ public class User {
     @Column(name = "not_before")
     private int notBefore;
 
+    @Column(name = "username")
     private String username;
 
     @Column(name = "created_timestamp")

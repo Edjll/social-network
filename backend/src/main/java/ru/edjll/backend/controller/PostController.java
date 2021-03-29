@@ -1,6 +1,5 @@
 package ru.edjll.backend.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.PostDto;
@@ -21,34 +20,31 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<PostDto>> getAllPostDtoByUserId(
-        @RequestParam String userId
-    ) {
-        return ResponseEntity.ok().body(postService.getAllPostDtoByUserId(userId));
+    public Collection<PostDto> getAllPostDtoByUserId(@RequestParam String userId) {
+        return postService.getAllPostDtoByUserId(userId);
     }
 
     @PostMapping("/save")
-    public ResponseEntity<PostDto> save(@RequestBody Post post, @AuthenticationPrincipal Principal principal) {
-        if (post.getUser() == null || !principal.getName().equals(post.getUser().getId())) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        return ResponseEntity.ok().body(postService.save(post));
+    public PostDto save(
+            @RequestBody Post post,
+            @AuthenticationPrincipal Principal principal
+    ) {
+        return postService.save(post, principal);
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<PostDto> edit(@RequestBody Post post, @AuthenticationPrincipal Principal principal) {
-        if (post.getUser() == null || !principal.getName().equals(post.getUser().getId())) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        return ResponseEntity.ok().body(postService.edit(post));
+    public PostDto edit(
+            @RequestBody Post post,
+            @AuthenticationPrincipal Principal principal
+    ) {
+        return postService.edit(post, principal);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Object> delete(@RequestBody Post post, @AuthenticationPrincipal Principal principal) {
-        if (post.getUser() == null || !principal.getName().equals(post.getUser().getId())) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        postService.delete(post);
-        return ResponseEntity.ok().body(null);
+    public void delete(
+            @RequestBody Post post,
+            @AuthenticationPrincipal Principal principal
+    ) {
+        postService.delete(post, principal);
     }
 }

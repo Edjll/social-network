@@ -1,6 +1,5 @@
 package ru.edjll.backend.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,7 +20,7 @@ public class CityController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Collection<City>> getAll(@RequestParam(required = false) Long countryId) {
-        return ResponseEntity.ok().body(cityService.getAll(countryId));
+    public Collection<City> getAll(@RequestParam(required = false) Long countryId) {
+        return cityService.getAll(countryId);
     }
 }

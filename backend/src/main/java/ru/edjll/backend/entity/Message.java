@@ -1,17 +1,17 @@
 package ru.edjll.backend.entity;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "message")
-@Setter
-@Getter
-@NoArgsConstructor
 public class Message {
 
     @Id
@@ -19,13 +19,14 @@ public class Message {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id")
+    @JoinColumn(name = "sender_id", referencedColumnName = "id")
     private User sender;
 
     @ManyToOne
-    @JoinColumn(name = "recipient_id")
+    @JoinColumn(name = "recipient_id", referencedColumnName = "id")
     private User recipient;
 
+    @Column(name = "text")
     private String text;
 
     @Column(name = "created_date")

@@ -1,12 +1,13 @@
 package ru.edjll.backend.dto;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import ru.edjll.backend.entity.User;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserDto {
 
     private String id;
@@ -14,10 +15,10 @@ public class UserDto {
     private String lastName;
     private String username;
 
-    public UserDto(String id, String firstName, String lastName, String username) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
+    public UserDto(User user) {
+        this.id = user.getId();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.username = user.getUsername();
     }
 }

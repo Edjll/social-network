@@ -1,6 +1,5 @@
 package ru.edjll.backend.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +20,12 @@ public class CountryController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Collection<Country>> getAll() {
-        return ResponseEntity.ok().body(countryService.getAll());
+    public Collection<Country> getAll() {
+        return countryService.getAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Country> getOne(@PathVariable long id) {
-        return ResponseEntity.ok().body(countryService.getOne(id));
+    public Country getOne(@PathVariable long id) {
+        return countryService.getOne(id);
     }
 }

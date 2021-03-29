@@ -1,17 +1,17 @@
 package ru.edjll.backend.entity;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "user_info")
-@Getter
-@Setter
-@NoArgsConstructor
 public class UserInfo {
 
     @Id
@@ -20,12 +20,13 @@ public class UserInfo {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "city_id")
+    @JoinColumn(name = "city_id", referencedColumnName = "id")
     private City city;
 
+    @Column(name = "birthday")
     private LocalDate birthday;
 }

@@ -1,6 +1,5 @@
 package ru.edjll.backend.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -24,30 +23,30 @@ public class UserController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/update")
-    public ResponseEntity<Object> edit(@RequestBody EditUserInfoDto editUserInfoDto, @AuthenticationPrincipal Principal principal) {
+    public void edit(
+            @RequestBody EditUserInfoDto editUserInfoDto,
+            @AuthenticationPrincipal Principal principal
+    ) {
         userInfoService.edit(editUserInfoDto, principal);
-        return ResponseEntity.ok().body(null);
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<UserInfoDto> getUserInfo(@PathVariable String username) {
-        return ResponseEntity.ok().body(userInfoService.getUserInfoByUsername(username));
+    public UserInfoDto getUserInfo(@PathVariable String username) {
+        return userInfoService.getUserInfoByUsername(username);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Collection<UserInfoDto>> searchUsers(
+    public Collection<UserInfoDto> searchUsers(
             @RequestParam(required = false, defaultValue = "") String firstName,
             @RequestParam(required = false, defaultValue = "") String lastName,
             @RequestParam(required = false) Long countryId,
             @RequestParam(required = false) Long cityId
     ) {
-        return ResponseEntity.ok().body(userInfoService.searchUserInfo(firstName, lastName, countryId, cityId));
+        return userInfoService.searchUserInfo(firstName, lastName, countryId, cityId);
     }
 
     @GetMapping("/detail/{username}")
-    public ResponseEntity<UserInfoDetailDto> getUserInfoDetail(
-            @PathVariable(required = false) String username
-    ) {
-        return ResponseEntity.ok().body(userInfoService.getUserInfoDetailByUsername(username));
+    public UserInfoDetailDto getUserInfoDetail(@PathVariable(required = false) String username) {
+        return userInfoService.getUserInfoDetailByUsername(username);
     }
 }
