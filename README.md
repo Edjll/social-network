@@ -6,6 +6,23 @@ Command to build docker images: `docker-compose build`
 
 Command to start docker containers: `docker-compose up`
 
+## backend endpoints
+
+<table>
+  <tr>
+    <th>URL</th>
+    <th>Описание</th>
+  </tr>
+  <tr>
+    <td><a href="http://localhost:8085/docs">http://localhost:8085/docs</a></td>
+    <td>api-docs</td>
+  </tr>
+  <tr>
+    <td><a href=http://localhost:8085/docs/ui">http://localhost:8085/docs/ui</a></td>
+    <td>swagger-ui</td>
+  </tr>
+</table>
+
 ## frontend endpoints
 
 <table>

@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    active: dev
+    active: docker
   security:
     oauth2:
       resourceserver:
@@ -21,6 +21,12 @@ spring:
   datasource:
     username: admin
     password: admin
+
+springdoc:
+  swagger-ui:
+    path: /docs/ui
+  api-docs:
+    path: /docs
 
 ---
 
