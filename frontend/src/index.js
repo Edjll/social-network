@@ -12,5 +12,7 @@ const app = () => ReactDOM.render(
     document.getElementById('root')
 );
 
+// app();
+
 AuthService.initKeycloak(app);
 RequestService.configure();

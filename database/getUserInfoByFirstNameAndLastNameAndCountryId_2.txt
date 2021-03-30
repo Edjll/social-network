@@ -1,0 +1,51 @@
+// jpql
+select new ru.edjll.backend.dto.UserInfoDto(
+    user.id, user.firstName, user.lastName, user.username, 
+    case when userInfo is null then null else userInfo.birthday end, 
+    case when city is null then null else city.title end) 
+from User user left join user.userInfo userInfo left join userInfo.city city left join city.country country 
+where lower(user.firstName) like concat('%', lower(:firstName), '%') 
+and lower(user.lastName) like concat('%', lower(:lastName), '%') 
+and country.id = :countryId
+
+// sql
+explain analyze
+select user0_.id         as col_0_0_,
+       user0_.first_name as col_1_0_,
+       user0_.last_name  as col_2_0_,
+       user0_.username   as col_3_0_,
+       case
+           when userinfo1_.user_id is null then null
+           else userinfo1_.birthday
+           end           as col_4_0_,
+       case
+           when city2_.id is null then null
+           else city2_.title
+           end           as col_5_0_
+from user_entity user0_
+         left outer join user_info userinfo1_ on user0_.id = userinfo1_.user_id
+         left outer join city city2_ on userinfo1_.city_id = city2_.id
+         left outer join country country3_ on city2_.country_id = country3_.id
+where (lower(user0_.first_name) like ('%' || lower(?) || '%'))
+  and (lower(user0_.last_name) like ('%' || lower(?) || '%'))
+  and country3_.id =(?)
+
+// result
+// added index on city_id
+
+Nested Loop  (cost=0.42..24.10 rows=1 width=1674) (actual time=0.058..0.085 rows=1 loops=1)
+  ->  Nested Loop  (cost=0.42..19.05 rows=1 width=2175) (actual time=0.048..0.049 rows=1 loops=1)
+        ->  Nested Loop  (cost=0.14..10.63 rows=1 width=2166) (actual time=0.024..0.025 rows=1 loops=1)
+              ->  Seq Scan on user_info userinfo1_  (cost=0.00..1.01 rows=1 width=528) (actual time=0.006..0.007 rows=1 loops=1)
+              ->  Index Scan using constraint_fb on user_entity user0_  (cost=0.14..8.16 rows=1 width=1638) (actual time=0.013..0.013 rows=1 loops=1)
+                    Index Cond: ((id)::text = (userinfo1_.user_id)::text)
+                    Filter: ((lower((first_name)::text) ~~ '%s%'::text) AND (lower((last_name)::text) ~~ '%f%'::text))
+        ->  Index Scan using city_pkey on city city2_  (cost=0.29..8.31 rows=1 width=17) (actual time=0.023..0.023 rows=1 loops=1)
+              Index Cond: (id = userinfo1_.city_id)
+              Filter: (country_id = 2)
+  ->  Seq Scan on country country3_  (cost=0.00..5.04 rows=1 width=4) (actual time=0.008..0.033 rows=1 loops=1)
+        Filter: (id = 2)
+        Rows Removed by Filter: 242
+Planning Time: 4.277 ms
+Execution Time: 0.124 ms
+

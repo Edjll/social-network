@@ -1,10 +1,18 @@
 package ru.edjll.backend.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.entity.City;
 import ru.edjll.backend.repository.CityRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CityService {
@@ -19,12 +27,47 @@ public class CityService {
         return cityRepository.findAll();
     }
 
-    public Collection<City> getAll(Long countryId) {
-        if (countryId == null) return this.getAll();
-        return cityRepository.findAllByCountryId(countryId);
+    public Page<City> getAll(
+            Integer page, Integer size,
+            Optional<String> idDirection, Optional<String> titleDirection, Optional<String> countryDirection,
+            Long id, String title, String country
+    ) {
+        List<Sort.Order> orders = new ArrayList<>();
+
+        idDirection.ifPresent(s -> orders.add(new Sort.Order(Sort.Direction.fromString(s), "id")));
+        countryDirection.ifPresent(s -> orders.add(new Sort.Order(Sort.Direction.fromString(s), "country")));
+        titleDirection.ifPresent(s -> orders.add(new Sort.Order(Sort.Direction.fromString(s), "title")));
+
+        if (orders.isEmpty()) {
+            return cityRepository.findAllByIdGreaterThanEqualAndTitleStartingWithIgnoreCaseAndCountryTitleStartingWithIgnoreCase(id, title, country, PageRequest.of(page, size));
+        } else {
+            return cityRepository.findAllByIdGreaterThanEqualAndTitleStartingWithIgnoreCaseAndCountryTitleStartingWithIgnoreCase(id, title, country, PageRequest.of(page, size, Sort.by(orders)));
+        }
     }
 
-    public City getCityById(Long id) {
+    public Collection<City> getAll(Optional<Long> countryId) {
+        if (countryId.isPresent()) return cityRepository.findAllByCountryId(countryId.get());
+        return this.getAll();
+
+    }
+
+    public City getById(Long id) {
         return cityRepository.findById(id).orElse(null);
+    }
+
+    public void save(City city) {
+        if (city.getCountry() == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "city must have country");
+        cityRepository.save(city);
+    }
+
+    public void update(City city) {
+        if (city.getCountry() == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "city must have country");
+        cityRepository.save(city);
+    }
+
+    public void delete(Long id) {
+        cityRepository.deleteById(id);
     }
 }

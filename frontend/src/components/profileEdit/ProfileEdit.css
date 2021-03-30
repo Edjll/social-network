@@ -4,7 +4,7 @@
     align-items: center;
     border-radius: .25rem;
     border: 1px solid rgb(62, 68, 70);
-    background-color: #2b2b2b;
+    background-color: #2b2e34;
     width: max-content;
     margin: .5rem auto;
 }
@@ -16,6 +16,7 @@
     margin: .7rem .5rem;
     box-sizing: border-box;
     border-bottom: 1px solid rgb(62, 68, 70);
+    color: white;
 }
 
 .profile-edit__title > h1 {

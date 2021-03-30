@@ -26,7 +26,7 @@ public class UserInfoService {
         this.cityService = cityService;
     }
 
-    public void edit(EditUserInfoDto editUserInfoDto, Principal principal) {
+    public void update(EditUserInfoDto editUserInfoDto, Principal principal) {
         UserInfo userInfo = this.getUserInfoById(principal.getName());
         if (userInfo == null) {
             userInfo = new UserInfo();
@@ -36,7 +36,7 @@ public class UserInfoService {
         if (userInfo.getCity() == null || !userInfo.getCity().getId().equals(editUserInfoDto.getCityId())) {
             if (editUserInfoDto.getCityId() == null) userInfo.setCity(null);
             else {
-                City city = cityService.getCityById(editUserInfoDto.getCityId());
+                City city = cityService.getById(editUserInfoDto.getCityId());
                 userInfo.setCity(city);
             }
         }

@@ -32,12 +32,12 @@ public class PostController {
         return postService.save(post, principal);
     }
 
-    @PutMapping("/edit")
-    public PostDto edit(
+    @PutMapping("/update")
+    public PostDto update(
             @RequestBody Post post,
             @AuthenticationPrincipal Principal principal
     ) {
-        return postService.edit(post, principal);
+        return postService.update(post, principal);
     }
 
     @DeleteMapping("/delete")

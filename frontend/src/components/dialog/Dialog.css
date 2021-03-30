@@ -4,20 +4,15 @@
     height: 100vh;
 }
 
-main {
-    width: 100%;
-    height: calc(100% - 61px);
-    box-sizing: border-box;
-}
-
 .dialog {
     border: 1px solid rgb(62, 68, 70);
     background-color: #2b2e34;
-    height: 100%;
+    height: calc(100vh - 63px - 1rem);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     border-radius: .25rem;
+    width: 100%;
 }
 
 .dialog__interlocutor-info {
@@ -104,11 +99,12 @@ main {
     display: flex;
     align-items: baseline;
     font-size: 1rem;
-    background-color: #3b3a3a;
+    background-color: #2b2e34;
     padding: .2rem .4rem;
     border-radius: 0 .25rem 0 0;
-    border-top: 1px solid rgb(48, 52, 53);
-    border-right: 1px solid rgb(48, 52, 53);
+    border-top: 1px solid rgb(62, 68, 70);
+    border-right: 1px solid rgb(62, 68, 70);
+    color: white;
 }
 
 .dialog__form__message-editing__button {

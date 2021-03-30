@@ -30,7 +30,7 @@ public class MessageService {
         return this.getMessageDtoById(savedMessage.getId());
     }
 
-    public MessageDto edit(Message message, Principal principal) {
+    public MessageDto update(Message message, Principal principal) {
         if (message.getSender() == null || !Objects.equals(message.getSender().getId(), principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Don't have rights");
         }
@@ -48,7 +48,7 @@ public class MessageService {
 
     public Collection<MessageDto> getAllMessageDtoBetweenUsersById(String senderId, String recipientId, Principal principal) {
         if (!principal.getName().equals(senderId) && !principal.getName().equals(recipientId)) {
-            throw new ResponseStatusException(HttpStatus.MULTI_STATUS, "Don't have rights");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Don't have rights");
         }
         return messageRepository.getAllMessageDtoBetweenUsersById(senderId, recipientId);
     }

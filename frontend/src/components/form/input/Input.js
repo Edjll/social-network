@@ -23,6 +23,7 @@ export class Input extends React.Component {
 
     handleBlur() {
         this.setState({active: false});
+        if (this.props.handleBlur) this.props.handleBlur();
     }
 
     handleChange(value) {
@@ -33,16 +34,17 @@ export class Input extends React.Component {
     render() {
 
         return (
-            <label className="input">
-                <span className="input__label">{this.props.label}</span>
+            <label className={`input ${this.props.className ? this.props.className : ''}`}>
+                <span className={"input__label"}>{this.props.label}</span>
                 <input
-                    className="input__value"
+                    className={"input__value"}
                     value={this.state.value}
                     name={this.props.name}
                     type={this.props.type}
                     onChange={(e) => this.handleChange(e.target.value)}
                     onFocus={this.handleFocus.bind(this)}
                     onBlur={this.handleBlur.bind(this)}
+                    disabled={!!this.props.disabled}
                 />
             </label>
         )

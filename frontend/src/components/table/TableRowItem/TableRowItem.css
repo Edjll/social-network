@@ -1,0 +1,12 @@
+.table__body__row__item {
+    padding: 1rem;
+    font-size: .9rem;
+    width: 100%;
+    border-bottom: 1px solid rgb(62, 68, 70);
+    display: flex;
+    align-items: center;
+}
+
+.table__body__row__item:not(:last-of-type) {
+    border-right: 1px solid rgb(62, 68, 70);
+}

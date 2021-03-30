@@ -9,8 +9,9 @@
     transition: background-color .15s;
     outline: none;
     text-decoration: none;
-    margin: .3rem;
+    margin: .7rem;
     user-select: none;
+    max-width: 350px;
 }
 
 .button:hover {

@@ -1,0 +1,6 @@
+.table__head {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    box-sizing: border-box;
+}

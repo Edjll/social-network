@@ -11,7 +11,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "message")
+@Table(
+        name = "message",
+        indexes = {
+                @Index(name = "message_sender_id", columnList = "sender_id"),
+                @Index(name = "message_recipient_id", columnList = "recipient_id")
+        }
+)
 public class Message {
 
     @Id

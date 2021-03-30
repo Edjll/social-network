@@ -1,0 +1,45 @@
+// jpql
+select new ru.edjll.backend.dto.MessageDto(
+    m.id, m.text, m.createdDate, m.modifiedDate,
+    s.id, s.firstName, s.lastName, s.username,
+    r.id, r.firstName, r.lastName, r.username)
+from Message m join m.sender s join m.recipient r
+where m.sender.id in (:senderId, :recipientId)
+and m.recipient.id in (:senderId, :recipientId)
+order by m.createdDate
+
+// sql
+explain analyze
+select message0_.id            as col_0_0_,
+       message0_.text          as col_1_0_,
+       message0_.created_date  as col_2_0_,
+       message0_.modified_date as col_3_0_,
+       user1_.id               as col_4_0_,
+       user1_.first_name       as col_5_0_,
+       user1_.last_name        as col_6_0_,
+       user1_.username         as col_7_0_,
+       user2_.id               as col_8_0_,
+       user2_.first_name       as col_9_0_,
+       user2_.last_name        as col_10_0_,
+       user2_.username         as col_11_0_
+from message message0_
+         inner join user_entity user1_ on message0_.sender_id = user1_.id
+         inner join user_entity user2_ on message0_.recipient_id = user2_.id
+where (message0_.sender_id in (?, ?))
+  and (message0_.recipient_id in (?, ?))
+order by message0_.created_date
+
+// result
+Sort  (cost=29.98..29.99 rows=1 width=3816) (actual time=0.050..0.051 rows=1 loops=1)
+  Sort Key: message0_.created_date
+  Sort Method: quicksort  Memory: 25kB
+  ->  Nested Loop  (cost=0.27..29.97 rows=1 width=3816) (actual time=0.040..0.042 rows=1 loops=1)
+        ->  Nested Loop  (cost=0.14..20.36 rows=1 width=2694) (actual time=0.035..0.036 rows=1 loops=1)
+              ->  Seq Scan on message message0_  (cost=0.00..10.75 rows=1 width=1572) (actual time=0.016..0.017 rows=1 loops=1)
+                    Filter: (((sender_id)::text = ANY ('{ac6e6a9b-1533-49f3-ad93-2e4282b6de6f,9406f796-9494-460b-a55d-feb6f792ff06}'::text[])) AND ((recipient_id)::text = ANY ('{ac6e6a9b-1533-49f3-ad93-2e4282b6de6f,9406f796-9494-460b-a55d-feb6f792ff06}'::text[])))"
+              ->  Index Scan using constraint_fb on user_entity user1_  (cost=0.14..8.15 rows=1 width=1638) (actual time=0.016..0.017 rows=1 loops=1)
+                    Index Cond: ((id)::text = (message0_.sender_id)::text)
+        ->  Index Scan using constraint_fb on user_entity user2_  (cost=0.14..8.15 rows=1 width=1638) (actual time=0.004..0.004 rows=1 loops=1)
+              Index Cond: ((id)::text = (message0_.recipient_id)::text)
+Planning Time: 0.366 ms
+Execution Time: 0.087 ms

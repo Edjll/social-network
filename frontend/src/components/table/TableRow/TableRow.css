@@ -1,0 +1,10 @@
+.table__body__row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    color: #a2aaad;
+}
+
+.table__body__row:nth-of-type(odd) {
+    background-color: #31353c;
+}

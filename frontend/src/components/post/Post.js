@@ -17,7 +17,7 @@ export class Post extends React.Component {
     }
 
     handleSubmit(text) {
-        RequestService.getAxios().put(RequestService.URL + "/post/edit", {
+        RequestService.getAxios().put(RequestService.URL + "/post/update", {
             id: this.state.post.id,
             user: {
                 id: AuthService.getId()

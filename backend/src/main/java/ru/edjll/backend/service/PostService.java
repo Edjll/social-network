@@ -29,7 +29,7 @@ public class PostService {
         return postRepository.getPostDtoById(savedPost.getId());
     }
 
-    public PostDto edit(Post post, Principal principal) {
+    public PostDto update(Post post, Principal principal) {
         if (post.getUser() == null || !principal.getName().equals(post.getUser().getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Don't have rights");
         }

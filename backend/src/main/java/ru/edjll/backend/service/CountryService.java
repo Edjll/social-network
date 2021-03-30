@@ -19,7 +19,19 @@ public class CountryService {
         return countryRepository.findAll();
     }
 
-    public Country getOne(long id) {
+    public Country getOne(Long id) {
         return countryRepository.getOne(id);
+    }
+
+    public void save(Country country) {
+        countryRepository.save(country);
+    }
+
+    public void update(Country country) {
+        countryRepository.save(country);
+    }
+
+    public void delete(Long id) {
+        countryRepository.deleteById(id);
     }
 }

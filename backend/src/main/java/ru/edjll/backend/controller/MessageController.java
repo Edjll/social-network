@@ -36,12 +36,12 @@ public class MessageController {
         return messageService.save(message, principal);
     }
 
-    @PutMapping("/edit")
-    public MessageDto edit(
+    @PutMapping("/update")
+    public MessageDto update(
             @RequestBody Message message,
             @AuthenticationPrincipal Principal principal
     ) {
-        return messageService.edit(message, principal);
+        return messageService.update(message, principal);
     }
 
     @DeleteMapping("/delete")

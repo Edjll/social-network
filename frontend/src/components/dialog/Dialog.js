@@ -66,7 +66,7 @@ export class Dialog extends React.Component {
     }
 
     editMessage() {
-        RequestService.getAxios().put(RequestService.URL + "/message/edit", {
+        RequestService.getAxios().put(RequestService.URL + "/message/update", {
             id: this.state.id,
             sender: {id: AuthService.getId()},
             recipient: {id: this.state.interlocutor.id},

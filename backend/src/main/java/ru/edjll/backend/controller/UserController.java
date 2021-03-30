@@ -23,11 +23,11 @@ public class UserController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/update")
-    public void edit(
+    public void update(
             @RequestBody EditUserInfoDto editUserInfoDto,
             @AuthenticationPrincipal Principal principal
     ) {
-        userInfoService.edit(editUserInfoDto, principal);
+        userInfoService.update(editUserInfoDto, principal);
     }
 
     @GetMapping("/{username}")
@@ -45,7 +45,7 @@ public class UserController {
         return userInfoService.searchUserInfo(firstName, lastName, countryId, cityId);
     }
 
-    @GetMapping("/detail/{username}")
+    @GetMapping("/{username}/detail")
     public UserInfoDetailDto getUserInfoDetail(@PathVariable(required = false) String username) {
         return userInfoService.getUserInfoDetailByUsername(username);
     }

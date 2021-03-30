@@ -58,7 +58,7 @@
     position: absolute;
     top: 110%;
     width: 100%;
-    max-height: 300px;
+    max-height: 250px;
     overflow-y: scroll;
     border: 1px solid rgb(62, 68, 70);
     z-index: 1;
