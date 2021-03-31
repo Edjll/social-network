@@ -30,7 +30,7 @@ export default class ProfileEdit extends React.Component {
 
     handleChangeCountry(value) {
         if (value != null) {
-            RequestService.getAxios().get(RequestService.URL + `/city/all`, {params: {countryId: value}})
+            RequestService.getAxios().get(RequestService.URL + `/city/all`, {params: {countryId: value.key}})
                 .then(response =>
                     this.setState({
                         selectedCountry: true, cities: response.data.map(option => {
