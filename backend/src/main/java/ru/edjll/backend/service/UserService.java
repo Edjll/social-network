@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import ru.edjll.backend.entity.User;
 import ru.edjll.backend.repository.UserRepository;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -13,7 +15,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User getUserById(String id) {
-        return userRepository.getOne(id);
+    public Optional<User> getUserById(String id) {
+        return userRepository.findById(id);
     }
 }

@@ -21,6 +21,10 @@ export class UpdateCity extends React.Component {
                     id: null,
                     title: null
                 }
+            },
+            errors: {
+                title: null,
+                country: null
             }
         }
     }
@@ -57,19 +61,24 @@ export class UpdateCity extends React.Component {
         RequestService.getAxios().put(RequestService.URL + "/city/update", {
             id: this.state.city.id,
             title: this.state.title,
-            country: {
-                id: this.state.countryId
-            }
-        }).then(() => this.handleClose());
+            countryId: this.state.countryId
+        })
+            .then(() => this.handleClose())
+            .catch(error => this.setState({
+                errors: {
+                    title: error.response.data.errors.title,
+                    country: error.response.data.errors.countryId
+                }
+            }));
     }
 
     handleChangeTitle(value) {
-        this.setState({title: value});
+        this.setState({title: value, errors: {...this.state.errors, title: null}});
     }
 
     handleSelectCountry(value) {
-        if (value === null) this.setState({countryId: null});
-        else this.setState({countryId: value.key});
+        if (value === null) this.setState({countryId: null, errors: {...this.state.errors, country: null}});
+        else this.setState({countryId: value.key, errors: {...this.state.errors, country: null}});
     }
 
     render() {
@@ -82,10 +91,10 @@ export class UpdateCity extends React.Component {
                                 <h1 className={"city-form__title"}>Update city</h1>
                                 <Input value={this.state.city.id} label={"id"} disabled={true}/>
                                 <Input value={this.state.city.title} handleChange={this.handleChangeTitle.bind(this)}
-                                       label={"title"}/>
+                                       label={"title"} error={this.state.errors.title}/>
                                 <Select value={{key: this.state.city.country.id, text: this.state.city.country.title}}
                                         options={this.state.countries} label={"country"}
-                                        onChange={this.handleSelectCountry.bind(this)}/>
+                                        onChange={this.handleSelectCountry.bind(this)} error={this.state.errors.country}/>
                                 <Button text={"Update"} className={"city-form__button"}/>
                             </form>
                         : ''

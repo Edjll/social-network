@@ -10,51 +10,47 @@ import axios from "axios";
 import RequestService from "../../../services/RequestService";
 import {TableFooter} from "../../table/TableFooter/TableFooter";
 import {TablePageSize} from "../../table/TablePageSize/TablePageSize";
-import './CityAll.css';
-import {CreateCity} from "../CreateCity/CreateCity";
+import './CountryAll.css';
+import {CreateCountry} from "../CreateCountry/CreateCountry";
 import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
-import {UpdateCity} from "../UpdateCity/UpdateCity";
-import {DeleteCity} from "../DeleteCity/DeleteCity";
+import {UpdateCountry} from "../UpdateCountry/UpdateCountry";
+import {DeleteCountry} from "../DeleteCountry/DeleteCountry";
 import {Input} from "../../form/input/Input";
 
-export class CityAll extends React.Component {
+export class CountryAll extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            cities: [],
+            countries: [],
             page: 0,
             maxPage: 0,
             pageSize: 15,
             idDirection: null,
             titleDirection: null,
-            countryDirection: null,
             id: null,
             title: null,
-            country: null,
             search: false
         }
     }
 
     componentDidMount() {
-        this.loadCities(this.state.page, this.state.pageSize);
+        this.loadCountries(this.state.page, this.state.pageSize);
     }
 
-    loadCities() {
-        axios.get(RequestService.URL + '/city/page', {
+    loadCountries() {
+        axios.get(RequestService.URL + '/country/page', {
             params: {
                 page: this.state.page,
                 size: this.state.pageSize,
                 idDirection: this.state.idDirection,
                 titleDirection: this.state.titleDirection,
-                countryDirection: this.state.countryDirection,
                 id: this.state.id,
-                title: this.state.title,
-                country: this.state.country,
+                title: this.state.title
             }
         }).then(response => {
             this.setState({
-                cities: response.data.content,
+                countries: response.data.content,
                 maxPage: response.data.totalPages,
                 page: response.data.number
             })
@@ -62,11 +58,11 @@ export class CityAll extends React.Component {
     }
 
     handleClick(page) {
-        this.setState({page: page}, () => this.loadCities());
+        this.setState({page: page}, () => this.loadCountries());
     }
 
     handleChangePageSize(value) {
-        this.setState({pageSize: value}, () => this.loadCities());
+        this.setState({pageSize: value}, () => this.loadCountries());
     }
 
     handleChangeDirection(directionName) {
@@ -83,7 +79,7 @@ export class CityAll extends React.Component {
                 direction[field] = 'asc';
                 break
         }
-        this.setState(direction, () => this.loadCities());
+        this.setState(direction, () => this.loadCountries());
     }
 
     handleChangeId(value) {
@@ -94,12 +90,8 @@ export class CityAll extends React.Component {
         this.setState({title: value});
     }
 
-    handleChangeCountry(value) {
-        this.setState({country: value});
-    }
-
     handleBlur() {
-        this.loadCities();
+        this.loadCountries();
     }
 
     handleActiveSearch() {
@@ -110,20 +102,18 @@ export class CityAll extends React.Component {
 
         return (
             <BrowserRouter>
-                <div className={"city-all"}>
-                    <div className={"city-all__header"}>
-                        <h1 className={"city-all__header__title"}>Cities</h1>
-                        <div className={"city-all__header__actions"}>
-                            <div className={"city-all__header__button-search"} onClick={this.handleActiveSearch.bind(this)}>🔍</div>
-                            <Link to={"/admin/city/create"} className={"city-all__header__link-create"}>create</Link>
+                <div className={"country-all"}>
+                    <div className={"country-all__header"}>
+                        <h1 className={"country-all__header__title"}>Countries</h1>
+                        <div className={"country-all__header__actions"}>
+                            <div className={"country-all__header__button-search"} onClick={this.handleActiveSearch.bind(this)}>🔍</div>
+                            <Link to={"/admin/country/create"} className={"country-all__header__link-create"}>create</Link>
                         </div>
                     </div>
                     <Table>
                         <TableHead>
                             <TableHeadItem name={'id'} order={this.state.idDirection}
                                            handleClick={this.handleChangeDirection.bind(this)}>#</TableHeadItem>
-                            <TableHeadItem name={'country'} order={this.state.countryDirection}
-                                           handleClick={this.handleChangeDirection.bind(this)}>Country</TableHeadItem>
                             <TableHeadItem name={'title'} order={this.state.titleDirection}
                                            handleClick={this.handleChangeDirection.bind(this)}>Title</TableHeadItem>
                             <TableHeadItem>Actions</TableHeadItem>
@@ -135,19 +125,13 @@ export class CityAll extends React.Component {
                                             <TableRowItem>
                                                 <Input handleBlur={this.handleBlur.bind(this)} type={'number'}
                                                        handleChange={this.handleChangeId.bind(this)}
-                                                       className={"city-all__search__input"}
-                                                />
-                                            </TableRowItem>
-                                            <TableRowItem>
-                                                <Input handleBlur={this.handleBlur.bind(this)}
-                                                       handleChange={this.handleChangeCountry.bind(this)}
-                                                       className={"city-all__search__input"}
+                                                       className={"country-all__search__input"}
                                                 />
                                             </TableRowItem>
                                             <TableRowItem>
                                                 <Input handleBlur={this.handleBlur.bind(this)}
                                                        handleChange={this.handleChangeTitle.bind(this)}
-                                                       className={"city-all__search__input"}
+                                                       className={"country-all__search__input"}
                                                 />
                                             </TableRowItem>
                                             <TableRowItem/>
@@ -155,17 +139,16 @@ export class CityAll extends React.Component {
                                     :   ''
                             }
                             {
-                                this.state.cities.map(city => {
+                                this.state.countries.map(country => {
                                     return (
-                                        <TableRow key={city.id}>
-                                            <TableRowItem>{city.id}</TableRowItem>
-                                            <TableRowItem>{city.country.title}</TableRowItem>
-                                            <TableRowItem>{city.title}</TableRowItem>
-                                            <TableRowItem className={"city-all__actions"}>
-                                                <Link to={`/admin/city/${city.id}/update`}
-                                                      className={"city-all__action"}>✎</Link>
-                                                <Link to={`/admin/city/${city.id}/delete`}
-                                                      className={"city-all__action"}>🗑</Link>
+                                        <TableRow key={country.id}>
+                                            <TableRowItem>{country.id}</TableRowItem>
+                                            <TableRowItem>{country.title}</TableRowItem>
+                                            <TableRowItem className={"country-all__actions"}>
+                                                <Link to={`/admin/country/${country.id}/update`}
+                                                      className={"country-all__action"}>✎</Link>
+                                                <Link to={`/admin/country/${country.id}/delete`}
+                                                      className={"country-all__action"}>🗑</Link>
                                             </TableRowItem>
                                         </TableRow>
                                     );
@@ -185,9 +168,9 @@ export class CityAll extends React.Component {
                     </Table>
                 </div>
                 <Switch>
-                    <Route path={"/admin/city/create"} component={CreateCity}/>
-                    <Route path={"/admin/city/:id/update"} component={UpdateCity}/>
-                    <Route path={"/admin/city/:id/delete"} component={DeleteCity}/>
+                    <Route path={"/admin/country/create"} component={CreateCountry}/>
+                    <Route path={"/admin/country/:id/update"} component={UpdateCountry}/>
+                    <Route path={"/admin/country/:id/delete"} component={DeleteCountry}/>
                 </Switch>
             </BrowserRouter>
         );

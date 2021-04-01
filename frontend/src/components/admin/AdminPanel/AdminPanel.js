@@ -7,13 +7,19 @@ export class AdminPanel extends React.Component {
     constructor(props) {
         super(props);
 
+        let active = localStorage.getItem("adminPanel");
+        if (active === null) {
+            localStorage.setItem("adminPanel", "true");
+            active = true;
+        }
+
         this.state = {
-            active: false
+            active: active
         }
     }
 
     handleClickShow() {
-        this.setState({active: !this.state.active})
+        this.setState({active: !this.state.active}, () => localStorage.setItem("adminPanel", this.state.active));
     }
 
     render() {
@@ -23,6 +29,7 @@ export class AdminPanel extends React.Component {
                     this.state.active
                         ?   <div className={"admin-panel__links"}>
                                 <Link to={"/admin/city"} className={"admin-panel__link"} onClick={this.handleClickShow.bind(this)}>Cities</Link>
+                                <Link to={"/admin/countries"} className={"admin-panel__link"} onClick={this.handleClickShow.bind(this)}>Countries</Link>
                             </div>
                         : ''
                 }

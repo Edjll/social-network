@@ -46,6 +46,14 @@ export class Input extends React.Component {
                     onBlur={this.handleBlur.bind(this)}
                     disabled={!!this.props.disabled}
                 />
+                {
+                    this.props.error
+                        ?   <div className={"input__error"}>
+                                <div className={"input__error__description"}>{this.props.error}</div>
+                                <div className={"input__error__icon"}>❌</div>
+                            </div>
+                        :   ''
+                }
             </label>
         )
     }

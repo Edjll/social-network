@@ -20,6 +20,7 @@
     background-color: #181a1b;
     border: 1px solid rgb(62, 68, 70);
     border-radius: .25rem;
+    position: relative;
 }
 
 .select__search__input {
@@ -80,4 +81,43 @@
 
 .select__options__value:hover {
     background-color: #212425;
+}
+
+.select__error {
+    position: absolute;
+    bottom: .6rem;
+    right: .6rem;
+}
+
+.select__error__description {
+    max-width: 200px;
+    width: max-content;
+    position: absolute;
+    background-color: #202426;
+    padding: .5rem 1.5rem;
+    top: -200%;
+    right: 0;
+    color: white;
+    border-radius: .25rem;
+    display: none;
+    font-size: 1rem;
+}
+
+.select__error__description::after {
+    content: '';
+    border: .5rem solid transparent;
+    border-top-color: #202426;
+    position: absolute;
+    bottom: -1rem;
+    right: .2rem;
+}
+
+.select__error__icon {
+    color: red;
+    cursor: default;
+    font-size: 1rem;
+}
+
+.select__error:hover .select__error__description {
+    display: block;
 }

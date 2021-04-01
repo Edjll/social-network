@@ -2,6 +2,7 @@ import {AdminPanel} from "../AdminPanel/AdminPanel";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import './AdminPage.css';
 import {CityAll} from "../../city/CityAll/CityAll";
+import {CountryAll} from "../../country/CountryAll/CountryAll";
 
 export const AdminPage = () => {
 
@@ -11,6 +12,7 @@ export const AdminPage = () => {
                 <AdminPanel/>
                     <Switch>
                         <Route path={"/admin/city"} component={CityAll}/>
+                        <Route path={"/admin/countries"} component={CountryAll}/>
                     </Switch>
             </div>
         </BrowserRouter>

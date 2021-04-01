@@ -19,4 +19,8 @@ public class Country {
 
     @Column(name = "title", length = 60)
     private String title;
+
+    public Country(String title) {
+        this.title = title;
+    }
 }

@@ -63,6 +63,14 @@ export class Select extends React.Component {
                     />
                     {this.state.search !== "" ?
                         <div className="select__search__clear" onClick={this.handleClear.bind(this)}>×</div> : ""}
+                    {
+                        this.props.error
+                            ? <div className={"select__error"}>
+                                <div className={"select__error__description"}>{this.props.error}</div>
+                                <div className={"select__error__icon"}>❌</div>
+                            </div>
+                            : ''
+                    }
                 </div>
                 {
                     this.state.active && this.state.options.length > 0

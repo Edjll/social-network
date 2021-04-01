@@ -1,11 +1,13 @@
-package ru.edjll.backend.dto;
+package ru.edjll.backend.dto.city;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.edjll.backend.dto.country.CountryDto;
 
 @Data
 @NoArgsConstructor
 public class CityDto {
+
 
     private Long id;
     private String title;

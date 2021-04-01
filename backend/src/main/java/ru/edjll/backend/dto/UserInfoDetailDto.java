@@ -2,6 +2,7 @@ package ru.edjll.backend.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.edjll.backend.dto.city.CityDto;
 
 import java.time.LocalDate;
 

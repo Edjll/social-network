@@ -1,4 +1,4 @@
-package ru.edjll.backend.dto;
+package ru.edjll.backend.dto.country;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

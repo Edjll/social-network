@@ -8,8 +8,10 @@ import ru.edjll.backend.dto.UserInfoDetailDto;
 import ru.edjll.backend.dto.UserInfoDto;
 import ru.edjll.backend.service.UserInfoService;
 
+import javax.swing.text.html.Option;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -39,8 +41,8 @@ public class UserController {
     public Collection<UserInfoDto> searchUsers(
             @RequestParam(required = false, defaultValue = "") String firstName,
             @RequestParam(required = false, defaultValue = "") String lastName,
-            @RequestParam(required = false) Long countryId,
-            @RequestParam(required = false) Long cityId
+            @RequestParam(required = false) Optional<Long> countryId,
+            @RequestParam(required = false) Optional<Long> cityId
     ) {
         return userInfoService.searchUserInfo(firstName, lastName, countryId, cityId);
     }

@@ -27,8 +27,6 @@ export class DeleteCity extends React.Component {
             .then(response => {
                 this.setState({
                     city: response.data,
-                    countryId: response.data.country.id,
-                    title: response.data.title,
                     loadQueue: this.state.loadQueue - 1
                 });
             });

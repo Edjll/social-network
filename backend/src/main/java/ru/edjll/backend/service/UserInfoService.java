@@ -10,6 +10,7 @@ import ru.edjll.backend.repository.UserInfoRepository;
 
 import java.security.Principal;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class UserInfoService {
@@ -27,33 +28,35 @@ public class UserInfoService {
     }
 
     public void update(EditUserInfoDto editUserInfoDto, Principal principal) {
-        UserInfo userInfo = this.getUserInfoById(principal.getName());
-        if (userInfo == null) {
-            userInfo = new UserInfo();
-            userInfo.setUser(userService.getUserById(principal.getName()));
-        }
+        UserInfo userInfo = this.getUserInfoById(principal.getName())
+                .orElseGet(() -> {
+                    UserInfo uf = new UserInfo();
+                    userService.getUserById(principal.getName()).ifPresent(uf::setUser);
+                    return uf;
+                });
+
         userInfo.setBirthday(editUserInfoDto.getBirthday());
+
         if (userInfo.getCity() == null || !userInfo.getCity().getId().equals(editUserInfoDto.getCityId())) {
-            if (editUserInfoDto.getCityId() == null) userInfo.setCity(null);
-            else {
-                City city = cityService.getById(editUserInfoDto.getCityId());
-                userInfo.setCity(city);
+            if (editUserInfoDto.getCityId() != null) {
+                cityService.getById(editUserInfoDto.getCityId())
+                        .ifPresent(userInfo::setCity);
             }
         }
         userInfoRepository.save(userInfo);
     }
 
-    public UserInfo getUserInfoById(String id) {
-        return userInfoRepository.findById(id).orElse(null);
+    public Optional<UserInfo> getUserInfoById(String id) {
+        return userInfoRepository.findById(id);
     }
 
     public UserInfoDto getUserInfoByUsername(String username) {
         return userInfoRepository.getUserInfoByUsername(username);
     }
 
-    public Collection<UserInfoDto> searchUserInfo(String firstName, String lastName, Long countryId, Long cityId) {
-        if (cityId != null) return userInfoRepository.getUserInfoByFirstNameAndLastNameAndCityId(firstName, lastName, cityId);
-        if (countryId != null) return userInfoRepository.getUserInfoByFirstNameAndLastNameAndCountryId(firstName, lastName, countryId);
+    public Collection<UserInfoDto> searchUserInfo(String firstName, String lastName, Optional<Long> countryId, Optional<Long> cityId) {
+        if (cityId.isPresent()) return userInfoRepository.getUserInfoByFirstNameAndLastNameAndCityId(firstName, lastName, cityId.get());
+        if (countryId.isPresent()) return userInfoRepository.getUserInfoByFirstNameAndLastNameAndCountryId(firstName, lastName, countryId.get());
         return userInfoRepository.getUserInfoByFirstNameAndLastName(firstName, lastName);
     }
 

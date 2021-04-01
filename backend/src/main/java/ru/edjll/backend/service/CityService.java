@@ -6,6 +6,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import ru.edjll.backend.dto.city.CityDtoForSave;
+import ru.edjll.backend.dto.city.CityDtoForUpdate;
 import ru.edjll.backend.entity.City;
 import ru.edjll.backend.repository.CityRepository;
 
@@ -46,25 +48,20 @@ public class CityService {
     }
 
     public Collection<City> getAll(Optional<Long> countryId) {
-        if (countryId.isPresent()) return cityRepository.findAllByCountryId(countryId.get());
-        return this.getAll();
-
+        return countryId.map(cityRepository::findAllByCountryId)
+                .orElseGet(this::getAll);
     }
 
-    public City getById(Long id) {
-        return cityRepository.findById(id).orElse(null);
+    public Optional<City> getById(Long id) {
+        return cityRepository.findById(id);
     }
 
-    public void save(City city) {
-        if (city.getCountry() == null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "city must have country");
-        cityRepository.save(city);
+    public void save(CityDtoForSave cityDtoForSave) {
+        cityRepository.save(cityDtoForSave.toCity());
     }
 
-    public void update(City city) {
-        if (city.getCountry() == null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "city must have country");
-        cityRepository.save(city);
+    public void update(CityDtoForUpdate cityDtoForUpdate) {
+        cityRepository.save(cityDtoForUpdate.toCity());
     }
 
     public void delete(Long id) {

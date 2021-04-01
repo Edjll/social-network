@@ -1,16 +1,22 @@
 package ru.edjll.backend.controller;
 
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.edjll.backend.dto.city.CityDtoForSave;
+import ru.edjll.backend.dto.city.CityDtoForUpdate;
 import ru.edjll.backend.entity.City;
 import ru.edjll.backend.service.CityService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Collection;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/city")
+@Validated
 public class CityController {
 
     private final CityService cityService;
@@ -25,7 +31,7 @@ public class CityController {
     }
 
     @GetMapping("/{id}")
-    public City getById(@PathVariable Long id) {
+    public Optional<City> getById(@PathVariable @NotNull(message = "{city.id.notNull}") @Positive(message = "{city.id.positive}") Long id) {
         return cityService.getById(id);
     }
 
@@ -43,21 +49,21 @@ public class CityController {
         return cityService.getAll(page, size, idDirection, titleDirection, countryDirection, id, title, country);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/save")
-    public void save(@RequestBody City city) {
-        cityService.save(city);
+    public void save(@RequestBody @Valid CityDtoForSave cityDtoForSave) {
+        cityService.save(cityDtoForSave);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
-    public void update(@RequestBody City city) {
-        cityService.update(city);
+    public void update(@RequestBody @Valid CityDtoForUpdate cityDtoForUpdate) {
+        cityService.update(cityDtoForUpdate);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
-    public void delete(@RequestParam Long id) {
+    public void delete(@RequestParam @NotNull(message = "{city.id.notNull}") @Positive(message = "{city.id.positive}") Long id) {
         cityService.delete(id);
     }
 }

@@ -1,0 +1,36 @@
+.country-form {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100%;
+    background-color: #000000f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+}
+
+.country-form__button-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2.2rem;
+    color: white;
+    cursor: pointer;
+}
+
+.country-form__form {
+    background-color: #2b2e34;
+    padding: 2rem 2rem 4rem 2rem;
+    border: 1px solid rgb(62, 68, 70);
+}
+
+.country-form__title {
+    text-align: center;
+    color: white;
+}
+
+.country-form__button {
+    width: 100%;
+}
