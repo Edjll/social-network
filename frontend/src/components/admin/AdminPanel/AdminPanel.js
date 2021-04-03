@@ -8,14 +8,18 @@ export class AdminPanel extends React.Component {
         super(props);
 
         let active = localStorage.getItem("adminPanel");
+
         if (active === null) {
-            localStorage.setItem("adminPanel", "true");
             active = true;
+            localStorage.setItem("adminPanel", active);
+        } else {
+            active = active === 'true'
         }
 
         this.state = {
             active: active
         }
+
     }
 
     handleClickShow() {

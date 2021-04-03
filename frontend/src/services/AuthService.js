@@ -1,5 +1,5 @@
 import Keycloak from "keycloak-js";
-import keycloakConfig from "../keycloak.json"
+import keycloakConfig from "../keycloak.json";
 
 const keycloak = new Keycloak(keycloakConfig);
 
@@ -10,7 +10,7 @@ const initKeycloak = (onAuthenticatedCallback) => {
         pkceMethod: 'S256'
     })
         .then((authenticated) => {
-            onAuthenticatedCallback();
+            if (onAuthenticatedCallback) onAuthenticatedCallback();
         })
 };
 

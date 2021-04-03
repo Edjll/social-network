@@ -10,6 +10,7 @@ import ProfileEdit from "./components/profileEdit/ProfileEdit";
 import {Dialog} from "./components/dialog/Dialog";
 import {AdminPage} from "./components/admin/AdminPage/AdminPage";
 import AuthService from "./services/AuthService";
+import {Register} from "./components/register/Register";
 
 class App extends React.Component {
 
@@ -19,6 +20,7 @@ class App extends React.Component {
                 <Header/>
                 <main>
                     <Switch>
+                        <Route path={`/register`} component={Register}/>
                         <PrivateRoute path={'/admin'} roles={[AuthService.Role.ADMIN]} component={AdminPage}/>
                         <PrivateRoute path={`/user/:username/message`} component={Dialog}/>
                         <Route path={`/search`} component={Search}/>

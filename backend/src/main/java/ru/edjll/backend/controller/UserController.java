@@ -1,16 +1,21 @@
 package ru.edjll.backend.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.EditUserInfoDto;
 import ru.edjll.backend.dto.UserInfoDetailDto;
 import ru.edjll.backend.dto.UserInfoDto;
+import ru.edjll.backend.dto.user.UserDtoWrapperForSave;
 import ru.edjll.backend.service.UserInfoService;
+import ru.edjll.backend.service.UserService;
 
 import javax.swing.text.html.Option;
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -18,9 +23,17 @@ import java.util.Optional;
 public class UserController {
 
     private final UserInfoService userInfoService;
+    private final UserService userService;
 
-    public UserController(UserInfoService userInfoService) {
+    public UserController(UserInfoService userInfoService, UserService userService) {
         this.userInfoService = userInfoService;
+        this.userService = userService;
+    }
+
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void register(@RequestBody @Valid UserDtoWrapperForSave userDtoWrapperForSave) {
+        userService.register(userDtoWrapperForSave);
     }
 
     @PreAuthorize("hasRole('USER')")

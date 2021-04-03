@@ -10,7 +10,11 @@ const Header = () => {
     if (AuthService.isAuthenticated()) {
         element = <ProfileCart/>
     } else {
-        element = <button className={"header__nav__link"} onClick={() => AuthService.login()}>Login</button>
+        element = <div>
+            <button className={"header__nav__link"} onClick={() => AuthService.login()}>Login</button>
+            <span className={"header__nav__link"}>|</span>
+            <Link className={"header__nav__link"} to={"/register"}>Register</Link>
+        </div>
     }
 
     return (
@@ -19,6 +23,11 @@ const Header = () => {
                 <p className="logo">Social-network</p>
                 <nav className={"header__nav"}>
                     <Link to={"/"} className={"header__nav__link"}>Home</Link>
+                    {
+                        AuthService.isAuthenticated() && AuthService.hasRole([AuthService.Role.ADMIN])
+                            ?   <Link className={"header__nav__link"} to={"/admin"}>Admin</Link>
+                            :   ''
+                    }
                     <Link to={"/search"} className={"header__nav__link"}>Search</Link>
                     {element}
                 </nav>

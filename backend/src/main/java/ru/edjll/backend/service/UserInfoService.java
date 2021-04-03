@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service;
 import ru.edjll.backend.dto.EditUserInfoDto;
 import ru.edjll.backend.dto.UserInfoDetailDto;
 import ru.edjll.backend.dto.UserInfoDto;
+import ru.edjll.backend.dto.userInfo.UserInfoDtoForSave;
 import ru.edjll.backend.entity.City;
+import ru.edjll.backend.entity.User;
 import ru.edjll.backend.entity.UserInfo;
 import ru.edjll.backend.repository.UserInfoRepository;
 
@@ -25,6 +27,16 @@ public class UserInfoService {
         this.userInfoRepository = userInfoRepository;
         this.userService = userService;
         this.cityService = cityService;
+    }
+
+    public void save(UserInfoDtoForSave userInfoDtoForSave, String username) {
+        if (userInfoDtoForSave.getCityId() != null || userInfoDtoForSave.getBirthday() != null) {
+            userService.getUserByUsername(username).ifPresent(user -> {
+                UserInfo userInfo = userInfoDtoForSave.toUserInfo();
+                userInfo.setUser(user);
+                userInfoRepository.save(userInfo);
+            });
+        }
     }
 
     public void update(EditUserInfoDto editUserInfoDto, Principal principal) {
@@ -60,7 +72,7 @@ public class UserInfoService {
         return userInfoRepository.getUserInfoByFirstNameAndLastName(firstName, lastName);
     }
 
-    public UserInfoDetailDto getUserInfoDetailByUsername(String id) {
-        return userInfoRepository.getUserInfoDetailByUsername(id);
+    public UserInfoDetailDto getUserInfoDetailByUsername(String username) {
+        return userInfoRepository.getUserInfoDetailByUsername(username);
     }
 }

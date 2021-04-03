@@ -34,4 +34,9 @@ public class UserInfo {
 
     @Column(name = "birthday")
     private LocalDate birthday;
+
+    public UserInfo(City city, LocalDate birthday) {
+        this.city = city;
+        this.birthday = birthday;
+    }
 }

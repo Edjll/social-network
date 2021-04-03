@@ -28,6 +28,12 @@ springdoc:
   api-docs:
     path: /docs
 
+keycloak:
+  admin:
+    username: admin
+    password: admin
+    url: http://keycloak:8080/auth/admin/realms/social-network
+
 ---
 
 spring:

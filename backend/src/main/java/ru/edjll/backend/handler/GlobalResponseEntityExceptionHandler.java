@@ -1,5 +1,7 @@
 package ru.edjll.backend.handler;
 
+import org.apache.tomcat.util.json.JSONParser;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -8,6 +10,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -47,5 +51,19 @@ public class GlobalResponseEntityExceptionHandler extends ResponseEntityExceptio
                 .collect(Collectors.toMap(cv -> cv.getPropertyPath().toString(), ConstraintViolation::getMessage)));
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RestClientResponseException.class)
+    public ResponseEntity<Object> handleRestClientResponseException(RestClientResponseException ex, WebRequest request) {
+        Map<String, Object> body = new HashMap<>();
+        JSONParser jsonParser = new JSONParser(ex.getResponseBodyAsString());
+
+        body.put("timestamp", new Date());
+        body.put("status", ex.getRawStatusCode());
+        try {
+            body.put("errors", jsonParser.object());
+        } catch (ParseException ignored) { }
+
+        return new ResponseEntity<>(body, HttpStatus.valueOf(ex.getRawStatusCode()));
     }
 }

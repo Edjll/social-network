@@ -1,0 +1,8 @@
+{
+  "realm": "social-network",
+  "auth-server-url" : "http://keycloak:8080/auth",
+  "resource" : "spring-boot-admin",
+  "credentials": {
+    "secret": "3ce02105-35ea-417f-b70e-31771d5bbf57"
+  }
+}

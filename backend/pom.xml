@@ -70,6 +70,12 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-authz-client</artifactId>
+            <version>11.0.3</version>
+        </dependency>
+
     </dependencies>
 
     <build>

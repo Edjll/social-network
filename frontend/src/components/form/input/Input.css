@@ -42,8 +42,9 @@
     position: absolute;
     background-color: #202426;
     padding: .5rem 1.5rem;
-    top: -200%;
+    bottom: 125%;
     right: 0;
+    font-size: .9rem;
     color: white;
     border-radius: .25rem;
     display: none;

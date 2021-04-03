@@ -23,4 +23,8 @@ public class City {
     @ManyToOne
     @JoinColumn(name = "country_id", referencedColumnName = "id")
     private Country country;
+
+    public City(Long id) {
+        this.id = id;
+    }
 }
