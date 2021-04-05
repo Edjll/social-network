@@ -1,5 +1,5 @@
 // jpql
-select new ru.edjll.backend.dto.MessageDto(
+select new ru.edjll.backend.dto.message.MessageDto(
     m.id, m.text, m.createdDate, m.modifiedDate,
     s.id, s.firstName, s.lastName, s.username,
     r.id, r.firstName, r.lastName, r.username)

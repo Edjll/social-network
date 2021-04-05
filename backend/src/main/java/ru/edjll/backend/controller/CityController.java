@@ -1,12 +1,16 @@
 package ru.edjll.backend.controller;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.city.CityDtoForSave;
 import ru.edjll.backend.dto.city.CityDtoForUpdate;
 import ru.edjll.backend.entity.City;
+import ru.edjll.backend.repository.CityRepository;
 import ru.edjll.backend.service.CityService;
+import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -31,10 +35,16 @@ public class CityController {
     }
 
     @GetMapping("/{id}")
-    public Optional<City> getById(@PathVariable @NotNull(message = "{city.id.notNull}") @Positive(message = "{city.id.positive}") Long id) {
+    public Optional<City> getById(
+            @PathVariable
+            @NotNull(message = "{city.id.notNull}")
+            @Positive(message = "{city.id.positive}")
+            @Exists(typeRepository = CityRepository.class, message = "{city.id.exists}") Long id
+    ) {
         return cityService.getById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/page")
     public Page<City> getPage(
             @RequestParam Integer page,
@@ -49,21 +59,27 @@ public class CityController {
         return cityService.getAll(page, size, idDirection, titleDirection, countryDirection, id, title, country);
     }
 
-    //    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/save")
+    @ResponseStatus(HttpStatus.CREATED)
     public void save(@RequestBody @Valid CityDtoForSave cityDtoForSave) {
         cityService.save(cityDtoForSave);
     }
 
-    //    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
     public void update(@RequestBody @Valid CityDtoForUpdate cityDtoForUpdate) {
         cityService.update(cityDtoForUpdate);
     }
 
-    //    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
-    public void delete(@RequestParam @NotNull(message = "{city.id.notNull}") @Positive(message = "{city.id.positive}") Long id) {
+    public void delete(
+            @RequestParam
+            @NotNull(message = "{city.id.notNull}")
+            @Positive(message = "{city.id.positive}")
+            @Exists(typeRepository = CityRepository.class, message = "{city.id.exists}") Long id
+    ) {
         cityService.delete(id);
     }
 }

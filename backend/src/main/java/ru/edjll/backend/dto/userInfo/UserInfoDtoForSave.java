@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.edjll.backend.entity.City;
 import ru.edjll.backend.entity.UserInfo;
+import ru.edjll.backend.repository.CityRepository;
+import ru.edjll.backend.validation.exists.Exists;
 
 import java.time.LocalDate;
 
@@ -13,7 +15,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UserInfoDtoForSave {
 
+    @Exists(typeRepository = CityRepository.class, message = "{user.cityId.exists}")
     private Long cityId;
+
     private LocalDate birthday;
 
     public UserInfoDtoForSave(UserInfo userInfo) {

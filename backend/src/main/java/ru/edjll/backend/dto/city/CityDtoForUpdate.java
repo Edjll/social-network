@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.edjll.backend.entity.City;
 import ru.edjll.backend.entity.Country;
+import ru.edjll.backend.repository.CityRepository;
+import ru.edjll.backend.repository.CountryRepository;
+import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -15,12 +18,14 @@ import javax.validation.constraints.NotNull;
 public class CityDtoForUpdate {
 
     @NotNull(message = "{city.id.notNull}")
+    @Exists(typeRepository = CityRepository.class, message = "{city.id.exists}")
     private Long id;
 
     @NotEmpty(message = "{city.title.notEmpty}")
     private String title;
 
     @NotNull(message = "{city.countryId.notNull}")
+    @Exists(typeRepository = CountryRepository.class, message = "{country.id.exists}")
     private Long countryId;
 
     public CityDtoForUpdate(@NotNull City city) {

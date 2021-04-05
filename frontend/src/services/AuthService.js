@@ -1,20 +1,52 @@
 import Keycloak from "keycloak-js";
 import keycloakConfig from "../keycloak.json";
+import axios from "axios";
 
 const keycloak = new Keycloak(keycloakConfig);
 
-const initKeycloak = (onAuthenticatedCallback) => {
-    keycloak.init({
+const initKeycloak = (onAuthenticatedCallback, token = null, refreshToken = null) => {
+    let initOptions = {
         onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-        pkceMethod: 'S256'
-    })
-        .then((authenticated) => {
+        silentCheckSsoRedirectUri : window.location.origin  +  '/silent-check-sso.html',
+        pkceMethod: 'S256',
+        checkLoginIframe: true
+    }
+
+    if (token && refreshToken) {
+        initOptions = {
+            ...initOptions,
+            token: token,
+            refreshToken: refreshToken
+        }
+    }
+
+    keycloak.init(initOptions)
+        .then(() => {
             if (onAuthenticatedCallback) onAuthenticatedCallback();
         })
 };
 
 const login = keycloak.login;
+
+// const login = (username, password) => {
+//     const params = new URLSearchParams();
+//
+//     params.append("grant_type", "password");
+//     params.append("client_id", "spring-boot");
+//     params.append("username", username);
+//     params.append("password", password);
+//
+//     axios.post(
+//         'http://keycloak:8080/auth/realms/social-network/protocol/openid-connect/token',
+//         params,
+//         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, withCredentials: true }
+//     )
+//         .then(response => {
+//             localStorage.setItem("token", response.data.access_token);
+//             localStorage.setItem("refreshToken", response.data.refresh_token);
+//             window.location.reload();
+//         })
+// };
 
 const logout = keycloak.logout;
 

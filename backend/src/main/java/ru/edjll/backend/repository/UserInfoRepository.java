@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ru.edjll.backend.dto.UserInfoDetailDto;
-import ru.edjll.backend.dto.UserInfoDto;
+import ru.edjll.backend.dto.userInfo.UserInfoDetailDto;
+import ru.edjll.backend.dto.userInfo.UserInfoDto;
 import ru.edjll.backend.entity.UserInfo;
 
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.Collection;
 @Repository
 public interface UserInfoRepository extends JpaRepository<UserInfo, String> {
 
-    @Query( "select new ru.edjll.backend.dto.UserInfoDto(" +
+    @Query( "select new ru.edjll.backend.dto.userInfo.UserInfoDto(" +
                 "user.id, user.firstName, user.lastName, user.username, " +
                 "case when userInfo is null then null else userInfo.birthday end, " +
                 "case when city is null then null else city.title end) " +
@@ -21,7 +21,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, String> {
             "where user.username = :username" )
     UserInfoDto getUserInfoByUsername(@Param("username") String username);
 
-    @Query( "select new ru.edjll.backend.dto.UserInfoDto(" +
+    @Query( "select new ru.edjll.backend.dto.userInfo.UserInfoDto(" +
                 "user.id, user.firstName, user.lastName, user.username, " +
                 "case when userInfo is null then null else userInfo.birthday end, " +
                 "case when city is null then null else city.title end) " +
@@ -30,7 +30,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, String> {
             "and lower(user.lastName) like concat('%', lower(:lastName), '%')" )
     Collection<UserInfoDto> getUserInfoByFirstNameAndLastName(@Param("firstName") String firstName, @Param("lastName") String lastName);
 
-    @Query( "select new ru.edjll.backend.dto.UserInfoDto(" +
+    @Query( "select new ru.edjll.backend.dto.userInfo.UserInfoDto(" +
                 "user.id, user.firstName, user.lastName, user.username, " +
                 "case when userInfo is null then null else userInfo.birthday end, " +
                 "case when city is null then null else city.title end) " +
@@ -40,7 +40,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, String> {
             "and country.id = :countryId" )
     Collection<UserInfoDto> getUserInfoByFirstNameAndLastNameAndCountryId(@Param("firstName") String firstName, @Param("lastName") String lastName, @Param("countryId") Long countryId);
 
-    @Query( "select new ru.edjll.backend.dto.UserInfoDto(" +
+    @Query( "select new ru.edjll.backend.dto.userInfo.UserInfoDto(" +
                 "user.id, user.firstName, user.lastName, user.username, " +
                 "case when userInfo is null then null else userInfo.birthday end, " +
                 "case when city is null then null else city.title end) " +
@@ -50,7 +50,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, String> {
             "and city.id = :cityId" )
     Collection<UserInfoDto> getUserInfoByFirstNameAndLastNameAndCityId(@Param("firstName") String firstName, @Param("lastName") String lastName, @Param("cityId") Long cityId);
 
-    @Query( "select new ru.edjll.backend.dto.UserInfoDetailDto(" +
+    @Query( "select new ru.edjll.backend.dto.userInfo.UserInfoDetailDto(" +
                 "user.id, user.firstName, user.lastName, user.username, " +
                 "case when userInfo is null then null else userInfo.birthday end, " +
                 "case when city is null then null else city.id end, " +

@@ -5,6 +5,7 @@ import {Button} from "../form/button/Button";
 import './Register.css';
 import RequestService from "../../services/RequestService";
 import AuthService from "../../services/AuthService";
+import axios from "axios";
 
 export class Register extends React.Component {
 

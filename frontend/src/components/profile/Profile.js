@@ -8,6 +8,7 @@ import {Spinner} from "../spinner/Spinner";
 import axios from "axios";
 import {Post} from "../post/Post";
 import {CreatePost} from "../createPost/CreatePost";
+import {Button} from "../form/button/Button";
 
 export class Profile extends React.Component{
 
@@ -29,18 +30,19 @@ export class Profile extends React.Component{
 
     componentDidMount() {
         this.loadUserInfo();
-        if (this.props.match.params.username === AuthService.getUsername()) this.loadUserPosts();
     }
 
     loadUserInfo() {
         RequestService.getAxios()
             .get(RequestService.URL + `/user/${this.props.match.params.username}`)
-            .then(response => this.setState({user: response.data, loadQueue: this.state.loadQueue - 1}))
+            .then(response => this.setState({
+                user: response.data,
+                loadQueue: this.state.loadQueue - 1}, this.loadUserPosts))
     }
 
     loadUserPosts() {
         axios
-            .get(RequestService.URL + "/post", {params: { userId: AuthService.getId() }})
+            .get(RequestService.URL + "/post", {params: { userId: this.state.user.id }})
             .then(response => this.setState({posts: response.data}));
     }
 
@@ -57,14 +59,23 @@ export class Profile extends React.Component{
             <div className="profile">
                 {
                     this.state.loadQueue === 0
-                        ?   <div className="profile__info">
+                        ? <div className="profile">
+                            <div className="profile__info">
                                 <div className="profile__info__header">
                                     <p className="profile__info__name">{`${this.state.user.firstName} ${this.state.user.lastName}`}</p>
-                                    {
-                                        AuthService.isAuthenticated() && AuthService.getUsername() === this.state.user.username
-                                            ? <Link to={`/user/edit`} className="button">Edit info</Link>
-                                            : <Link to={`/user/${this.state.user.username}/message`} className="button">Send message</Link>
-                                    }
+                                    <div>
+                                        {
+                                            AuthService.isAuthenticated() && AuthService.getUsername() === this.state.user.username
+                                                ? <Link to={`/user/edit`} className="button">Edit info</Link>
+                                                : <Link to={`/user/${this.state.user.username}/message`} className="button">Send
+                                                    message</Link>
+                                        }
+                                        {
+                                            AuthService.isAuthenticated() && AuthService.hasRole([AuthService.Role.ADMIN]) && AuthService.getUsername() !== this.state.user.username
+                                                ? <Button text={"Ban"}/>
+                                                : ''
+                                        }
+                                    </div>
                                 </div>
                                 <div className="profile__info__block">
                                     <span>Birthday:</span>
@@ -75,11 +86,17 @@ export class Profile extends React.Component{
                                     <span>{this.state.user.city ? this.state.user.city : "not specified"}</span>
                                 </div>
                             </div>
+                            {
+                                AuthService.isAuthenticated() && AuthService.getUsername() === this.state.user.username
+                                    ? <CreatePost handleSubmit={this.handlePostCreate.bind(this)}/>
+                                    : ''
+                            }
+                            {
+                                this.state.posts.map(post => <Post key={post.id} data={post}
+                                                                   handleDelete={this.handlePostDelete.bind(this)}/>)
+                            }
+                        </div>
                         : <Spinner/>
-                }
-                <CreatePost handleSubmit={this.handlePostCreate.bind(this)}/>
-                {
-                    this.state.posts.map(post => <Post key={post.id} data={post} handleDelete={this.handlePostDelete.bind(this)}/>)
                 }
             </div>
         );

@@ -5,16 +5,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ResponseStatusException;
-import ru.edjll.backend.dto.UserInfoDetailDto;
-import ru.edjll.backend.dto.user.UserDtoForSave;
 import ru.edjll.backend.dto.user.UserDtoWrapperForSave;
 import ru.edjll.backend.entity.User;
 import ru.edjll.backend.repository.UserRepository;
 
-import javax.transaction.Transactional;
-import javax.xml.ws.Response;
-import java.util.Map;
 import java.util.Optional;
 
 @Service

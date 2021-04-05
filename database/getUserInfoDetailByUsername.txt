@@ -1,5 +1,5 @@
 // jpql
-select new ru.edjll.backend.dto.UserInfoDetailDto(
+select new ru.edjll.backend.dto.userInfo.UserInfoDetailDto(
     user.id, user.firstName, user.lastName, user.username,
     case when userInfo is null then null else userInfo.birthday end,
     case when city is null then null else city.id end,

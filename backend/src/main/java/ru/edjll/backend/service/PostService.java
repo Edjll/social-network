@@ -3,7 +3,10 @@ package ru.edjll.backend.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import ru.edjll.backend.dto.PostDto;
+import ru.edjll.backend.dto.post.PostDto;
+import ru.edjll.backend.dto.post.PostDtoForDelete;
+import ru.edjll.backend.dto.post.PostDtoForSave;
+import ru.edjll.backend.dto.post.PostDtoForUpdate;
 import ru.edjll.backend.entity.Post;
 import ru.edjll.backend.repository.PostRepository;
 
@@ -20,29 +23,18 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public PostDto save(Post post, Principal principal) {
-        if (post.getUser() == null || !principal.getName().equals(post.getUser().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Don't have rights");
-        }
-        post.setCreatedDate(LocalDateTime.now());
-        Post savedPost = postRepository.save(post);
-        return postRepository.getPostDtoById(savedPost.getId());
+    public PostDto save(PostDtoForSave postDtoForSave) {
+        Post savedPost = postRepository.save(postDtoForSave.toPost());
+        return new PostDto(savedPost);
     }
 
-    public PostDto update(Post post, Principal principal) {
-        if (post.getUser() == null || !principal.getName().equals(post.getUser().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Don't have rights");
-        }
-        post.setModifiedDate(LocalDateTime.now());
-        Post savedPost = postRepository.save(post);
-        return postRepository.getPostDtoById(savedPost.getId());
+    public PostDto update(PostDtoForUpdate postDtoForUpdate) {
+        Post savedPost = postRepository.save(postDtoForUpdate.toPost());
+        return new PostDto(savedPost);
     }
 
-    public void delete(Post post, Principal principal) {
-        if (post.getUser() == null || !principal.getName().equals(post.getUser().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Don't have rights");
-        }
-        postRepository.deleteById(post.getId());
+    public void delete(PostDtoForDelete postDtoForDelete) {
+        postRepository.deleteById(postDtoForDelete.getId());
     }
 
     public Collection<PostDto> getAllPostDtoByUserId(String id) {

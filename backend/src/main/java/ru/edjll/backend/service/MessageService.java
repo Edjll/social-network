@@ -3,8 +3,12 @@ package ru.edjll.backend.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import ru.edjll.backend.dto.MessageDto;
+import ru.edjll.backend.dto.message.MessageDto;
+import ru.edjll.backend.dto.message.MessageDtoForDelete;
+import ru.edjll.backend.dto.message.MessageDtoForSave;
+import ru.edjll.backend.dto.message.MessageDtoForUpdate;
 import ru.edjll.backend.entity.Message;
+import ru.edjll.backend.entity.User;
 import ru.edjll.backend.repository.MessageRepository;
 
 import java.security.Principal;
@@ -17,39 +21,25 @@ public class MessageService {
 
     private final MessageRepository messageRepository;
 
-    public MessageService(MessageRepository messageRepository) {
+    public MessageService(MessageRepository messageRepository, UserService userService) {
         this.messageRepository = messageRepository;
     }
 
-    public MessageDto save(Message message, Principal principal) {
-        if (message.getSender() == null || !Objects.equals(message.getSender().getId(), principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Don't have rights");
-        }
-        message.setCreatedDate(LocalDateTime.now());
-        Message savedMessage = messageRepository.save(message);
-        return this.getMessageDtoById(savedMessage.getId());
+    public MessageDto save(MessageDtoForSave messageDtoForSave) {
+        Message savedMessage = messageRepository.save(messageDtoForSave.toMessage());
+        return new MessageDto(savedMessage);
     }
 
-    public MessageDto update(Message message, Principal principal) {
-        if (message.getSender() == null || !Objects.equals(message.getSender().getId(), principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Don't have rights");
-        }
-        message.setModifiedDate(LocalDateTime.now());
-        Message savedMessage = messageRepository.save(message);
-        return this.getMessageDtoById(savedMessage.getId());
+    public MessageDto update(MessageDtoForUpdate messageDtoForUpdate) {
+        Message savedMessage = messageRepository.save(messageDtoForUpdate.toMessage());
+        return new MessageDto(savedMessage);
     }
 
-    public void delete(Message message, Principal principal) {
-        if (message.getSender() == null || !Objects.equals(message.getSender().getId(), principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Don't have rights");
-        }
-        messageRepository.deleteById(message.getId());
+    public void delete(MessageDtoForDelete messageDtoForDelete) {
+        messageRepository.deleteById(messageDtoForDelete.getId());
     }
 
-    public Collection<MessageDto> getAllMessageDtoBetweenUsersById(String senderId, String recipientId, Principal principal) {
-        if (!principal.getName().equals(senderId) && !principal.getName().equals(recipientId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Don't have rights");
-        }
+    public Collection<MessageDto> getAllMessageDtoBetweenUsersById(String senderId, String recipientId) {
         return messageRepository.getAllMessageDtoBetweenUsersById(senderId, recipientId);
     }
 

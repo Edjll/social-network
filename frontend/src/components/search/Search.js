@@ -6,6 +6,7 @@ import './Search.css';
 import RequestService from "../../services/RequestService";
 import {UserCart} from "../userCart/UserCart";
 import {Spinner} from "../spinner/Spinner";
+import AuthService from "../../services/AuthService";
 
 export class Search extends React.Component {
 

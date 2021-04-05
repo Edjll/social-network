@@ -1,4 +1,4 @@
-package ru.edjll.backend.dto;
+package ru.edjll.backend.dto.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,14 +8,14 @@ import ru.edjll.backend.entity.User;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class MessageUserDto {
 
     private String id;
     private String firstName;
     private String lastName;
     private String username;
 
-    public UserDto(User user) {
+    public MessageUserDto(User user) {
         this.id = user.getId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();

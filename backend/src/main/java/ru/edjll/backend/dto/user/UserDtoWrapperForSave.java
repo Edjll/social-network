@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.edjll.backend.dto.userInfo.UserInfoDtoForSave;
+import ru.edjll.backend.repository.CityRepository;
+import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -33,6 +33,7 @@ public class UserDtoWrapperForSave {
     @Size(min = 1, message = "{user.credentials.size}")
     private List<@Valid CredentialDtoForSave> credentials;
 
+    @Exists(typeRepository = CityRepository.class, message = "{user.cityId.exists}")
     private Long cityId;
 
     private LocalDate birthday;

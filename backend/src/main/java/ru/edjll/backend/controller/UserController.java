@@ -3,23 +3,24 @@ package ru.edjll.backend.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.edjll.backend.dto.EditUserInfoDto;
-import ru.edjll.backend.dto.UserInfoDetailDto;
-import ru.edjll.backend.dto.UserInfoDto;
+import ru.edjll.backend.dto.userInfo.UserInfoDetailDto;
+import ru.edjll.backend.dto.userInfo.UserInfoDto;
 import ru.edjll.backend.dto.user.UserDtoWrapperForSave;
+import ru.edjll.backend.dto.userInfo.UserInfoDtoForSave;
 import ru.edjll.backend.service.UserInfoService;
 import ru.edjll.backend.service.UserService;
 
-import javax.swing.text.html.Option;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.security.Principal;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
+@Validated
 public class UserController {
 
     private final UserInfoService userInfoService;
@@ -39,14 +40,14 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/update")
     public void update(
-            @RequestBody EditUserInfoDto editUserInfoDto,
+            @RequestBody @Valid UserInfoDtoForSave userInfoDtoForSave,
             @AuthenticationPrincipal Principal principal
     ) {
-        userInfoService.update(editUserInfoDto, principal);
+        userInfoService.update(userInfoDtoForSave, principal);
     }
 
     @GetMapping("/{username}")
-    public UserInfoDto getUserInfo(@PathVariable String username) {
+    public UserInfoDto getUserInfo(@PathVariable @NotEmpty(message = "{user.username.notEmpty}") String username) {
         return userInfoService.getUserInfoByUsername(username);
     }
 
@@ -61,7 +62,7 @@ public class UserController {
     }
 
     @GetMapping("/{username}/detail")
-    public UserInfoDetailDto getUserInfoDetail(@PathVariable(required = false) String username) {
+    public UserInfoDetailDto getUserInfoDetail(@PathVariable @NotEmpty(message = "{user.username.notEmpty}") String username) {
         return userInfoService.getUserInfoDetailByUsername(username);
     }
 }

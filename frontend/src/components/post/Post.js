@@ -20,7 +20,7 @@ export class Post extends React.Component {
         RequestService.getAxios().put(RequestService.URL + "/post/update", {
             id: this.state.post.id,
             user: {
-                id: AuthService.getId()
+                id: this.state.post.user.id
             },
             text: text,
             createdDate: this.state.post.createdDate
@@ -63,18 +63,26 @@ export class Post extends React.Component {
                         }
                     </div>
                     {
-                        this.state.post.user.id === AuthService.getId()
+                        AuthService.isAuthenticated()
                             ?   <div className={"post__header__actions"}>
-                                    <div className={"post__header__actions__edit"} onClick={this.handleClickEdit.bind(this)}>
-                                        {
-                                            this.state.editable
-                                                ? '✖'
-                                                : '✎'
-                                        }
-                                    </div>
-                                    <div className={"post__header__actions__edit"}
-                                         onClick={this.handleClickDelete.bind(this)}>🗑
-                                    </div>
+                                {
+                                    this.state.post.user.id === AuthService.getId()
+                                        ?   <div className={"post__header__actions__edit"} onClick={this.handleClickEdit.bind(this)}>
+                                                {
+                                                    this.state.editable
+                                                        ? '✖'
+                                                        : '✎'
+                                                }
+                                            </div>
+                                        :   ''
+                                }
+                                {
+                                    AuthService.hasRole([AuthService.Role.ADMIN])
+                                        ?   <div className={"post__header__actions__edit"}
+                                                 onClick={this.handleClickDelete.bind(this)}>🗑
+                                            </div>
+                                        :   ''
+                                }
                                 </div>
                             :   ""
                     }

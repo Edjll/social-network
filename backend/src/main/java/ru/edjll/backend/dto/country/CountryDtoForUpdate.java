@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.edjll.backend.entity.Country;
+import ru.edjll.backend.repository.CountryRepository;
+import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -16,6 +18,7 @@ public class CountryDtoForUpdate {
 
     @NotNull(message = "{country.id.notNull}")
     @Positive(message = "{country.id.positive}")
+    @Exists(typeRepository = CountryRepository.class, message = "{country.id.exists}")
     private Long id;
 
     @NotEmpty(message = "{country.title.notEmpty}")
