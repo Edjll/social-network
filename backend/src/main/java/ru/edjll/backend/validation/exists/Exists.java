@@ -14,7 +14,9 @@ public @interface Exists {
 
     String message() default "Not exist";
 
-    Class<? extends JpaRepository<?, ?>> typeRepository();
+    String column();
+
+    String table();
 
     Class<?> [] groups() default { };
 

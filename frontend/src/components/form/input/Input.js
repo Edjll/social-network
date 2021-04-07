@@ -26,9 +26,16 @@ export class Input extends React.Component {
         if (this.props.handleBlur) this.props.handleBlur();
     }
 
-    handleChange(value) {
-        this.setState({value: value})
-        if (this.props.handleChange) this.props.handleChange(value);
+    handleChange(e) {
+        this.setState({value: e.target.value})
+        if (this.props.handleChange) this.props.handleChange(e.target.value);
+    }
+
+    handleDownKey(e) {
+        if (e.code === 'Enter') {
+            e.preventDefault();
+            this.handleBlur();
+        }
     }
 
     render() {
@@ -41,7 +48,8 @@ export class Input extends React.Component {
                     value={this.state.value}
                     name={this.props.name}
                     type={this.props.type}
-                    onChange={(e) => this.handleChange(e.target.value)}
+                    onKeyDown={this.handleDownKey.bind(this)}
+                    onChange={this.handleChange.bind(this)}
                     onFocus={this.handleFocus.bind(this)}
                     onBlur={this.handleBlur.bind(this)}
                     disabled={!!this.props.disabled}

@@ -39,7 +39,7 @@ public class CityController {
             @PathVariable
             @NotNull(message = "{city.id.notNull}")
             @Positive(message = "{city.id.positive}")
-            @Exists(typeRepository = CityRepository.class, message = "{city.id.exists}") Long id
+            @Exists(table = "city", column = "id", message = "{city.id.exists}") Long id
     ) {
         return cityService.getById(id);
     }
@@ -78,7 +78,7 @@ public class CityController {
             @RequestParam
             @NotNull(message = "{city.id.notNull}")
             @Positive(message = "{city.id.positive}")
-            @Exists(typeRepository = CityRepository.class, message = "{city.id.exists}") Long id
+            @Exists(table = "city", column = "id", message = "{city.id.exists}") Long id
     ) {
         cityService.delete(id);
     }

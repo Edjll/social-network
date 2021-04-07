@@ -18,14 +18,14 @@ import javax.validation.constraints.NotNull;
 public class CityDtoForUpdate {
 
     @NotNull(message = "{city.id.notNull}")
-    @Exists(typeRepository = CityRepository.class, message = "{city.id.exists}")
+    @Exists(table = "city", column = "id", message = "{city.id.exists}")
     private Long id;
 
     @NotEmpty(message = "{city.title.notEmpty}")
     private String title;
 
     @NotNull(message = "{city.countryId.notNull}")
-    @Exists(typeRepository = CountryRepository.class, message = "{country.id.exists}")
+    @Exists(table = "country", column = "id", message = "{country.id.exists}")
     private Long countryId;
 
     public CityDtoForUpdate(@NotNull City city) {

@@ -26,7 +26,7 @@ class App extends React.Component {
                         <Route path={`/search`} component={Search}/>
                         <PrivateRoute path={`/user/edit`} component={ProfileEdit}/>
                         <Route path={"/user/:username"} component={Profile}/>
-                        <Route path="/" component={Home}/>
+                        <Route path={"/"} component={Home}/>
                     </Switch>
                 </main>
             </BrowserRouter>

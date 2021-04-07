@@ -25,7 +25,7 @@ export class CityAll extends React.Component {
             cities: [],
             page: 0,
             maxPage: 0,
-            pageSize: 15,
+            pageSize: 10,
             idDirection: null,
             titleDirection: null,
             countryDirection: null,
@@ -41,7 +41,7 @@ export class CityAll extends React.Component {
     }
 
     loadCities() {
-        axios.get(RequestService.URL + '/city/page', {
+        RequestService.getAxios().get(RequestService.URL + '/city/page', {
             params: {
                 page: this.state.page,
                 size: this.state.pageSize,

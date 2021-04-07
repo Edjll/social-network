@@ -20,7 +20,7 @@ public class CityDtoForSave {
     private String title;
 
     @NotNull(message = "{city.countryId.notNull}")
-    @Exists(typeRepository = CountryRepository.class, message = "{country.id.exists}")
+    @Exists(table = "country", column = "id", message = "{country.id.exists}")
     private Long countryId;
 
     public CityDtoForSave(@NotNull City city) {

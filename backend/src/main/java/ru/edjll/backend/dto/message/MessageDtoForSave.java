@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 public class MessageDtoForSave {
 
     @NotEmpty(message = "{message.senderId.notEmpty}")
-    @Exists(typeRepository = UserRepository.class, message = "{message.senderId.exist}")
+    @Exists(table = "user_entity", column = "id", message = "{message.senderId.exist}")
     private String senderId;
 
     @NotEmpty(message = "{message.recipientId.notEmpty}")
-    @Exists(typeRepository = UserRepository.class, message = "{message.recipientId.exist}")
+    @Exists(table = "user_entity", column = "id", message = "{message.recipientId.exist}")
     private String recipientId;
 
     @NotEmpty(message = "{message.text.notEmpty}")

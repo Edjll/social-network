@@ -8,9 +8,7 @@ export const CreatePost = (props) => {
 
     const handleSubmit = (text) => {
         RequestService.getAxios().post(RequestService.URL + "/post/save", {
-            user: {
-                id: AuthService.getId()
-            },
+            userId: AuthService.getId(),
             text: text
         }).then(response => {
             if (props.handleSubmit) props.handleSubmit(response.data);

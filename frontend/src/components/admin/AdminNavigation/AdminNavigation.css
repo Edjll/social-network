@@ -1,0 +1,19 @@
+.admin-navigation {
+    display: flex;
+}
+
+.admin-navigation__link {
+    padding: 1rem 2rem;
+    background-color: #2b2e34;
+    border-radius: .25rem;
+    border: 1px solid #3e424b;
+    box-sizing: border-box;
+    margin: .5rem;
+    color: white;
+    text-decoration: none;
+    transition: color .1s;
+}
+
+.admin-navigation__link:hover {
+    color: #7b8b91;
+}

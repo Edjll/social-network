@@ -34,6 +34,7 @@ export class AdminPanel extends React.Component {
                         ?   <div className={"admin-panel__links"}>
                                 <Link to={"/admin/city"} className={"admin-panel__link"} onClick={this.handleClickShow.bind(this)}>Cities</Link>
                                 <Link to={"/admin/countries"} className={"admin-panel__link"} onClick={this.handleClickShow.bind(this)}>Countries</Link>
+                                <Link to={"/admin/users"} className={"admin-panel__link"} onClick={this.handleClickShow.bind(this)}>Users</Link>
                             </div>
                         : ''
                 }

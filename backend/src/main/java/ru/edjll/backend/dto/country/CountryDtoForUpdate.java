@@ -18,7 +18,7 @@ public class CountryDtoForUpdate {
 
     @NotNull(message = "{country.id.notNull}")
     @Positive(message = "{country.id.positive}")
-    @Exists(typeRepository = CountryRepository.class, message = "{country.id.exists}")
+    @Exists(table = "country", column = "id", message = "{country.id.exists}")
     private Long id;
 
     @NotEmpty(message = "{country.title.notEmpty}")

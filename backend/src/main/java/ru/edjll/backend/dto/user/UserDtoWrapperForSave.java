@@ -33,7 +33,7 @@ public class UserDtoWrapperForSave {
     @Size(min = 1, message = "{user.credentials.size}")
     private List<@Valid CredentialDtoForSave> credentials;
 
-    @Exists(typeRepository = CityRepository.class, message = "{user.cityId.exists}")
+    @Exists(table = "city", column = "id", message = "{user.cityId.exists}")
     private Long cityId;
 
     private LocalDate birthday;

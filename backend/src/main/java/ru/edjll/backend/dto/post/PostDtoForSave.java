@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class PostDtoForSave {
 
     @NotEmpty(message = "{post.userId.notEmpty}")
-    @Exists(typeRepository = UserRepository.class, message = "{post.userId.exists}")
+    @Exists(table = "user_entity", column = "id", message = "{post.userId.exists}")
     private String userId;
 
     @NotEmpty(message = "{post.text.notEmpty}")

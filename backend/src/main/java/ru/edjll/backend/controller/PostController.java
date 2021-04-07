@@ -8,7 +8,6 @@ import ru.edjll.backend.dto.post.PostDto;
 import ru.edjll.backend.dto.post.PostDtoForDelete;
 import ru.edjll.backend.dto.post.PostDtoForSave;
 import ru.edjll.backend.dto.post.PostDtoForUpdate;
-import ru.edjll.backend.repository.UserRepository;
 import ru.edjll.backend.service.PostService;
 import ru.edjll.backend.validation.exists.Exists;
 
@@ -31,7 +30,7 @@ public class PostController {
     public Collection<PostDto> getAllPostDtoByUserId(
             @RequestParam
             @NotEmpty(message = "{post.userId.notEmpty}")
-            @Exists(typeRepository = UserRepository.class, message = "{post.userId.exists}") String userId
+            @Exists(table = "user_entity", column = "id", message = "{post.userId.exists}") String userId
     ) {
         return postService.getAllPostDtoByUserId(userId);
     }

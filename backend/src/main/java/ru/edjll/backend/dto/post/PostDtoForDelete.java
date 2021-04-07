@@ -20,11 +20,11 @@ public class PostDtoForDelete {
 
     @NotNull(message = "{post.id.notNull}")
     @Positive(message = "{post.id.positive}")
-    @Exists(typeRepository = PostRepository.class, message = "{post.id.exists}")
+    @Exists(table = "post", column = "id", message = "{post.id.exists}")
     private Long id;
 
     @NotEmpty(message = "{post.userId.notEmpty}")
-    @Exists(typeRepository = UserRepository.class, message = "{post.userId.exists}")
+    @Exists(table = "user_entity", column = "id", message = "{post.userId.exists}")
     private String userId;
 
     public PostDtoForDelete(Post post) {

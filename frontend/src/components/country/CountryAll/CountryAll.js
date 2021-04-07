@@ -25,7 +25,7 @@ export class CountryAll extends React.Component {
             countries: [],
             page: 0,
             maxPage: 0,
-            pageSize: 15,
+            pageSize: 10,
             idDirection: null,
             titleDirection: null,
             id: null,
@@ -39,7 +39,7 @@ export class CountryAll extends React.Component {
     }
 
     loadCountries() {
-        axios.get(RequestService.URL + '/country/page', {
+        RequestService.getAxios().get(RequestService.URL + '/country/page', {
             params: {
                 page: this.state.page,
                 size: this.state.pageSize,

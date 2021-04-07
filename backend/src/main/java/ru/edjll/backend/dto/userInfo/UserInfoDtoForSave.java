@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UserInfoDtoForSave {
 
-    @Exists(typeRepository = CityRepository.class, message = "{user.cityId.exists}")
+    @Exists(table = "city", column = "id", message = "{user.cityId.exists}")
     private Long cityId;
 
     private LocalDate birthday;

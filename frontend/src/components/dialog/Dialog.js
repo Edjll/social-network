@@ -55,9 +55,8 @@ export class Dialog extends React.Component {
 
     saveMessage() {
         RequestService.getAxios().post(RequestService.URL + "/message/save", {
-            id: this.state.id,
-            sender: {id: AuthService.getId()},
-            recipient: {id: this.state.interlocutor.id},
+            senderId: AuthService.getId(),
+            recipientId: this.state.interlocutor.id,
             text: this.state.text.replace(/\n\n+/g, '\n')
         }).then(response => {
             this.setState({messages: [...this.state.messages, response.data]});
@@ -68,8 +67,8 @@ export class Dialog extends React.Component {
     editMessage() {
         RequestService.getAxios().put(RequestService.URL + "/message/update", {
             id: this.state.id,
-            sender: {id: AuthService.getId()},
-            recipient: {id: this.state.interlocutor.id},
+            senderId: AuthService.getId(),
+            recipientId: this.state.interlocutor.id,
             text: this.state.text.replace(/\n\n/g, '\n'),
             createdDate: this.state.createdDate
         }).then(response => {
@@ -85,7 +84,7 @@ export class Dialog extends React.Component {
         RequestService.getAxios().delete(RequestService.URL + "/message/delete", {
             data: {
                 id: value.id,
-                sender: {id: AuthService.getId()}
+                senderId: AuthService.getId()
             }
         }).then(() => {
             const newMessages = [...this.state.messages];

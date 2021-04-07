@@ -6,13 +6,15 @@ import './Search.css';
 import RequestService from "../../services/RequestService";
 import {UserCart} from "../userCart/UserCart";
 import {Spinner} from "../spinner/Spinner";
-import AuthService from "../../services/AuthService";
 
 export class Search extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            page: 0,
+            totalPages: 0,
+            size: 15,
             firstName: "",
             lastName: "",
             city: {
@@ -27,23 +29,40 @@ export class Search extends React.Component {
             users: [],
             loadQueue: 1
         }
+        this.ref = React.createRef();
     }
 
     handleSubmit(e) {
         e.preventDefault();
-        this.getUsers();
+        this.loadUsers();
     }
 
-    getUsers() {
+    loadUsers(callback) {
         RequestService.getAxios()
             .get(RequestService.URL + `/user/search`, {
                 params: {
+                    page: this.state.page,
+                    size: this.state.size,
                     firstName: this.state.firstName,
                     lastName: this.state.lastName,
                     countryId: this.state.country.id,
                     cityId: this.state.city.id
                 }
-            }).then(response => this.setState({users: response.data}));
+            }).then(response => {
+                this.setState({users: [...this.state.users, ...response.data.content], totalPages: response.data.totalPages}, () => { if (callback) callback() });
+        })
+    }
+
+    loadCountry() {
+        RequestService.getAxios().get(RequestService.URL + "/country/all")
+            .then(response => {
+                this.setState({
+                    countries: response.data.map(option => {
+                        return {key: option.id, text: option.title}
+                    }).sort((a, b) => a.text > b.text),
+                    loadQueue: this.state.loadQueue - 1
+                });
+            });
     }
 
     handleChangeFirstName(value) {
@@ -104,25 +123,37 @@ export class Search extends React.Component {
     }
 
     componentDidMount() {
-        RequestService.getAxios().get(RequestService.URL + "/country/all")
-            .then(response => {
-                this.setState({
-                    countries: response.data.map(option => {
-                        return {key: option.id, text: option.title}
-                    }).sort((a, b) => a.text > b.text),
-                    loadQueue: this.state.loadQueue - 1
-                });
-            });
-        this.getUsers();
+        this.loadUsers(() => {
+            this.observer = new IntersectionObserver(
+                entries => entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        this.observer.unobserve(entry.target);
+                        console.log(this.state);
+                        if (this.state.page + 1 < this.state.totalPages) {
+                            this.setState({page: this.state.page + 1}, () =>
+                                this.loadUsers(() => {
+                                    this.observer.observe(document.querySelector('.user-cart:last-child'));
+                                })
+                            );
+                        }
+                    }
+                }),
+                {
+                    threshold: 0.75
+                }
+            );
+            this.observer.observe(document.querySelector('.user-cart:last-child'));
+        });
+        this.loadCountry();
     }
 
     render() {
 
         return (
             <div className={"search"}>
-                <div className={"search__result"}>
+                <div className={"search__result"} ref={this.ref}>
                     {
-                        this.state.users.map(user => <UserCart key={user.id} info={user}/>)
+                        this.state.users.map(user => <UserCart key={user.username} info={user}/>)
                     }
                 </div>
                 <div className={"search__form"}>

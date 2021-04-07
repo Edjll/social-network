@@ -32,10 +32,12 @@ public class MessageController {
     public Collection<MessageDto> getAllMessageDtoBetweenUsersById(
             @RequestParam
             @NotEmpty(message = "{message.senderId.notEmpty}")
-            @Exists(typeRepository = UserRepository.class, message = "{message.senderId.exists}") String senderId,
+            @Exists(table = "user_entity", column = "id", message = "{message.senderId.exists}")
+            String senderId,
             @RequestParam
             @NotEmpty(message = "{message.recipientId.notEmpty}")
-            @Exists(typeRepository = UserRepository.class, message = "{message.recipientId.exists}") String recipientId
+            @Exists(table = "user_entity", column = "id", message = "{message.recipientId.exists}")
+            String recipientId
     ) {
         return messageService.getAllMessageDtoBetweenUsersById(senderId, recipientId);
     }
@@ -53,7 +55,7 @@ public class MessageController {
         return messageService.update(messageDtoForUpdate);
     }
 
-    @PreAuthorize("principal.getClaim('sub') == #messageDtoForDelete.senderId or hasRole('ADMIN')")
+    @PreAuthorize("principal.getClaim('sub') == #messageDtoForDelete.senderId")
     @DeleteMapping("/delete")
     public void delete(@RequestBody @Valid MessageDtoForDelete messageDtoForDelete) {
         messageService.delete(messageDtoForDelete);
