@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.user.UserDtoForAdminPage;
@@ -44,6 +46,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/update")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(
             @RequestBody @Valid UserInfoDtoForSave userInfoDtoForSave,
             @AuthenticationPrincipal Principal principal
@@ -52,6 +55,7 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<UserInfoDto> getUserInfo(
             @PathVariable
             @NotEmpty(message = "{user.username.notEmpty}")
@@ -60,29 +64,34 @@ public class UserController {
     }
 
     @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
     public Page<UserInfoDtoForSearch> searchUsers(
             @RequestParam Integer page,
             @RequestParam Integer size,
             @RequestParam Optional<String> firstName,
             @RequestParam Optional<String> lastName,
             @RequestParam Optional<Long> countryId,
-            @RequestParam Optional<Long> cityId
+            @RequestParam Optional<Long> cityId,
+            Principal principal
     ) {
-        return userInfoService.searchUserInfo(page, size, firstName, lastName, countryId, cityId);
+        return userInfoService.searchUserInfo(page, size, firstName, lastName, countryId, cityId, Optional.ofNullable(principal));
     }
 
     @GetMapping("/{username}/detail")
+    @ResponseStatus(HttpStatus.OK)
     public UserInfoDetailDto getUserInfoDetail(@PathVariable @NotEmpty(message = "{user.username.notEmpty}") String username) {
         return userInfoService.getUserInfoDetailByUsername(username);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/enabled")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void changeEnabled(@RequestBody @Valid UserDtoForChangeEnabled userDtoForChangeEnabled) {
         userService.changeEnabled(userDtoForChangeEnabled);
     }
 
     @GetMapping("/page")
+    @ResponseStatus(HttpStatus.OK)
     public Page<UserDtoForAdminPage> getPage(
             @RequestParam Integer page,
             @RequestParam Integer size,

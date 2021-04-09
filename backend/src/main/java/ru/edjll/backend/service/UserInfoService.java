@@ -67,7 +67,7 @@ public class UserInfoService {
         return userInfoRepository.getUserInfoByUsername(username);
     }
 
-    public Page<UserInfoDtoForSearch> searchUserInfo(Integer page, Integer size, Optional<String> firstName, Optional<String> lastName, Optional<Long> countryId, Optional<Long> cityId) {
+    public Page<UserInfoDtoForSearch> searchUserInfo(Integer page, Integer size, Optional<String> firstName, Optional<String> lastName, Optional<Long> countryId, Optional<Long> cityId, Optional<Principal> principal) {
         Map<String, String> stringSearchParams = new HashMap<>();
         Map<String, Object> searchParams = new HashMap<>();
 
@@ -84,6 +84,13 @@ public class UserInfoService {
         if (countryId.isPresent()) {
             sqlFrom += " join country on city.country_id = country.id";
             searchParams.put("country.id", countryId.get());
+        }
+
+        if (principal.isPresent()) {
+            sqlFrom += " left join user_friend on user_friend.friend_id = '" + principal.get().getName() + "' and user_friend.user_id = user_entity.id";
+            sqlSelect += ", user_friend.status";
+        } else {
+            sqlSelect += ", null as status";
         }
 
         String countSql =   "select count(*) " + sqlFrom + " " + sqlWhere;
@@ -106,10 +113,12 @@ public class UserInfoService {
         String sql = sqlSelect + " " + sqlFrom + " " + sqlWhere + " limit " + size + " offset " + page * size;
 
         List<UserInfoDtoForSearch> users = jdbcTemplate.query(sql, (rs, rowNumber) -> new UserInfoDtoForSearch(
+                rs.getString("id"),
                 rs.getString("username"),
                 rs.getString("first_name"),
                 rs.getString("last_name"),
-                rs.getString("city")
+                rs.getString("city"),
+                (Integer) rs.getObject("status")
         ));
 
         return new PageImpl<>(users, PageRequest.of(page, size), count);

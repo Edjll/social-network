@@ -1,8 +1,27 @@
 import './UserCart.css';
 import '../form/button/Button.css';
 import {Link} from "react-router-dom";
+import AuthService from "../../services/AuthService";
+import {Button} from "../form/button/Button";
+import RequestService from "../../services/RequestService";
 
 export const UserCart = (props) => {
+
+    let friendButton = '';
+
+    if (AuthService.isAuthenticated()) {
+        switch (props.info.status) {
+            case 0:
+                friendButton = <Button text={"Remove from friends"}/>
+                break;
+            case 1:
+                friendButton = <Button text={"Cancel request"} handleClick={() => props.handleRemoveFromFriends(props.info.id)}/>
+                break;
+            default:
+                friendButton = <Button text={"Add to friends"} handleClick={() => props.handleAddToFriends(props.info.id)}/>
+        }
+    }
+
     return (
         <div className={"user-cart"}>
             <div className={"user-cart__info"}>
@@ -15,8 +34,7 @@ export const UserCart = (props) => {
                 }
             </div>
             <div className={"user-cart__action"}>
-                <Link to={`/user/${props.info.username}/message`} className={"button user-cart__action__item"}>Send
-                    message</Link>
+                {friendButton}
             </div>
         </div>
     );

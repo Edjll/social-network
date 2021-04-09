@@ -29,15 +29,14 @@ public class MessageController {
 
     @PreAuthorize("principal.getClaim('sub') == #senderId")
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Collection<MessageDto> getAllMessageDtoBetweenUsersById(
             @RequestParam
             @NotEmpty(message = "{message.senderId.notEmpty}")
-            @Exists(table = "user_entity", column = "id", message = "{message.senderId.exists}")
-            String senderId,
+            @Exists(table = "user_entity", column = "id", message = "{message.senderId.exists}") String senderId,
             @RequestParam
             @NotEmpty(message = "{message.recipientId.notEmpty}")
-            @Exists(table = "user_entity", column = "id", message = "{message.recipientId.exists}")
-            String recipientId
+            @Exists(table = "user_entity", column = "id", message = "{message.recipientId.exists}") String recipientId
     ) {
         return messageService.getAllMessageDtoBetweenUsersById(senderId, recipientId);
     }
@@ -51,12 +50,14 @@ public class MessageController {
 
     @PreAuthorize("principal.getClaim('sub') == #messageDtoForUpdate.senderId")
     @PutMapping("/update")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public MessageDto update(@RequestBody @Valid MessageDtoForUpdate messageDtoForUpdate) {
         return messageService.update(messageDtoForUpdate);
     }
 
     @PreAuthorize("principal.getClaim('sub') == #messageDtoForDelete.senderId")
     @DeleteMapping("/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@RequestBody @Valid MessageDtoForDelete messageDtoForDelete) {
         messageService.delete(messageDtoForDelete);
     }

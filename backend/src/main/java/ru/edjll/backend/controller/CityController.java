@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.city.CityDtoForSave;
 import ru.edjll.backend.dto.city.CityDtoForUpdate;
 import ru.edjll.backend.entity.City;
-import ru.edjll.backend.repository.CityRepository;
 import ru.edjll.backend.service.CityService;
 import ru.edjll.backend.validation.exists.Exists;
 
@@ -30,11 +29,13 @@ public class CityController {
     }
 
     @GetMapping("/all")
-    public Collection<City> getAll(@RequestParam(required = false) Optional<Long> countryId) {
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<City> getCities(@RequestParam(required = false) Optional<Long> countryId) {
         return cityService.getAll(countryId);
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<City> getById(
             @PathVariable
             @NotNull(message = "{city.id.notNull}")
@@ -46,6 +47,7 @@ public class CityController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/page")
+    @ResponseStatus(HttpStatus.OK)
     public Page<City> getPage(
             @RequestParam Integer page,
             @RequestParam Integer size,
@@ -68,12 +70,14 @@ public class CityController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody @Valid CityDtoForUpdate cityDtoForUpdate) {
         cityService.update(cityDtoForUpdate);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
             @RequestParam
             @NotNull(message = "{city.id.notNull}")

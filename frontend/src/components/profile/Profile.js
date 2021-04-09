@@ -40,7 +40,10 @@ export class Profile extends React.Component {
                     this.setState({
                         user: response.data,
                         loadQueue: this.state.loadQueue - 1
-                    }, this.loadUserPosts)
+                    }, () => {
+                        this.loadUserPosts();
+                        this.loadFriends();
+                    })
                 } else {
                     this.setState({loadQueue: this.state.loadQueue - 1, error: "User not found"})
                 }
@@ -53,9 +56,21 @@ export class Profile extends React.Component {
     }
 
     loadUserPosts() {
-        axios
+        RequestService.getAxios()
             .get(RequestService.URL + "/post", {params: {userId: this.state.user.id}})
             .then(response => this.setState({posts: response.data}));
+    }
+
+    loadFriends() {
+        RequestService.getAxios()
+            .get(RequestService.URL + `/user/friend` , {
+                params: {
+                    page: 0,
+                    size: 10,
+                    userId: this.state.user.id
+                }
+            })
+            .then(response => this.setState({friends: response.data}));
     }
 
     handlePostDelete(id) {
@@ -99,6 +114,9 @@ export class Profile extends React.Component {
                                     AuthService.isAuthenticated() && AuthService.getUsername() === this.state.user.username
                                         ? <CreatePost handleSubmit={this.handlePostCreate.bind(this)}/>
                                         : ''
+                                }
+                                {
+                                    this.state.posts.map(friend => <div key={friend.id}>{friend.username}</div>)
                                 }
                                 {
                                     this.state.posts.map(post => <Post key={post.id} data={post}

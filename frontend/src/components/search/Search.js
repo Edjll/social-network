@@ -6,6 +6,7 @@ import './Search.css';
 import RequestService from "../../services/RequestService";
 import {UserCart} from "../userCart/UserCart";
 import {Spinner} from "../spinner/Spinner";
+import AuthService from "../../services/AuthService";
 
 export class Search extends React.Component {
 
@@ -49,7 +50,12 @@ export class Search extends React.Component {
                     cityId: this.state.city.id
                 }
             }).then(response => {
-                this.setState({users: [...this.state.users, ...response.data.content], totalPages: response.data.totalPages}, () => { if (callback) callback() });
+            this.setState({
+                users: [...this.state.users, ...response.data.content],
+                totalPages: response.data.totalPages
+            }, () => {
+                if (callback) callback()
+            });
         })
     }
 
@@ -128,7 +134,6 @@ export class Search extends React.Component {
                 entries => entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         this.observer.unobserve(entry.target);
-                        console.log(this.state);
                         if (this.state.page + 1 < this.state.totalPages) {
                             this.setState({page: this.state.page + 1}, () =>
                                 this.loadUsers(() => {
@@ -147,13 +152,45 @@ export class Search extends React.Component {
         this.loadCountry();
     }
 
+    handleAddToFriends(id) {
+        if (AuthService.isAuthenticated()) {
+            RequestService.getAxios().post(RequestService.URL + "/user/friend/save", {
+                userId: id,
+                friendId: AuthService.getId()
+            }).then(() => {
+                this.state.users[this.state.users.findIndex(user => user.id === id)].status = 1;
+                this.setState({users: this.state.users})
+            });
+        } else {
+            AuthService.login();
+        }
+    }
+
+    handleRemoveFromFriends(id) {
+        if (AuthService.isAuthenticated()) {
+            RequestService.getAxios().delete(RequestService.URL + "/user/friend/delete", {
+                data: {
+                    userId: id,
+                    friendId: AuthService.getId()
+                }
+            }).then(() => {
+                this.state.users[this.state.users.findIndex(user => user.id === id)].status = null;
+                this.setState({users: this.state.users})
+            });
+        } else {
+            AuthService.login();
+        }
+    }
+
     render() {
 
         return (
             <div className={"search"}>
                 <div className={"search__result"} ref={this.ref}>
                     {
-                        this.state.users.map(user => <UserCart key={user.username} info={user}/>)
+                        this.state.users.map(user => <UserCart key={user.id} info={user}
+                                                               handleAddToFriends={this.handleAddToFriends.bind(this)}
+                                                               handleRemoveFromFriends={this.handleRemoveFromFriends.bind(this)}/>)
                     }
                 </div>
                 <div className={"search__form"}>

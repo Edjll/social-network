@@ -31,11 +31,13 @@ public class CountryController {
     }
 
     @GetMapping("/all")
+    @ResponseStatus(HttpStatus.OK)
     public Collection<Country> getAll() {
         return countryService.getAll();
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<Country> getById(
             @PathVariable
             @NotNull(message = "{country.id.notNull}")
@@ -47,6 +49,7 @@ public class CountryController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/page")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Country> getPage(
             @RequestParam Integer page,
             @RequestParam Integer size,
@@ -67,12 +70,14 @@ public class CountryController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody @Valid CountryDtoForUpdate countryDtoForUpdate) {
         countryService.update(countryDtoForUpdate);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
             @RequestParam
             @NotNull(message = "{country.id.null}")

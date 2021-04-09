@@ -27,6 +27,7 @@ public class PostController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Collection<PostDto> getAllPostDtoByUserId(
             @RequestParam
             @NotEmpty(message = "{post.userId.notEmpty}")
@@ -44,12 +45,14 @@ public class PostController {
 
     @PreAuthorize("principal.getClaim('sub') == #postDtoForUpdate.userId")
     @PutMapping("/update")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public PostDto update(@RequestBody @Valid PostDtoForUpdate postDtoForUpdate) {
         return postService.update(postDtoForUpdate);
     }
 
     @PreAuthorize("principal.getClaim('sub') == #postDtoForDelete.userId or hasRole('ADMIN')")
     @DeleteMapping("/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@RequestBody @Valid PostDtoForDelete postDtoForDelete) {
         postService.delete(postDtoForDelete);
     }

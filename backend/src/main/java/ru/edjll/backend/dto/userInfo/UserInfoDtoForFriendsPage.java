@@ -7,12 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfoDtoForSearch {
+public class UserInfoDtoForFriendsPage {
 
     private String id;
     private String username;
     private String firstName;
     private String lastName;
     private String city;
-    private Integer status;
 }
