@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.edjll.backend.dto.user.friend.UserFriendDtoForSave;
+import ru.edjll.backend.dto.user.friend.UserFriendDtoForUpdate;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForFriendsPage;
 import ru.edjll.backend.entity.User;
 import ru.edjll.backend.entity.UserFriend;
@@ -42,6 +43,19 @@ public class UserFriendService {
         friend.setId(principal.getName());
 
         UserFriend userFriend = userFriendDtoForSave.toUserFriend();
+        userFriend.setId(new UserFriendKey(user, friend));
+
+        this.userFriendRepository.save(userFriend);
+    }
+
+    public void update(UserFriendDtoForUpdate userFriendDtoForUpdate, Principal principal) {
+        User user = new User();
+        User friend = new User();
+
+        user.setId(userFriendDtoForUpdate.getUserId());
+        friend.setId(principal.getName());
+
+        UserFriend userFriend = userFriendDtoForUpdate.toUserFriend();
         userFriend.setId(new UserFriendKey(user, friend));
 
         this.userFriendRepository.save(userFriend);

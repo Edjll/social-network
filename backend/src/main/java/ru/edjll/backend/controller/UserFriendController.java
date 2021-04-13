@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.user.friend.UserFriendDtoForSave;
+import ru.edjll.backend.dto.user.friend.UserFriendDtoForUpdate;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForFriendsPage;
 import ru.edjll.backend.service.UserFriendService;
 
@@ -57,8 +58,8 @@ public class UserFriendController {
 
     @PutMapping("/friend/update")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody @Valid UserFriendDtoForSave userFriendDtoForSave, Principal principal) {
-        this.userFriendService.save(userFriendDtoForSave, principal);
+    public void update(@RequestBody @Valid UserFriendDtoForUpdate userFriendDtoForUpdate, Principal principal) {
+        this.userFriendService.update(userFriendDtoForUpdate, principal);
     }
 
     @DeleteMapping("/friend/delete")

@@ -18,6 +18,6 @@ public interface UserFriendRepository extends JpaRepository<UserFriend, UserFrie
 
     @Modifying
     @Transactional
-    @Query(value = "delete from user_friend where user_id = :userId and friend_id = :friendId", nativeQuery = true)
+    @Query(value = "delete from user_friend where (user_id = :userId and friend_id = :friendId) or (user_id = :friendId and friend_id = :userId)", nativeQuery = true)
     void deleteByUserIdAndFriendId(@Param("userId") String userId, @Param("friendId") String friendId);
 }

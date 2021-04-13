@@ -11,7 +11,6 @@ import {GroupRemover} from "./group-remover";
 import {GroupPostCreator} from "./group-post/group-post-creator";
 import {GroupPost} from "./group-post/group-post";
 import {FormButton} from "../form/form-button";
-import {UserFriendCard} from "../user/user-card/user-friend-card";
 import {UserCardMini} from "../user/user-card/user-card-mini";
 
 export class Group extends React.Component {

@@ -1,0 +1,51 @@
+explain analyze
+select
+       user_entity.id, user_entity.username, user_entity.first_name,
+       user_entity.last_name, city.title as city, user_id.status
+from user_entity
+    left join user_info on user_entity.id = user_info.user_id
+    left join city on user_info.city_id = city.id
+    left join (
+        select friend_id as id, status
+        from user_friend
+        where user_friend.user_id = '7aa62035-0556-4763-b277-2f2025cbbcc6'
+          and status = 0
+        union
+        select user_id as id, status
+        from user_friend
+        where user_friend.friend_id = '7aa62035-0556-4763-b277-2f2025cbbcc6'
+          and status = 0) as user_id
+        on user_entity.id = user_id.id
+where realm_id = 'social-network'
+  and service_account_client_link is null
+  and user_entity.enabled = true
+limit 12 offset 12
+
+Limit  (cost=38.83..42.00 rows=2 width=1652) (actual time=0.369..0.389 rows=4 loops=1)
+  ->  Nested Loop Left Join  (cost=19.82..42.00 rows=14 width=1652) (actual time=0.174..0.386 rows=16 loops=1)
+        ->  Nested Loop Left Join  (cost=19.39..27.47 rows=1 width=1642) (actual time=0.156..0.207 rows=16 loops=1)
+              Join Filter: ((user_entity.id)::text = (user_friend.friend_id)::text)
+              Rows Removed by Join Filter: 30
+              ->  Index Scan using uk_ru8tt6t700s9v50bu18ws5ha6 on user_entity  (cost=0.14..8.15 rows=1 width=1638) (actual time=0.023..0.041 rows=16 loops=1)
+                    Index Cond: ((realm_id)::text = 'social-network'::text)
+                    Filter: ((service_account_client_link IS NULL) AND enabled)
+                    Rows Removed by Filter: 2
+              ->  Unique  (cost=19.25..19.27 rows=2 width=520) (actual time=0.008..0.009 rows=2 loops=16)
+                    ->  Sort  (cost=19.25..19.26 rows=2 width=520) (actual time=0.008..0.008 rows=2 loops=16)
+"                          Sort Key: user_friend.friend_id, user_friend.status"
+                          Sort Method: quicksort  Memory: 25kB
+                          ->  Append  (cost=0.00..19.24 rows=2 width=520) (actual time=0.073..0.076 rows=2 loops=1)
+                                ->  Seq Scan on user_friend  (cost=0.00..11.05 rows=1 width=520) (actual time=0.063..0.063 rows=0 loops=1)
+                                      Filter: (((user_id)::text = '7aa62035-0556-4763-b277-2f2025cbbcc6'::text) AND (status = 0))
+                                      Rows Removed by Filter: 13
+                                ->  Index Scan using user_friend_pkey on user_friend user_friend_1  (cost=0.14..8.16 rows=1 width=520) (actual time=0.009..0.011 rows=2 loops=1)
+                                      Index Cond: ((friend_id)::text = '7aa62035-0556-4763-b277-2f2025cbbcc6'::text)
+                                      Filter: (status = 0)
+                                      Rows Removed by Filter: 1
+        ->  Nested Loop Left Join  (cost=0.43..14.53 rows=1 width=526) (actual time=0.010..0.010 rows=0 loops=16)
+              ->  Index Scan using user_info_pkey on user_info  (cost=0.14..8.16 rows=1 width=524) (actual time=0.003..0.003 rows=0 loops=16)
+                    Index Cond: ((user_id)::text = (user_entity.id)::text)
+              ->  Index Scan using city_pkey on city  (cost=0.29..6.36 rows=1 width=14) (actual time=0.019..0.019 rows=1 loops=2)
+                    Index Cond: (id = user_info.city_id)
+Planning Time: 13.643 ms
+Execution Time: 0.669 ms

@@ -15,4 +15,5 @@ public class UserInfoDtoForSearch {
     private String lastName;
     private String city;
     private Integer status;
+    private String friendId;
 }

@@ -20,17 +20,11 @@ public class UserFriendDtoForUpdate {
     @Exists(table = "user_entity", column = "id")
     private String userId;
 
-    @NotNull
-    private UserFriendStatus status;
-
-    @NotNull
-    private LocalDateTime date;
-
     public UserFriend toUserFriend() {
         UserFriend userFriend = new UserFriend();
 
-        userFriend.setStatus(status);
-        userFriend.setDate(date);
+        userFriend.setStatus(UserFriendStatus.FRIEND);
+        userFriend.setDate(LocalDateTime.now());
 
         return userFriend;
     }

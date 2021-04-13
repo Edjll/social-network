@@ -10,7 +10,8 @@ export class UserCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            status: props.info.status
+            status: props.info.status,
+            friendId: props.info.friendId
         }
     }
 
@@ -31,8 +32,18 @@ export class UserCard extends React.Component {
             }
         })
             .then(response => {
-                this.setState({status: null});
+                this.setState({status: null, friendId: null});
                 if (this.props.handleRemoveFromFriends) this.props.handleRemoveFromFriends(response);
+            })
+    }
+
+    handleAcceptRequest(id) {
+        RequestService.getAxios().put(RequestService.URL + "/user/friend/update", {
+            userId: id
+        })
+            .then(response => {
+                this.setState({status: 0});
+                if (this.props.handleAcceptRequest) this.props.handleAcceptRequest(response);
             })
     }
 
@@ -45,8 +56,13 @@ export class UserCard extends React.Component {
                     friendButton = <FormButton handleClick={() => this.handleRemoveFromFriends(this.props.info.id)}>Remove from friends</FormButton>
                     break;
                 case 1:
-                    friendButton =
-                        <FormButton handleClick={() => this.handleRemoveFromFriends(this.props.info.id)}>Cancel request</FormButton>
+                    if (this.state.friendId === this.props.info.id) {
+                        friendButton =
+                            <FormButton handleClick={() => this.handleAcceptRequest(AuthService.getId())}>Accept request</FormButton>
+                    } else {
+                        friendButton =
+                            <FormButton handleClick={() => this.handleRemoveFromFriends(this.props.info.id)}>Cancel request</FormButton>
+                    }
                     break;
                 default:
                     friendButton =

@@ -94,8 +94,15 @@ public class UserInfoService {
         }
 
         if (principal.isPresent()) {
-            sqlFrom += " left join user_friend on user_friend.friend_id = '" + principal.get().getName() + "' and user_friend.user_id = user_entity.id";
-            sqlSelect += ", user_friend.status";
+            sqlFrom += " left join (  select friend_id as id, status, friend_id " +
+                                    "from user_friend " +
+                                    "where user_friend.user_id = '" + principal.get().getName() + "' " +
+                                    "union " +
+                                    "select user_id as id, status, friend_id " +
+                                    "from user_friend " +
+                                    "where user_friend.friend_id = '" + principal.get().getName() + "') as user_friend " +
+                        "on user_entity.id = user_friend.id ";
+            sqlSelect += ", user_friend.status, user_friend.friend_id";
         } else {
             sqlSelect += ", null as status";
         }
@@ -125,7 +132,8 @@ public class UserInfoService {
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("city"),
-                (Integer) rs.getObject("status")
+                (Integer) rs.getObject("status"),
+                rs.getString("friend_id")
         ));
 
         return new PageImpl<>(users, PageRequest.of(page, size), count);
