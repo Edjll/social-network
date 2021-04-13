@@ -1,0 +1,15 @@
+.group {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.group__info__description > * {
+    font: inherit;
+    color: white;
+}
+
+.group__users {
+    padding: .2rem .5rem;
+    flex-wrap: wrap;
+    flex-direction: row;
+}

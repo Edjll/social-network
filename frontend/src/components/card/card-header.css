@@ -1,0 +1,13 @@
+.card__header {
+    display: flex;
+    justify-content: space-between;
+    padding: .8rem 1rem;
+    border-bottom: 1px solid rgb(62, 68, 70);
+}
+
+.card__header > * {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0;
+}

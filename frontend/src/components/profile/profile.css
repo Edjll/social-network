@@ -1,0 +1,77 @@
+.profile {
+    margin: 1rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.profile__info {
+    border-radius: .25rem;
+    border: 1px solid rgb(62, 68, 70);
+    background-color: #2b2e34;
+    width: 100%;
+}
+
+.profile__info__header {
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #3e4446;
+}
+
+.profile__info__block {
+    display: flex;
+    margin: 1rem 0;
+}
+
+.profile__info__block:not(:last-of-type) {
+    margin-bottom: 0;
+}
+
+.profile__info__block > span {
+    width: 50%;
+    font-size: 1rem;
+    color: #b0b0b0;
+}
+
+.profile__side_left {
+    width: 14.7rem;
+    margin: 0 .5rem;
+}
+
+.profile__side_right {
+    width: calc(100% - 16.2rem);
+}
+
+.profile__side_left > *:not(:first-child) {
+    margin: 0.5rem 0;
+}
+
+.profile__friends {
+    background-color: #2b2e34;
+    border: 1px solid rgb(62, 68, 70);
+    border-radius: .25rem;
+    width: 100%;
+    height: max-content;
+    box-sizing: border-box;
+}
+
+.profile__friends__title {
+    padding: .8rem 1rem;
+    border-bottom: 1px solid rgb(62, 68, 70);
+}
+
+.profile__friends__title > a {
+    text-decoration: none;
+    font-size: 1.1rem;
+    color: white;
+}
+
+.profile__friends__items {
+    display: flex;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    padding: .2rem .5rem !important;
+    box-sizing: border-box;
+}

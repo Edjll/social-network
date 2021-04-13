@@ -11,3 +11,33 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+* {
+  box-sizing: border-box;
+}
+
+.left_side {
+  width: 14.7rem;
+  margin: 0 .5rem;
+}
+
+.right_side {
+  width: calc(100% - 16.2rem);
+}
+
+.left_side > *:not(:first-child), .right_side > *:not(:first-child) {
+  margin: 0.5rem 0;
+}
+
+.attention_center {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  background-color: #000000f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+}

@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.edjll.backend.entity.Post;
 import ru.edjll.backend.entity.User;
-import ru.edjll.backend.repository.PostRepository;
-import ru.edjll.backend.repository.UserRepository;
 import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.constraints.NotEmpty;

@@ -3,12 +3,13 @@ package ru.edjll.backend.dto.user;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.edjll.backend.dto.userInfo.UserInfoDtoForSave;
-import ru.edjll.backend.repository.CityRepository;
+import ru.edjll.backend.dto.user.info.UserInfoDtoForSave;
 import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 

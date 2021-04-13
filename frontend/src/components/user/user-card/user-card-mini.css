@@ -1,0 +1,26 @@
+.user_card_mini {
+    display: flex;
+    flex-direction: column;
+    margin: .2rem .5rem;
+}
+
+.user_card_mini__username {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border: 1px solid #3e424b;
+    background-color: #33363d;
+    text-decoration: none;
+}
+
+.user_card_mini__name {
+    color: white;
+    font-size: .9rem;
+    text-align: center;
+    margin-top: .2rem;
+}

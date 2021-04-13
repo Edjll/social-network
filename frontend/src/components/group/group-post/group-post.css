@@ -1,0 +1,41 @@
+.group_post > .cart__body > * {
+    font: inherit;
+    color: white;
+}
+
+.group_post__header__info {
+    display: flex;
+}
+
+.group_post__header__info > h3 {
+    font: inherit;
+    align-self: flex-end;
+    margin: 0;
+}
+
+.group_post__header__info > span {
+    font-size: .9rem;
+    align-self: flex-end;
+}
+
+.group_post__header__info > *:not(:last-child) {
+    margin-right: .25rem;
+}
+
+.group_post__header__actions {
+    display: flex;
+}
+
+.group_post__header__actions > * {
+    font-size: 1rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.group_post__header__actions > *:not(:last-child) {
+    margin-right: .25rem;
+}
+
+.group_post:not(:last-of-type) {
+    margin-bottom: .5rem;
+}

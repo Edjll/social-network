@@ -1,6 +1,5 @@
 import Keycloak from "keycloak-js";
 import keycloakConfig from "../keycloak.json";
-import axios from "axios";
 
 const keycloak = new Keycloak(keycloakConfig);
 
@@ -61,7 +60,7 @@ const updateToken = (successCallback) =>
 
 const getUsername = () => keycloak.tokenParsed.preferred_username;
 
-const getId = () => keycloak.tokenParsed.sub;
+const getId = () => keycloak.tokenParsed ? keycloak.tokenParsed.sub : null;
 
 const getFirstName = () => keycloak.tokenParsed.given_name;
 

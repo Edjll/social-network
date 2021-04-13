@@ -1,0 +1,67 @@
+.header_profile {
+    position: relative;
+    outline: none;
+}
+
+.header_profile:focus-within > .header_profile__actions {
+    display: flex;
+}
+
+.header_profile__name {
+    background-color: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    outline: none;
+    color: #fcfcfc;
+    margin: 0 .5rem;
+}
+
+.header_profile__actions {
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    top: 40px;
+    right: 0;
+    width: 100%;
+    background-color: #2b2e34;
+    border-radius: 0 0 .25rem .25rem;
+    box-sizing: border-box;
+    z-index: 1;
+    min-width: 150px;
+    border: 1px solid #3e424b;
+    border-top: none;
+    padding: .2rem 0;
+}
+
+.header_profile__actions > * {
+    background-color: transparent;
+    border: none;
+    font-size: 1rem;
+    text-decoration: none;
+    padding: .5rem .7rem;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    color: #fcfcfc;
+    position: relative;
+    transition: background-color .1s;
+}
+
+.header_profile__actions > *:hover {
+    background-color: #474c56;
+}
+
+.header_profile__actions > *:not(:first-child) {
+    margin-top: .4rem;
+}
+
+.header_profile__actions > *:not(:last-child)::after {
+    content: '';
+    width: calc(100% - 1.4rem);
+    display: block;
+    border-bottom: 1px solid #3e4446;
+    position: absolute;
+    bottom: calc(-.2rem - 0.5px);
+    left: .7rem;
+}

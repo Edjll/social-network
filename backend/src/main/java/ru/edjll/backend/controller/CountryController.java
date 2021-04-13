@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.country.CountryDtoForSave;
 import ru.edjll.backend.dto.country.CountryDtoForUpdate;
 import ru.edjll.backend.entity.Country;
-import ru.edjll.backend.repository.CityRepository;
-import ru.edjll.backend.repository.CountryRepository;
 import ru.edjll.backend.service.CountryService;
 import ru.edjll.backend.validation.exists.Exists;
 

@@ -1,7 +1,5 @@
 package ru.edjll.backend.validation.exists;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;

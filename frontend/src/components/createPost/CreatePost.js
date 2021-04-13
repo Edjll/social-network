@@ -16,7 +16,7 @@ export const CreatePost = (props) => {
     }
 
     return (
-        <div className={"create-post"}>
+        <div className={`create-post ${props.className ? props.className : ''}`}>
             <PostForm handleSubmit={handleSubmit.bind(this)}/>
         </div>
     );

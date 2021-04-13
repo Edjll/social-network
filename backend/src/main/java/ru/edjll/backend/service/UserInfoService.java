@@ -1,23 +1,30 @@
 package ru.edjll.backend.service;
 
-import org.springframework.data.domain.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import ru.edjll.backend.dto.user.UserDtoForAdminPage;
-import ru.edjll.backend.dto.userInfo.UserInfoDetailDto;
-import ru.edjll.backend.dto.userInfo.UserInfoDto;
-import ru.edjll.backend.dto.userInfo.UserInfoDtoForSave;
-import ru.edjll.backend.dto.userInfo.UserInfoDtoForSearch;
+import ru.edjll.backend.dto.user.info.UserInfoDetailDto;
+import ru.edjll.backend.dto.user.info.UserInfoDto;
+import ru.edjll.backend.dto.user.info.UserInfoDtoForSave;
+import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
 import ru.edjll.backend.entity.UserInfo;
 import ru.edjll.backend.repository.UserInfoRepository;
 
 import java.security.Principal;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserInfoService {
 
+    private static final Logger logger = LogManager.getLogger(UserInfoService.class);
     private final UserInfoRepository userInfoRepository;
     private final UserService userService;
     private final CityService cityService;

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.edjll.backend.entity.User;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @Repository

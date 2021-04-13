@@ -6,7 +6,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.edjll.backend.dto.country.CountryDtoForSave;
 import ru.edjll.backend.dto.country.CountryDtoForUpdate;
-import ru.edjll.backend.entity.City;
 import ru.edjll.backend.entity.Country;
 import ru.edjll.backend.repository.CountryRepository;
 

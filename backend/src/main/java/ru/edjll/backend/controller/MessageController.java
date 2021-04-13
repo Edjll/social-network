@@ -8,7 +8,6 @@ import ru.edjll.backend.dto.message.MessageDto;
 import ru.edjll.backend.dto.message.MessageDtoForDelete;
 import ru.edjll.backend.dto.message.MessageDtoForSave;
 import ru.edjll.backend.dto.message.MessageDtoForUpdate;
-import ru.edjll.backend.repository.UserRepository;
 import ru.edjll.backend.service.MessageService;
 import ru.edjll.backend.validation.exists.Exists;
 

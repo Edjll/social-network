@@ -1,0 +1,10 @@
+.card__body {
+    display: flex;
+    flex-direction: column;
+    padding: .2rem 1rem;
+}
+
+.card__body > * {
+    font: inherit;
+    color: white;
+}

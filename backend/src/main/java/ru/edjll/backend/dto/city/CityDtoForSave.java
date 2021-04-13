@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.edjll.backend.entity.City;
 import ru.edjll.backend.entity.Country;
-import ru.edjll.backend.repository.CountryRepository;
 import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.constraints.NotEmpty;

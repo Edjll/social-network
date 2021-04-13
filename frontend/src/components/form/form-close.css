@@ -1,0 +1,8 @@
+.form__close {
+    cursor: pointer;
+    transition: transform .2s;
+}
+
+.form__close:hover {
+    transform: rotate(90deg);
+}

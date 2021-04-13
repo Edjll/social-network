@@ -45,7 +45,7 @@ public class PostController {
 
     @PreAuthorize("principal.getClaim('sub') == #postDtoForUpdate.userId")
     @PutMapping("/update")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public PostDto update(@RequestBody @Valid PostDtoForUpdate postDtoForUpdate) {
         return postService.update(postDtoForUpdate);
     }
