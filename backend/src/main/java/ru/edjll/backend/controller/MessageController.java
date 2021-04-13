@@ -49,7 +49,7 @@ public class MessageController {
 
     @PreAuthorize("principal.getClaim('sub') == #messageDtoForUpdate.senderId")
     @PutMapping("/update")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public MessageDto update(@RequestBody @Valid MessageDtoForUpdate messageDtoForUpdate) {
         return messageService.update(messageDtoForUpdate);
     }

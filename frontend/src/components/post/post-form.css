@@ -1,0 +1,38 @@
+.post__form__input {
+    font-size: 1.1rem;
+    padding: .75rem;
+    border-bottom: 1px solid rgb(62, 68, 70);
+    color: #fcfcfc;
+    outline: none;
+}
+
+.post__form__actions {
+    display: flex;
+    padding: .75rem;
+}
+
+.post__form__actions > * {
+    width: 100%;
+    padding: .25rem;
+    font-size: 1rem;
+    border-radius: .25rem;
+    border: 1px solid rgb(62, 68, 70);
+    background-color: #3e424b;
+    text-align: center;
+    color: #fcfcfc;
+    cursor: pointer;
+    transition: opacity .1s;
+    outline: none;
+}
+
+.post__form__actions > *:hover {
+    opacity: .8;
+}
+
+.post__form__actions > *:first-child {
+    margin-right: .25rem;
+}
+
+.post__form__actions > *:last-child {
+    margin-left: .25rem;
+}

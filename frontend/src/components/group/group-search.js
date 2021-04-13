@@ -4,6 +4,8 @@ import {CardHeader} from "../card/card-header";
 import {CardBody} from "../card/card-body";
 import RequestService from "../../services/RequestService";
 import {GroupCard} from "./group-card";
+import {Link} from "react-router-dom";
+import './group-search.css';
 
 export class GroupSearch extends React.Component {
 
@@ -65,6 +67,7 @@ export class GroupSearch extends React.Component {
                 <Card>
                     <CardHeader>
                         <h1>Groups</h1>
+                        <Link to={"/group/create"} className={"create_group_button"}>Create group</Link>
                     </CardHeader>
                     <CardBody>
                         { this.state.groups.map((group, index) => <GroupCard key={index} address={group.address} title={group.title} description={group.description}/>) }

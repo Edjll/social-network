@@ -2,7 +2,7 @@ import {Card} from "../../card/card";
 import {CardHeader} from "../../card/card-header";
 import {CardBody} from "../../card/card-body";
 import './group-post.css';
-import {HiddenInfo} from "../../hiddenInfo/HiddenInfo";
+import {HiddenInfo} from "../../hidden-info/hidden-info";
 import * as React from "react";
 import {FormTextarea} from "../../form/form-textarea";
 import {CardFooter} from "../../card/card-footer";

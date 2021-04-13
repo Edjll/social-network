@@ -1,17 +1,17 @@
 import RequestService from "../../services/RequestService";
-import {Table} from "../table/Table/Table";
-import {TableHead} from "../table/TableHead/TableHead";
-import {TableHeadItem} from "../table/TableHeadItem/TableHeadItem";
-import {TableBody} from "../table/TableBody/TableBody";
-import {TableRow} from "../table/TableRow/TableRow";
-import {TableRowItem} from "../table/TableRowItem/TableRowItem";
-import AuthService from "../../services/AuthService";
-import {TableFooter} from "../table/TableFooter/TableFooter";
-import {TablePagination} from "../table/TablePagination/TablePagination";
-import {TablePageSize} from "../table/TablePageSize/TablePageSize";
 import * as React from "react";
 import {FormSwitch} from "../form/form-switch";
 import {FormInput} from "../form/form-input";
+import {TableRowItem} from "../table/table-row-item";
+import {TableRow} from "../table/table-row";
+import {TableBody} from "../table/table-body";
+import {TableHeadItem} from "../table/table-head-item";
+import {TableHead} from "../table/table-head";
+import {Table} from "../table/table";
+import {TableFooter} from "../table/table-footer";
+import {TablePagination} from "../table/table-pagination";
+import {TablePageSize} from "../table/table-page-size";
+import AuthService from "../../services/AuthService";
 
 export class AdminUsers extends React.Component {
 

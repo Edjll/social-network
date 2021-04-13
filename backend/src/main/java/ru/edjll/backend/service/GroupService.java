@@ -1,5 +1,6 @@
 package ru.edjll.backend.service;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.group.*;
+import ru.edjll.backend.dto.group.user.GroupUserDtoForSubscribe;
 import ru.edjll.backend.entity.Group;
 import ru.edjll.backend.entity.User;
 import ru.edjll.backend.repository.GroupRepository;
@@ -19,10 +21,12 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final UserService userService;
+    private final GroupUserService groupUserService;
 
-    public GroupService(GroupRepository groupRepository, UserService userService) {
+    public GroupService(GroupRepository groupRepository, UserService userService, @Lazy GroupUserService groupUserService) {
         this.groupRepository = groupRepository;
         this.userService = userService;
+        this.groupUserService = groupUserService;
     }
 
     public Optional<GroupDto> getDtoByAddress(String address) {
@@ -34,6 +38,7 @@ public class GroupService {
         Group group = groupDtoForSave.toGroup();
         group.setCreator(creator);
         groupRepository.save(group);
+        groupUserService.subscribe(group.getId(), principal);
     }
 
     public void update(GroupDtoForUpdate groupDtoForUpdate, Principal principal) {

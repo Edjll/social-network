@@ -37,11 +37,15 @@ public class GroupUserService {
     }
 
     public void subscribe(GroupUserDtoForSubscribe groupUserDtoForSubscribe, Principal principal) {
+        subscribe(groupUserDtoForSubscribe.getGroupId(), principal);
+    }
+
+    public void subscribe(Long groupId, Principal principal) {
         User user = new User();
         Group group = new Group();
 
         user.setId(principal.getName());
-        group.setId(groupUserDtoForSubscribe.getGroupId());
+        group.setId(groupId);
 
         GroupUser groupUser = new GroupUser(group, user, LocalDateTime.now());
 

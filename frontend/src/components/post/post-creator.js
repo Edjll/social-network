@@ -1,10 +1,10 @@
 import * as React from "react";
-import {PostForm} from "../postForm/PostForm";
 import RequestService from "../../services/RequestService";
 import AuthService from "../../services/AuthService";
-import './CreatePost.css';
+import './post-creator.css';
+import {PostForm} from "./post-form";
 
-export const CreatePost = (props) => {
+export const PostCreator = (props) => {
 
     const handleSubmit = (text) => {
         RequestService.getAxios().post(RequestService.URL + "/post/save", {
@@ -16,7 +16,7 @@ export const CreatePost = (props) => {
     }
 
     return (
-        <div className={`create-post ${props.className ? props.className : ''}`}>
+        <div className={`post_creator ${props.className ? props.className : ''}`}>
             <PostForm handleSubmit={handleSubmit.bind(this)}/>
         </div>
     );

@@ -1,4 +1,4 @@
-import './TablePagination.css';
+import './table-pagination.css';
 
 export const TablePagination = (props) => {
 

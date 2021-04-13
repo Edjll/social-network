@@ -2,6 +2,11 @@
     display: flex;
     align-items: center;
     margin: .5rem 0;
+    padding-bottom: 1rem;
+}
+
+.group_card:not(:last-child) {
+    border-bottom: 1px solid #3e424b;
 }
 
 .group_card__address {

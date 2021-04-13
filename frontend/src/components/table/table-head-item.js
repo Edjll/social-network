@@ -1,4 +1,4 @@
-import './TableHeadItem.css';
+import './table-head-item.css';
 
 export const TableHeadItem = (props) => {
 

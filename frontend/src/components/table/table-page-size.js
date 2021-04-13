@@ -1,4 +1,4 @@
-import './TablePageSize.css';
+import './table-page-size.css';
 import * as React from "react";
 
 export class TablePageSize extends React.Component {

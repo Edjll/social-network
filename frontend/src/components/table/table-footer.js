@@ -1,4 +1,4 @@
-import './TableFooter.css';
+import './table-footer.css';
 
 export const TableFooter = (props) => {
 

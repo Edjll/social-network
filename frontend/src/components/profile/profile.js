@@ -3,14 +3,14 @@ import './profile.css'
 import React from "react";
 import RequestService from "../../services/RequestService";
 import {Link} from "react-router-dom";
-import {Spinner} from "../spinner/Spinner";
-import {Post} from "../post/Post";
-import {CreatePost} from "../createPost/CreatePost";
+import {Spinner} from "../spinner/spinner";
+import {Post} from "../post/post";
 import {Card} from "../card/card";
 import {CardHeader} from "../card/card-header";
 import {CardBody} from "../card/card-body";
 import {UserCardMini} from "../user/user-card/user-card-mini";
 import {UserGroupCard} from "../user/user-card/user-group-card";
+import {PostCreator} from "../post/post-creator";
 
 export class Profile extends React.Component {
 
@@ -217,8 +217,8 @@ export class Profile extends React.Component {
                     </Card>
                     {
                         AuthService.isAuthenticated() && AuthService.getUsername() === this.state.user.username
-                            ? <CreatePost handleSubmit={this.handlePostCreate.bind(this)}
-                                          className={"profile__create-post"}/>
+                            ? <PostCreator handleSubmit={this.handlePostCreate.bind(this)}
+                                           className={"profile__create-post"}/>
                             : ''
                     }
                     {

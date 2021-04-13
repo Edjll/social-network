@@ -1,10 +1,10 @@
-import './Post.css';
+import './post.css';
 import {Link} from "react-router-dom";
 import * as React from "react";
-import {PostForm} from "../postForm/PostForm";
+import {PostForm} from "./post-form";
 import RequestService from "../../services/RequestService";
 import AuthService from "../../services/AuthService";
-import {HiddenInfo} from "../hiddenInfo/HiddenInfo";
+import {HiddenInfo} from "../hidden-info/hidden-info";
 
 export class Post extends React.Component {
 

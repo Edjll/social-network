@@ -1,0 +1,36 @@
+.hidden_info {
+    display: inline-block;
+    margin-left: .3rem;
+    position: relative;
+}
+
+.hidden_info__text {
+    font-size: .9rem;
+    color: #91a4ac;
+}
+
+.hidden_info__hidden {
+    display: none;
+    position: absolute;
+    top: -170%;
+    right: 0;
+    width: max-content;
+    background-color: #1f2022;
+    padding: .3rem;
+    border-radius: .25rem;
+    font-size: .8rem;
+    color: #91a4ac;
+}
+
+.hidden_info__hidden::after {
+    content: '';
+    border: .5rem solid transparent;
+    border-top-color: #1f2022;
+    position: absolute;
+    bottom: -1rem;
+    right: .8rem;
+}
+
+.hidden_info:hover .hidden_info__hidden {
+    display: block;
+}

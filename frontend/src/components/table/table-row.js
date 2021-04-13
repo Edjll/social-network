@@ -1,4 +1,4 @@
-import './TableRow.css';
+import './table-row.css';
 
 export const TableRow = (props) => {
 

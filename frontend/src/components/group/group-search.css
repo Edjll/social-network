@@ -1,0 +1,13 @@
+.create_group_button {
+    background-color: #3e424b;
+    padding: .4rem .8rem;
+    text-decoration: none;
+    border-radius: .25rem;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: opacity .1s;
+}
+
+.create_group_button:hover {
+    opacity: .8;
+}

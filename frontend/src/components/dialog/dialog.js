@@ -1,8 +1,8 @@
 import * as React from "react";
-import {Message} from "../message/Message";
+import {Message} from "../message/message";
 import RequestService from "../../services/RequestService";
-import {Spinner} from "../spinner/Spinner";
-import './Dialog.css';
+import {Spinner} from "../spinner/spinner";
+import './dialog.css';
 import AuthService from "../../services/AuthService";
 import {Link} from "react-router-dom";
 
