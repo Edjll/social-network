@@ -4,7 +4,7 @@ import * as React from "react";
 export const FormInput = (props) => {
 
     const handleChange = (e) => {
-        if (this.props.handleChange) this.props.handleChange(e.target.value);
+        if (props.handleChange) props.handleChange(e.target.value);
     }
 
     return (

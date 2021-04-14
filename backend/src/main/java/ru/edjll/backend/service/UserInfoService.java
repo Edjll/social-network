@@ -104,7 +104,7 @@ public class UserInfoService {
                         "on user_entity.id = user_friend.id ";
             sqlSelect += ", user_friend.status, user_friend.friend_id";
         } else {
-            sqlSelect += ", null as status";
+            sqlSelect += ", null as status, null as friend_id";
         }
 
         String countSql =   "select count(*) " + sqlFrom + " " + sqlWhere;
