@@ -17,6 +17,7 @@ import {GroupSubscribers} from "./components/group/group-subscribers";
 import {Admin} from "./components/admin/admin";
 import ProfileEditor from "./components/profile/profile-editor";
 import {GroupSearch} from "./components/group/group-search";
+import {UserGroups} from "./components/user/user-groups";
 
 class App extends React.Component {
 
@@ -33,6 +34,7 @@ class App extends React.Component {
                         <Route path={"/profile/edit"} component={ProfileEditor}/>
                         <Route path={"/user/friends"} component={UserFriends}/>
                         <Route path={"/user/subscribers"} component={UserSubscribers}/>
+                        <Route path={"/user/groups"} component={UserGroups}/>
                         <Route path={"/user/:username"} component={Profile}/>
                         <PrivateRoute path={"/group/create"} component={GroupCreator}/>
                         <Route path={"/groups"} component={GroupSearch}/>

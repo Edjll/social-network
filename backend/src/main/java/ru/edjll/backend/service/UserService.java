@@ -58,11 +58,11 @@ public class UserService {
         userInfoService.save(userDtoWrapperForSave.toUserInfoDtoForSave(), userDtoWrapperForSave.getUsername());
     }
 
-    public void changeEnabled(UserDtoForChangeEnabled userDtoForChangeEnabled) {
+    public void changeEnabled(String id, UserDtoForChangeEnabled userDtoForChangeEnabled) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", "Bearer " + authService.getAdminToken());
 
-        restTemplate.exchange(keycloakUrl + "/users/" + userDtoForChangeEnabled.getId(), HttpMethod.PUT, new HttpEntity<>(userDtoForChangeEnabled, httpHeaders), Object.class);
+        restTemplate.exchange(keycloakUrl + "/users/" + id, HttpMethod.PUT, new HttpEntity<>(userDtoForChangeEnabled, httpHeaders), Object.class);
     }
 
     public Page<UserDtoForAdminPage> getAll(

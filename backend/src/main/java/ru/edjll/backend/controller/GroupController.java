@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.group.*;
 import ru.edjll.backend.service.GroupService;
 import ru.edjll.backend.validation.exists.Exists;
@@ -17,7 +18,7 @@ import java.security.Principal;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/group")
+@RequestMapping("/groups")
 public class GroupController {
 
     private final GroupService groupService;
@@ -26,12 +27,13 @@ public class GroupController {
         this.groupService = groupService;
     }
 
-    @GetMapping("/page")
+    @GetMapping
     public Page<GroupDtoForSearch> getAll(
             @RequestParam Integer page,
-            @RequestParam Integer pageSize
+            @RequestParam Integer pageSize,
+            Principal principal
     ) {
-        return groupService.getAll(page, pageSize);
+        return groupService.getAll(page, pageSize, Optional.ofNullable(principal));
     }
 
     @GetMapping("/{address}")
@@ -43,36 +45,33 @@ public class GroupController {
         return groupService.getDtoByAddress(address);
     }
 
-    @GetMapping
-    public Page<GroupDtoForUserPage> getByUserId(
-            @RequestParam
-            @NotEmpty
-            @Exists(table = "user_entity", column = "id") String userId,
-            @RequestParam
-            @NotNull
-            @PositiveOrZero Integer page,
-            @RequestParam
-            @NotNull
-            @Positive Integer pageSize
-    ) {
-        return groupService.getDtoByUserId(userId, page, pageSize);
-    }
-
-    @PostMapping("/save")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void save(@RequestBody @Valid GroupDtoForSave groupDtoForSave, Principal principal) {
         groupService.save(groupDtoForSave, principal);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody @Valid GroupDtoForUpdate groupDtoForUpdate, Principal principal) {
-        groupService.update(groupDtoForUpdate, principal);
+    public void update(
+            @PathVariable
+            @NotNull
+            @Positive
+            @Exists(table = "groups", column = "id") Long id,
+            @RequestBody
+            @Valid GroupDtoForUpdate groupDtoForUpdate,
+            Principal principal) {
+        groupService.update(id, groupDtoForUpdate, principal);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@RequestParam @NotNull @Positive @Exists(table = "groups", column = "id") Long id, JwtAuthenticationToken principal) {
+    public void delete(
+            @PathVariable
+            @NotNull
+            @Positive
+            @Exists(table = "groups", column = "id") Long id,
+            JwtAuthenticationToken principal) {
         groupService.delete(id, principal);
     }
 }

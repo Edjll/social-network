@@ -7,6 +7,7 @@ import ru.edjll.backend.dto.message.MessageDto;
 import ru.edjll.backend.entity.Message;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
 

@@ -38,7 +38,7 @@ export class Register extends React.Component {
     }
 
     componentDidMount() {
-        RequestService.getAxios().get(RequestService.URL + "/country/all")
+        RequestService.getAxios().get(RequestService.URL + "/countries")
             .then(response => {
                 this.setState({
                     countries: response.data.map(option => {
@@ -77,7 +77,7 @@ export class Register extends React.Component {
     handleChangeCountry(value) {
         if (value === null) this.setState({country: null, city: null})
         else {
-            RequestService.getAxios().get(RequestService.URL + `/city/all`, {params: {countryId: value.key}})
+            RequestService.getAxios().get(RequestService.URL + `/cities`, {params: {countryId: value.key}})
                 .then(response => this.setState({
                         country: value.key,
                         cities: response.data.map(option => {
@@ -95,7 +95,7 @@ export class Register extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().post(RequestService.URL + '/user/register', {
+        RequestService.getAxios().post(RequestService.URL + '/users', {
             username: this.state.username,
             email: this.state.email,
             firstName: this.state.firstName,

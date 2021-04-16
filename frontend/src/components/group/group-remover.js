@@ -23,7 +23,7 @@ export class GroupRemover extends React.Component {
 
     loadInfo() {
         RequestService.getAxios()
-            .get(RequestService.URL + "/group/" + this.props.match.params.address)
+            .get(RequestService.URL + "/groups/" + this.props.match.params.address)
             .then(response => this.setState({...response.data}));
     }
 
@@ -45,11 +45,9 @@ export class GroupRemover extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().delete(RequestService.URL + '/group/delete', {
-            params: {
-                id: this.state.id
-            }
-        })
+        RequestService
+            .getAxios()
+            .delete(RequestService.URL + `/groups/${this.state.id}`)
             .then(() => this.props.history.push(`/`))
     }
 

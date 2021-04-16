@@ -1,12 +1,13 @@
 .group_card {
     display: flex;
     align-items: center;
-    margin: .5rem 0;
+    margin-top: .5rem;
     padding-bottom: 1rem;
 }
 
 .group_card:not(:last-child) {
     border-bottom: 1px solid #3e424b;
+    margin-bottom: .5rem;
 }
 
 .group_card__address {
@@ -41,4 +42,12 @@
     margin-left: .5rem;
     color: #9b9b9b;
     text-decoration: none;
+}
+
+.group_cart__actions {
+    margin-left: auto;
+}
+
+.group_cart__actions > * {
+    margin: 0;
 }

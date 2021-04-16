@@ -1,9 +1,9 @@
-package ru.edjll.backend.dto.post;
+package ru.edjll.backend.dto.user.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.edjll.backend.entity.Post;
+import ru.edjll.backend.entity.UserPost;
 import ru.edjll.backend.entity.User;
 import ru.edjll.backend.validation.exists.Exists;
 
@@ -14,7 +14,7 @@ import javax.validation.constraints.Positive;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDtoForDelete {
+public class UserPostDtoForDelete {
 
     @NotNull(message = "{post.id.notNull}")
     @Positive(message = "{post.id.positive}")
@@ -25,19 +25,19 @@ public class PostDtoForDelete {
     @Exists(table = "user_entity", column = "id", message = "{post.userId.exists}")
     private String userId;
 
-    public PostDtoForDelete(Post post) {
-        this.id = post.getId();
-        this.userId = post.getUser().getId();
+    public UserPostDtoForDelete(UserPost userPost) {
+        this.id = userPost.getId();
+        this.userId = userPost.getUser().getId();
     }
 
-    public Post toPost() {
-        Post post = new Post();
+    public UserPost toPost() {
+        UserPost userPost = new UserPost();
         User user = new User();
 
         user.setId(userId);
-        post.setId(id);
-        post.setUser(user);
+        userPost.setId(id);
+        userPost.setUser(user);
 
-        return post;
+        return userPost;
     }
 }

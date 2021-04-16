@@ -23,7 +23,9 @@ export class CountryRemover extends React.Component {
 
     componentDidMount() {
         document.body.style.overflow = 'hidden';
-        RequestService.getAxios().get(RequestService.URL + "/country/" + this.props.match.params.id)
+        RequestService
+            .getAxios()
+            .get(RequestService.URL + "/countries/" + this.props.match.params.id)
             .then(response => {
                 this.setState({
                     country: response.data,
@@ -39,11 +41,10 @@ export class CountryRemover extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().delete(RequestService.URL + "/country/delete", {
-            params: {
-                id: this.state.country.id
-            }
-        }).then(() => this.handleClose());
+        RequestService
+            .getAxios()
+            .delete(RequestService.ADMIN_URL + `/countries/${this.state.country.id}`)
+            .then(() => this.handleClose());
     }
 
     render() {

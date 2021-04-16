@@ -39,7 +39,7 @@ export class AdminCities extends React.Component {
     }
 
     loadCities() {
-        RequestService.getAxios().get(RequestService.URL + '/city/page', {
+        RequestService.getAxios().get(RequestService.ADMIN_URL + '/cities', {
             params: {
                 page: this.state.page,
                 size: this.state.pageSize,

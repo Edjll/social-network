@@ -2,67 +2,47 @@ package ru.edjll.backend.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.edjll.backend.dto.user.UserDtoForAdminPage;
-import ru.edjll.backend.dto.user.UserDtoForChangeEnabled;
+import ru.edjll.backend.dto.group.GroupDtoForSearch;
+import ru.edjll.backend.dto.group.GroupDtoForUserPage;
 import ru.edjll.backend.dto.user.UserDtoWrapperForSave;
 import ru.edjll.backend.dto.user.info.UserInfoDetailDto;
 import ru.edjll.backend.dto.user.info.UserInfoDto;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSave;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
+import ru.edjll.backend.service.GroupService;
 import ru.edjll.backend.service.UserInfoService;
 import ru.edjll.backend.service.UserService;
 import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Validated
 public class UserController {
 
     private final UserInfoService userInfoService;
     private final UserService userService;
+    private final GroupService groupService;
 
-    public UserController(UserInfoService userInfoService, UserService userService) {
+    public UserController(UserInfoService userInfoService, UserService userService, GroupService groupService) {
         this.userInfoService = userInfoService;
         this.userService = userService;
+        this.groupService = groupService;
     }
 
-    @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void register(@RequestBody @Valid UserDtoWrapperForSave userDtoWrapperForSave) {
-        userService.register(userDtoWrapperForSave);
-    }
-
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("/update")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(
-            @RequestBody @Valid UserInfoDtoForSave userInfoDtoForSave,
-            @AuthenticationPrincipal Principal principal
-    ) {
-        userInfoService.update(userInfoDtoForSave, principal);
-    }
-
-    @GetMapping("/{username}")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Optional<UserInfoDto> getUserInfo(
-            @PathVariable
-            @NotEmpty(message = "{user.username.notEmpty}")
-            @Exists(table = "user_entity", column = "username", message = "{user.username.exists}") String username) {
-        return userInfoService.getUserInfoByUsername(username);
-    }
-
-    @GetMapping("/search")
-    @ResponseStatus(HttpStatus.OK)
-    public Page<UserInfoDtoForSearch> searchUsers(
+    public Page<UserInfoDtoForSearch> get(
             @RequestParam Integer page,
             @RequestParam Integer size,
             @RequestParam Optional<String> firstName,
@@ -74,34 +54,53 @@ public class UserController {
         return userInfoService.searchUserInfo(page, size, firstName, lastName, countryId, cityId, Optional.ofNullable(principal));
     }
 
-    @GetMapping("/{username}/detail")
+    @GetMapping("/username/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public UserInfoDetailDto getUserInfoDetail(@PathVariable @NotEmpty(message = "{user.username.notEmpty}") String username) {
-        return userInfoService.getUserInfoDetailByUsername(username);
+    public Optional<UserInfoDto> getByUsername(
+            @PathVariable
+            @NotEmpty(message = "{user.username.notEmpty}")
+            @Exists(table = "user_entity", column = "username", message = "{user.username.exists}") String username) {
+        return userInfoService.getUserInfoByUsername(username);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/enabled")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void changeEnabled(@RequestBody @Valid UserDtoForChangeEnabled userDtoForChangeEnabled) {
-        userService.changeEnabled(userDtoForChangeEnabled);
-    }
-
-    @GetMapping("/page")
+    @GetMapping("/{id}/details")
     @ResponseStatus(HttpStatus.OK)
-    public Page<UserDtoForAdminPage> getPage(
-            @RequestParam Integer page,
-            @RequestParam Integer size,
-            @RequestParam(required = false) Optional<String> idDirection,
-            @RequestParam(required = false) Optional<String> usernameDirection,
-            @RequestParam(required = false) Optional<String> emailDirection,
-            @RequestParam(required = false) Optional<String> cityDirection,
-            @RequestParam(required = false) Optional<String> enabledDirection,
-            @RequestParam(required = false) Optional<String> id,
-            @RequestParam(required = false) Optional<String> username,
-            @RequestParam(required = false) Optional<String> email,
-            @RequestParam(required = false) Optional<String> city
+    public UserInfoDetailDto getDetails(
+            @PathVariable
+            @NotEmpty(message = "{user.username.notEmpty}") String id
     ) {
-        return userService.getAll(page, size, idDirection, usernameDirection, emailDirection, cityDirection, enabledDirection, id, username, email, city);
+        return userInfoService.getUserInfoDetailById(id);
+    }
+
+    @GetMapping("/{id}/groups")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<GroupDtoForSearch> getGroups(
+            @PathVariable
+            @NotEmpty
+            @Exists(table = "user_entity", column = "id") String id,
+            @RequestParam
+            @NotNull
+            @PositiveOrZero Integer page,
+            @RequestParam
+            @NotNull
+            @Positive Integer pageSize,
+            Principal principal
+    ) {
+        return groupService.getDtoByUserId(id, Optional.ofNullable(principal), page, pageSize);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void register(@RequestBody @Valid UserDtoWrapperForSave userDtoWrapperForSave) {
+        userService.register(userDtoWrapperForSave);
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(
+            @RequestBody @Valid UserInfoDtoForSave userInfoDtoForSave,
+            @AuthenticationPrincipal Principal principal
+    ) {
+        userInfoService.update(userInfoDtoForSave, principal);
     }
 }

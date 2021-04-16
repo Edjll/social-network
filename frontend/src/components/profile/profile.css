@@ -35,19 +35,6 @@
     color: #b0b0b0;
 }
 
-.profile__side_left {
-    width: 14.7rem;
-    margin: 0 .5rem;
-}
-
-.profile__side_right {
-    width: calc(100% - 16.2rem);
-}
-
-.profile__side_left > *:not(:first-child) {
-    margin: 0.5rem 0;
-}
-
 .profile__friends {
     background-color: #2b2e34;
     border: 1px solid rgb(62, 68, 70);

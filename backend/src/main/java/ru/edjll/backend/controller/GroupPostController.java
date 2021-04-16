@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.group.post.GroupPostDtoForGroupPage;
 import ru.edjll.backend.dto.group.post.GroupPostDtoForSave;
 import ru.edjll.backend.dto.group.post.GroupPostDtoForUpdate;
+import ru.edjll.backend.dto.post.PostDto;
 import ru.edjll.backend.service.GroupPostService;
 import ru.edjll.backend.validation.exists.Exists;
 
@@ -19,7 +20,7 @@ import java.security.Principal;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/group/post")
+@RequestMapping("/groups")
 @Validated
 public class GroupPostController {
 
@@ -29,10 +30,10 @@ public class GroupPostController {
         this.groupPostService = groupPostService;
     }
 
-    @GetMapping
+    @GetMapping("/{groupId}/posts")
     @ResponseStatus(HttpStatus.OK)
-    public Page<GroupPostDtoForGroupPage> getByGroupId(
-            @RequestParam
+    public Page<PostDto> get(
+            @PathVariable
             @NotNull
             @Positive
             @Exists(table = "groups", column = "id") Long groupId,
@@ -46,22 +47,35 @@ public class GroupPostController {
         return groupPostService.getDtoByGroupId(groupId, page, pageSize);
     }
 
-    @PostMapping("/save")
+    @PostMapping("/{groupId}/posts")
     @ResponseStatus(HttpStatus.CREATED)
-    public Optional<GroupPostDtoForGroupPage> save(@RequestBody @Valid GroupPostDtoForSave groupPostDtoForSave, Principal principal) {
-        return groupPostService.save(groupPostDtoForSave, principal);
+    public Optional<PostDto> save(
+            @PathVariable
+            @NotNull
+            @Positive
+            @Exists(table = "groups", column = "id") Long groupId,
+            @RequestBody
+            @Valid GroupPostDtoForSave groupPostDtoForSave,
+            Principal principal) {
+        return groupPostService.save(groupId, groupPostDtoForSave, principal);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/posts/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<GroupPostDtoForGroupPage> update(@RequestBody @Valid GroupPostDtoForUpdate groupPostDtoForUpdate, Principal principal) {
-        return groupPostService.update(groupPostDtoForUpdate, principal);
+    public Optional<PostDto> update(
+            @PathVariable
+            @NotNull
+            @Positive
+            @Exists(table = "group_post", column = "id") Long id,
+            @RequestBody
+            @Valid GroupPostDtoForUpdate groupPostDtoForUpdate, Principal principal) {
+        return groupPostService.update(id, groupPostDtoForUpdate, principal);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/posts/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-            @RequestParam
+            @PathVariable
             @NotNull
             @Positive
             @Exists(table = "group_post", column = "id") Long id,

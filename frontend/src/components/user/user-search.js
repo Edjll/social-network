@@ -6,7 +6,7 @@ import {UserCard} from "./user-card/user-card";
 export class UserSearch extends React.Component {
 
     loadUsers(callback) {
-        RequestService.getAxios().get(RequestService.URL + `/user/search`, {
+        RequestService.getAxios().get(RequestService.URL + `/users`, {
             params: {
                 firstName: this.state.firstName,
                 lastName: this.state.lastName,

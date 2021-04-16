@@ -4,13 +4,13 @@ import React from "react";
 import RequestService from "../../services/RequestService";
 import {Link} from "react-router-dom";
 import {Spinner} from "../spinner/spinner";
-import {Post} from "../post/post";
 import {Card} from "../card/card";
 import {CardHeader} from "../card/card-header";
 import {CardBody} from "../card/card-body";
 import {UserCardMini} from "../user/user-card/user-card-mini";
 import {UserGroupCard} from "../user/user-card/user-group-card";
-import {PostCreator} from "../post/post-creator";
+import {UserPost} from "../user/user-post/user-post";
+import {UserPostCreator} from "../user/user-post/user-post-creator";
 
 export class Profile extends React.Component {
 
@@ -43,7 +43,7 @@ export class Profile extends React.Component {
 
     loadUserInfo() {
         RequestService.getAxios()
-            .get(RequestService.URL + `/user/${this.props.match.params.username}`)
+            .get(RequestService.URL + `/users/username/${this.props.match.params.username}`)
             .then(response => {
                 if (response.data) {
                     this.setState({
@@ -69,18 +69,18 @@ export class Profile extends React.Component {
     }
 
     loadUserPosts() {
-        RequestService.getAxios()
-            .get(RequestService.URL + "/post", {params: {userId: this.state.user.id}})
+        RequestService
+            .getAxios()
+            .get(RequestService.URL + `/users/${this.state.user.id}/posts`)
             .then(response => this.setState({posts: response.data}));
     }
 
     loadFriends() {
         RequestService.getAxios()
-            .get(RequestService.URL + `/user/friends`, {
+            .get(RequestService.URL + `/users/${this.state.user.id}/friends`, {
                 params: {
                     page: 0,
-                    size: 9,
-                    userId: this.state.user.id
+                    size: 9
                 }
             })
             .then(response => this.setState({
@@ -91,11 +91,10 @@ export class Profile extends React.Component {
 
     loadSubscribers() {
         RequestService.getAxios()
-            .get(RequestService.URL + `/user/subscribers`, {
+            .get(RequestService.URL + `/users/${this.state.user.id}/subscribers`, {
                 params: {
                     page: 0,
-                    size: 9,
-                    userId: this.state.user.id
+                    size: 9
                 }
             })
             .then(response => this.setState({
@@ -105,9 +104,8 @@ export class Profile extends React.Component {
     }
 
     loadGroups() {
-        RequestService.getAxios().get(RequestService.URL + "/group", {
+        RequestService.getAxios().get(RequestService.URL + `/users/${this.state.user.id}/groups`, {
             params: {
-                userId: this.state.user.id,
                 page: 0,
                 pageSize: 9
             }
@@ -117,8 +115,6 @@ export class Profile extends React.Component {
                 totalGroups: response.data.totalElements
             }));
     }
-
-    com
 
     handlePostDelete(id) {
         this.setState({posts: this.state.posts.filter(post => post.id !== id)});
@@ -133,7 +129,7 @@ export class Profile extends React.Component {
         if (this.state.loadQueue > 0) return (<Spinner/>);
         return (
             <div className="profile">
-                <div className={"profile__side_left"}>
+                <div className={"left_side"}>
                     <Card className={"profile__actions"}>
                         <CardHeader>
                             <h3>Actions</h3>
@@ -169,7 +165,7 @@ export class Profile extends React.Component {
                         this.state.groups.length > 0
                             ? <Card className={"profile__friends"}>
                                 <CardHeader>
-                                    <Link to={`/user/${this.state.user.username}/groups`}>Groups</Link>
+                                    <Link to={{pathname: `/user/groups`, search: `?id=${this.state.user.id}`}}>Groups</Link>
                                     <span>{this.state.totalGroups}</span>
                                 </CardHeader>
                                 <CardBody className={"profile__friends__items"}>
@@ -199,7 +195,7 @@ export class Profile extends React.Component {
                             : ''
                     }
                 </div>
-                <div className={"profile__side_right"}>
+                <div className={"right_side"}>
                     <Card className="profile__info">
                         <CardHeader>
                             <h1>{`${this.state.user.firstName} ${this.state.user.lastName}`}</h1>
@@ -217,12 +213,12 @@ export class Profile extends React.Component {
                     </Card>
                     {
                         AuthService.isAuthenticated() && AuthService.getUsername() === this.state.user.username
-                            ? <PostCreator handleSubmit={this.handlePostCreate.bind(this)}
+                            ? <UserPostCreator handleSubmit={this.handlePostCreate.bind(this)}
                                            className={"profile__create-post"}/>
                             : ''
                     }
                     {
-                        this.state.posts.map(post => <Post key={post.id} data={post}
+                        this.state.posts.map(post => <UserPost key={post.id} data={post}
                                                            handleDelete={this.handlePostDelete.bind(this)}/>)
                     }
                 </div>

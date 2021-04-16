@@ -52,8 +52,10 @@ public class CountryService {
         countryRepository.save(countryDtoForSave.toCountry());
     }
 
-    public void update(CountryDtoForUpdate countryDtoForUpdate) {
-        countryRepository.save(countryDtoForUpdate.toCountry());
+    public void update(Long id, CountryDtoForUpdate countryDtoForUpdate) {
+        Country country = countryDtoForUpdate.toCountry();
+        country.setId(id);
+        countryRepository.save(country);
     }
 
     public void delete(Long id) {

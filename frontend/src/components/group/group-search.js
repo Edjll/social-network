@@ -6,6 +6,7 @@ import RequestService from "../../services/RequestService";
 import {GroupCard} from "./group-card";
 import {Link} from "react-router-dom";
 import './group-search.css';
+import AuthService from "../../services/AuthService";
 
 export class GroupSearch extends React.Component {
 
@@ -24,7 +25,7 @@ export class GroupSearch extends React.Component {
     }
 
     loadGroups(callback) {
-        RequestService.getAxios().get(RequestService.URL + "/group/page", {
+        RequestService.getAxios().get(RequestService.URL + "/groups", {
             params: {
                 page: this.state.page,
                 pageSize: this.state.pageSize
@@ -70,7 +71,14 @@ export class GroupSearch extends React.Component {
                         <Link to={"/group/create"} className={"create_group_button"}>Create group</Link>
                     </CardHeader>
                     <CardBody>
-                        { this.state.groups.map((group, index) => <GroupCard key={index} address={group.address} title={group.title} description={group.description}/>) }
+                        { this.state.groups.map((group, index) => <GroupCard key={group.id}
+                                                                             id={group.id}
+                                                                             address={group.address}
+                                                                             title={group.title}
+                                                                             description={group.description}
+                                                                             subscribed={group.subscribed}
+                                                                             userId={AuthService.getId()}
+                        />) }
                     </CardBody>
                 </Card>
             </div>

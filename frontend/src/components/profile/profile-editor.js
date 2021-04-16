@@ -33,7 +33,7 @@ export default class ProfileEditor extends React.Component {
 
     handleChangeCountry(value) {
         if (value != null) {
-            RequestService.getAxios().get(RequestService.URL + `/city/all`, {params: {countryId: value.key}})
+            RequestService.getAxios().get(RequestService.URL + `/cities`, {params: {countryId: value.key}})
                 .then(response =>
                     this.setState({
                         selectedCountry: true, cities: response.data.map(option => {
@@ -72,7 +72,7 @@ export default class ProfileEditor extends React.Component {
     }
 
     componentDidMount() {
-        RequestService.getAxios().get(RequestService.URL + "/country/all")
+        RequestService.getAxios().get(RequestService.URL + "/countries")
             .then(response => {
                 this.setState({
                     countries: response.data.map(option => {
@@ -83,7 +83,7 @@ export default class ProfileEditor extends React.Component {
             });
 
         RequestService.getAxios()
-            .get(RequestService.URL + `/user/${AuthService.getUsername()}/detail`)
+            .get(RequestService.URL + `/users/${AuthService.getUsername()}/details`)
             .then(response => {
                 this.setState({
                     city: {
@@ -104,7 +104,7 @@ export default class ProfileEditor extends React.Component {
     }
 
     handleSubmit() {
-        RequestService.getAxios().post(RequestService.URL + `/user/update`, {
+        RequestService.getAxios().post(RequestService.URL + `/users/${AuthService.getId()}`, {
             cityId: this.state.city.id,
             birthday: this.state.birthday
         }).then(() => this.props.history.replace(`/user/${AuthService.getUsername()}`));

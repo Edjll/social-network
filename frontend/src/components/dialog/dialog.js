@@ -25,17 +25,11 @@ export class Dialog extends React.Component {
 
     componentDidMount() {
         RequestService.getAxios()
-            .get(RequestService.URL + `/user/${this.props.match.params.username}`)
+            .get(RequestService.URL + `/users/username/${this.props.match.params.username}`)
             .then(response => {
                 this.setState({interlocutor: response.data, loadQueue: this.state.loadQueue - 1});
                 return RequestService.getAxios()
-                    .get(RequestService.URL + `/message`,
-                        {
-                            params: {
-                                senderId: AuthService.getId(),
-                                recipientId: this.state.interlocutor.id
-                            }
-                        })
+                    .get(RequestService.URL + `/users/${this.state.interlocutor.id}/messages`)
             })
             .then(response => {
                 this.setState({messages: response.data, loadQueue: this.state.loadQueue - 1});
@@ -54,9 +48,7 @@ export class Dialog extends React.Component {
     }
 
     saveMessage() {
-        RequestService.getAxios().post(RequestService.URL + "/message/save", {
-            senderId: AuthService.getId(),
-            recipientId: this.state.interlocutor.id,
+        RequestService.getAxios().post(RequestService.URL + `/users/${this.state.interlocutor.id}/messages`, {
             text: this.state.text.replace(/\n\n+/g, '\n')
         }).then(response => {
             this.setState({messages: [...this.state.messages, response.data]});
@@ -65,12 +57,8 @@ export class Dialog extends React.Component {
     }
 
     editMessage() {
-        RequestService.getAxios().put(RequestService.URL + "/message/update", {
-            id: this.state.id,
-            senderId: AuthService.getId(),
-            recipientId: this.state.interlocutor.id,
-            text: this.state.text.replace(/\n\n/g, '\n'),
-            createdDate: this.state.createdDate
+        RequestService.getAxios().put(RequestService.URL + `/users/messages/${this.state.id}`, {
+            text: this.state.text.replace(/\n\n/g, '\n')
         }).then(response => {
             const newMessages = [...this.state.messages];
             const index = newMessages.findIndex(value => value.id === response.data.id);
@@ -81,7 +69,7 @@ export class Dialog extends React.Component {
     }
 
     handleDelete(value) {
-        RequestService.getAxios().delete(RequestService.URL + "/message/delete", {
+        RequestService.getAxios().delete(RequestService.URL + `/users/messages/${this.state.id}`, {
             data: {
                 id: value.id,
                 senderId: AuthService.getId()

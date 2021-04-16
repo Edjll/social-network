@@ -27,7 +27,7 @@ export class CityCreator extends React.Component {
 
     componentDidMount() {
         document.body.style.overflow = 'hidden';
-        RequestService.getAxios().get(RequestService.URL + "/country/all")
+        RequestService.getAxios().get(RequestService.URL + "/countries")
             .then(response => {
                 this.setState({
                     countries: response.data.map(option => {
@@ -45,7 +45,7 @@ export class CityCreator extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().post(RequestService.URL + "/city/save", {
+        RequestService.getAxios().post(RequestService.ADMIN_URL + '/cities', {
             title: this.state.title,
             countryId: this.state.countryId
         })
@@ -77,7 +77,9 @@ export class CityCreator extends React.Component {
                         <FormClose handleClick={this.handleClose.bind(this)}/>
                     </CardHeader>
                     <CardBody>
-                        <FormInput handleChange={this.handleChangeTitle.bind(this)} title={"title"}
+                        <FormInput value={this.state.title}
+                                   handleChange={this.handleChangeTitle.bind(this)}
+                                   title={"title"}
                                    error={this.state.errors.title}/>
                         {
                             this.state.countries.length > 0

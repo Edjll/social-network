@@ -20,19 +20,10 @@ public class GroupPostDtoForSave {
     @NotEmpty
     private String text;
 
-    @NotNull
-    @Positive
-    @Exists(table = "groups", column = "id")
-    private Long groupId;
-
     public GroupPost toGroupPost() {
         GroupPost groupPost = new GroupPost();
-        Group group = new Group();
-
-        group.setId(groupId);
 
         groupPost.setText(text);
-        groupPost.setGroup(group);
         groupPost.setCreatedDate(LocalDateTime.now());
 
         return groupPost;

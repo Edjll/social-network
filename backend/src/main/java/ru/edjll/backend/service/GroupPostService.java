@@ -9,6 +9,8 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.group.post.GroupPostDtoForGroupPage;
 import ru.edjll.backend.dto.group.post.GroupPostDtoForSave;
 import ru.edjll.backend.dto.group.post.GroupPostDtoForUpdate;
+import ru.edjll.backend.dto.post.PostDto;
+import ru.edjll.backend.entity.Group;
 import ru.edjll.backend.entity.GroupPost;
 import ru.edjll.backend.repository.GroupPostRepository;
 
@@ -27,21 +29,26 @@ public class GroupPostService {
         this.groupService = groupService;
     }
 
-    public Optional<GroupPostDtoForGroupPage> save(GroupPostDtoForSave groupPostDtoForSave, Principal principal) {
-        String creatorId = groupService.findCreatorIdByGroupId(groupPostDtoForSave.getGroupId())
+    public Optional<PostDto> save(Long groupId, GroupPostDtoForSave groupPostDtoForSave, Principal principal) {
+        String creatorId = groupService.findCreatorIdByGroupId(groupId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+        Group group = groupService.findById(groupId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
         if (!creatorId.equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
-        GroupPost groupPost = groupPostRepository.save(groupPostDtoForSave.toGroupPost());
+        GroupPost groupPost = groupPostDtoForSave.toGroupPost();
+        groupPost.setGroup(group);
 
-        return groupPostRepository.getDtoById(groupPost.getId());
+        GroupPost savedGroupPost = groupPostRepository.save(groupPost);
+
+        return groupPostRepository.getDtoById(savedGroupPost.getId());
     }
 
-    public Optional<GroupPostDtoForGroupPage> update(GroupPostDtoForUpdate groupPostDtoForUpdate, Principal principal) {
-        GroupPost groupPostFromDB = groupPostRepository.getOne(groupPostDtoForUpdate.getId());
+    public Optional<PostDto> update(Long id, GroupPostDtoForUpdate groupPostDtoForUpdate, Principal principal) {
+        GroupPost groupPostFromDB = groupPostRepository.getOne(id);
 
         if (!groupPostFromDB.getGroup().getCreator().getId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -65,7 +72,7 @@ public class GroupPostService {
         groupPostRepository.deleteById(groupPostFromDB.getId());
     }
 
-    public Page<GroupPostDtoForGroupPage> getDtoByGroupId(Long groupId, Integer page, Integer pageSize) {
+    public Page<PostDto> getDtoByGroupId(Long groupId, Integer page, Integer pageSize) {
         return groupPostRepository.getDtoByGroupId(groupId, PageRequest.of(page, pageSize));
     }
 }

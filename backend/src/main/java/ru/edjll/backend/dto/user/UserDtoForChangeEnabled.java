@@ -12,9 +12,5 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 public class UserDtoForChangeEnabled {
 
-    @NotEmpty(message = "{user.id.notEmpty}")
-    @Exists(table = "user_entity", column = "id", message = "{user.id.exists}")
-    private String id;
-
     private boolean enabled;
 }

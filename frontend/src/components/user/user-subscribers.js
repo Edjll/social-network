@@ -13,9 +13,8 @@ export class UserSubscribers extends React.Component {
     }
 
     loadUsers(callback) {
-        RequestService.getAxios().get(RequestService.URL + `/user/subscribers`, {
+        RequestService.getAxios().get(RequestService.URL + `/users/${this.state.id}/subscribers`, {
             params: {
-                userId: this.state.id,
                 firstName: this.state.firstName,
                 lastName: this.state.lastName,
                 countryId: this.state.countryId,
@@ -38,7 +37,8 @@ export class UserSubscribers extends React.Component {
 
     render() {
         return (
-            <SearchPage id={this.state.userId} loadUsers={this.loadUsers}
+            <SearchPage id={this.state.userId}
+                        loadUsers={this.loadUsers}
                         card={this.component.bind(this)}>
                 <h3>Subscribers</h3>
             </SearchPage>

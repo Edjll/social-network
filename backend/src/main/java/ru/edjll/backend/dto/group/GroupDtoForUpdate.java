@@ -15,11 +15,6 @@ import javax.validation.constraints.Positive;
 @AllArgsConstructor
 public class GroupDtoForUpdate {
 
-    @NotNull
-    @Positive
-    @Exists(table = "groups", column = "id")
-    private Long id;
-
     @NotEmpty
     private String title;
 
@@ -32,7 +27,6 @@ public class GroupDtoForUpdate {
     public Group toGroup() {
         Group group = new Group();
 
-        group.setId(id);
         group.setTitle(title);
         group.setDescription(description);
         group.setAddress(address);

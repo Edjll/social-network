@@ -39,7 +39,7 @@ export class GroupCreator extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().post(RequestService.URL + '/group/save', {
+        RequestService.getAxios().post(RequestService.URL + '/groups', {
             title: this.state.title,
             description: this.state.description,
             address: this.state.address

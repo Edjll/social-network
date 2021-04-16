@@ -23,4 +23,8 @@
     font-size: .9rem;
     text-align: center;
     margin-top: .2rem;
+    max-width: 3.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

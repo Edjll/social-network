@@ -139,7 +139,7 @@ public class UserInfoService {
         return new PageImpl<>(users, PageRequest.of(page, size), count);
     }
 
-    public UserInfoDetailDto getUserInfoDetailByUsername(String username) {
-        return userInfoRepository.getUserInfoDetailByUsername(username);
+    public UserInfoDetailDto getUserInfoDetailById(String id) {
+        return userInfoRepository.getUserInfoDetailById(id);
     }
 }

@@ -25,7 +25,8 @@ code {
   width: calc(100% - 16.2rem);
 }
 
-.left_side > *:not(:first-child), .right_side > *:not(:first-child) {
+.left_side > *:not(:first-child),
+.right_side > *:not(:first-child) {
   margin: 0.5rem 0;
 }
 

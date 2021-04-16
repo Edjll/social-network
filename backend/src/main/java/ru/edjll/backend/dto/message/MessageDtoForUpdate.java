@@ -17,49 +17,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MessageDtoForUpdate {
 
-    @NotNull(message = "{message.id.notNull}")
-    @Positive(message = "{message.id.positive}")
-    @Exists(table = "message", column = "id", message = "{message.id.exists}")
-    private Long id;
-
-    @NotEmpty(message = "{message.senderId.notEmpty}")
-    @Exists(table = "user_entity", column = "id", message = "{message.senderId.exists}")
-    private String senderId;
-
-    @NotEmpty(message = "{message.recipientId.notEmpty}")
-    @Exists(table = "user_entity", column = "id", message = "{message.recipientId.exists}")
-    private String recipientId;
-
     @NotEmpty(message = "{message.text.notEmpty}")
     private String text;
 
-    @NotNull(message = "{message.createdDate.notNull}")
-    private LocalDateTime createdDate;
-
     private LocalDateTime modifiedDate = LocalDateTime.now();
-
-    public MessageDtoForUpdate(Message message) {
-        this.id = message.getId();
-        this.senderId = message.getSender().getId();
-        this.recipientId = message.getRecipient().getId();
-        this.text = message.getText();
-        this.createdDate = message.getCreatedDate();
-        this.modifiedDate = message.getModifiedDate();
-    }
 
     public Message toMessage() {
         Message message = new Message();
-        User sender = new User();
-        User recipient = new User();
 
-        sender.setId(senderId);
-        recipient.setId(recipientId);
-
-        message.setId(id);
-        message.setSender(sender);
-        message.setRecipient(recipient);
         message.setText(text);
-        message.setCreatedDate(createdDate);
         message.setModifiedDate(modifiedDate);
 
         return message;

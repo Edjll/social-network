@@ -2,93 +2,73 @@ import './post.css';
 import {Link} from "react-router-dom";
 import * as React from "react";
 import {PostForm} from "./post-form";
-import RequestService from "../../services/RequestService";
 import AuthService from "../../services/AuthService";
 import {HiddenInfo} from "../hidden-info/hidden-info";
+import {Card} from "../card/card";
+import {CardHeader} from "../card/card-header";
 
 export class Post extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            editable: false,
-            post: props.data
+            post: props.data,
+            editable: false
         };
-    }
-
-    handleSubmit(text) {
-        RequestService.getAxios().put(RequestService.URL + "/post/update", {
-            id: this.state.post.id,
-            userId: this.state.post.user.id,
-            text: text,
-            createdDate: this.state.post.createdDate
-        }).then(response => {
-            this.setState({post: response.data});
-        });
-        this.setState({editable: false});
     }
 
     handleClickEdit() {
         this.setState({editable: !this.state.editable});
     }
 
-    handleClickDelete() {
-        RequestService.getAxios().delete(RequestService.URL + "/post/delete", {
-            data: {
-                id: this.state.post.id,
-                userId: AuthService.getId()
-            }
-        }).then(() => {
-            if (this.props.handleDelete) this.props.handleDelete(this.state.post.id);
-        });
-    }
-
     render() {
         return (
-            <div className={"post"}>
-                <div className={"post__header"}>
+            <Card className={"post"}>
+                <CardHeader>
                     <div className={"post__header__info"}>
-                        <Link to={`/user/${this.state.post.user.username}`}
-                              className={"post__header__info__link"}>{this.state.post.user.firstName} {this.state.post.user.lastName}</Link>
+                        <Link to={`/user/${this.state.post.address}`}
+                              className={"post__header__info__link"}>{this.state.post.name}</Link>
                         <span
                             className={"post__header__info__date"}>{new Date(this.state.post.createdDate).toLocaleString()}</span>
                         {
                             this.state.post.modifiedDate
-                                ?   <HiddenInfo text={"(edit)"} hidden={new Date(this.state.post.modifiedDate).toLocaleString()}/>
-                                :   ""
+                                ? <HiddenInfo text={"(edit)"}
+                                              hidden={new Date(this.state.post.modifiedDate).toLocaleString()}/>
+                                : ""
                         }
                     </div>
                     {
                         AuthService.isAuthenticated()
-                            ?   <div className={"post__header__actions"}>
+                            ? <div className={"post__header__actions"}>
                                 {
-                                    this.state.post.user.id === AuthService.getId()
-                                        ?   <div className={"post__header__actions__edit"} onClick={this.handleClickEdit.bind(this)}>
-                                                {
-                                                    this.state.editable
-                                                        ? '✖'
-                                                        : '✎'
-                                                }
-                                            </div>
-                                        :   ''
+                                    this.state.post.creatorId === AuthService.getId()
+                                        ? <div className={"post__header__actions__edit"}
+                                               onClick={this.handleClickEdit.bind(this)}>
+                                            {
+                                                this.state.editable
+                                                    ? '✖'
+                                                    : '✎'
+                                            }
+                                        </div>
+                                        : ''
                                 }
                                 {
-                                    this.state.post.user.id === AuthService.getId() || AuthService.hasRole([AuthService.Role.ADMIN])
-                                        ?   <div className={"post__header__actions__edit"}
-                                                 onClick={this.handleClickDelete.bind(this)}>🗑
-                                            </div>
-                                        :   ''
+                                    this.state.post.creatorId === AuthService.getId() || AuthService.hasRole([AuthService.Role.ADMIN])
+                                        ? <div className={"post__header__actions__edit"}
+                                               onClick={() => this.props.handleDelete(this)}>🗑
+                                        </div>
+                                        : ''
                                 }
-                                </div>
-                            :   ""
+                            </div>
+                            : ""
                     }
-                </div>
+                </CardHeader>
                 {
                     this.state.editable
-                        ? <PostForm handleSubmit={this.handleSubmit.bind(this)} text={this.state.post.text}/>
+                        ? <PostForm handleSubmit={(text) => this.props.handleSubmit(this, text)} text={this.state.post.text}/>
                         : <div className={"post__text"}>{this.state.post.text}</div>
                 }
-            </div>
+            </Card>
         );
     }
 }

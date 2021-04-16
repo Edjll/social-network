@@ -1,5 +1,6 @@
 .card__header {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     padding: .8rem 1rem;
     border-bottom: 1px solid rgb(62, 68, 70);

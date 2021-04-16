@@ -37,7 +37,7 @@ export class AdminCountries extends React.Component {
     }
 
     loadCountries() {
-        RequestService.getAxios().get(RequestService.URL + '/country/page', {
+        RequestService.getAxios().get(RequestService.ADMIN_URL + '/countries', {
             params: {
                 page: this.state.page,
                 size: this.state.pageSize,

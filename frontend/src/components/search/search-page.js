@@ -37,13 +37,13 @@ export class SearchPage extends React.Component {
 
     loadCountries() {
         RequestService.getAxios()
-            .get(RequestService.URL + "/country/all")
+            .get(RequestService.URL + "/countries")
             .then(response => this.setState({countries: response.data}));
     }
 
     loadCities() {
         RequestService.getAxios()
-            .get(RequestService.URL + "/city/all", {
+            .get(RequestService.URL + "/cities", {
                 params: {
                     countryId: this.state.countryId
                 }

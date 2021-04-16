@@ -28,9 +28,11 @@ export class CountryCreator extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().post(RequestService.URL + "/country/save", {
-            title: this.state.title
-        })
+        RequestService
+            .getAxios()
+            .post(RequestService.ADMIN_URL + "/countries", {
+                title: this.state.title
+            })
             .then(() => this.handleClose())
             .catch(error => this.setState({
                 errors: {
@@ -53,7 +55,9 @@ export class CountryCreator extends React.Component {
                         <FormClose handleClick={this.handleClose.bind(this)}/>
                     </CardHeader>
                     <CardBody>
-                        <FormInput handleChange={this.handleChangeTitle.bind(this)} title={"title"}
+                        <FormInput value={this.state.title}
+                                   handleChange={this.handleChangeTitle.bind(this)}
+                                   title={"title"}
                                    error={this.state.errors.title}/>
                     </CardBody>
                     <CardFooter>

@@ -13,10 +13,13 @@ import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import java.security.Principal;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/message")
+@RequestMapping("/users")
 @Validated
 public class MessageController {
 
@@ -26,38 +29,51 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    @PreAuthorize("principal.getClaim('sub') == #senderId")
-    @GetMapping
+    @GetMapping("/{userId}/messages")
     @ResponseStatus(HttpStatus.OK)
     public Collection<MessageDto> getAllMessageDtoBetweenUsersById(
-            @RequestParam
+            @PathVariable
             @NotEmpty(message = "{message.senderId.notEmpty}")
-            @Exists(table = "user_entity", column = "id", message = "{message.senderId.exists}") String senderId,
-            @RequestParam
-            @NotEmpty(message = "{message.recipientId.notEmpty}")
-            @Exists(table = "user_entity", column = "id", message = "{message.recipientId.exists}") String recipientId
+            @Exists(table = "user_entity", column = "id", message = "{message.senderId.exists}") String userId,
+            Principal principal
     ) {
-        return messageService.getAllMessageDtoBetweenUsersById(senderId, recipientId);
+        return messageService.getAllMessageDtoBetweenUsersById(userId, principal);
     }
 
-    @PreAuthorize("principal.getClaim('sub') == #messageDtoForSave.senderId")
-    @PostMapping("/save")
+    @PostMapping("/{userId}/messages")
     @ResponseStatus(HttpStatus.CREATED)
-    public MessageDto save(@RequestBody @Valid MessageDtoForSave messageDtoForSave) {
-        return messageService.save(messageDtoForSave);
+    public MessageDto save(
+            @PathVariable
+            @NotEmpty(message = "{message.senderId.notEmpty}")
+            @Exists(table = "user_entity", column = "id", message = "{message.senderId.exists}") String userId,
+            Principal principal,
+            @RequestBody
+            @Valid MessageDtoForSave messageDtoForSave) {
+        return messageService.save(userId, principal, messageDtoForSave);
     }
 
-    @PreAuthorize("principal.getClaim('sub') == #messageDtoForUpdate.senderId")
-    @PutMapping("/update")
+    @PutMapping("/messages/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public MessageDto update(@RequestBody @Valid MessageDtoForUpdate messageDtoForUpdate) {
-        return messageService.update(messageDtoForUpdate);
+    public MessageDto update(
+            @PathVariable
+            @NotNull(message = "{message.id.notNull}")
+            @Positive(message = "{message.id.positive}")
+            @Exists(table = "message", column = "id", message = "{message.id.exists}") Long id,
+            Principal principal,
+            @RequestBody
+            @Valid MessageDtoForUpdate messageDtoForUpdate) {
+        return messageService.update(id, principal, messageDtoForUpdate);
     }
 
-    @PreAuthorize("principal.getClaim('sub') == #messageDtoForDelete.senderId")
-    @DeleteMapping("/delete")
+    @DeleteMapping("/messages/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody @Valid MessageDtoForDelete messageDtoForDelete) {
-        messageService.delete(messageDtoForDelete);
+    public void delete(
+            @PathVariable
+            @NotNull(message = "{message.id.notNull}")
+            @Positive(message = "{message.id.positive}")
+            @Exists(table = "message", column = "id", message = "{message.id.exists}") Long id,
+            Principal principal
+    ) {
+        messageService.delete(id, principal);
     }
 }

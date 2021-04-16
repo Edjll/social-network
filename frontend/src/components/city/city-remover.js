@@ -43,15 +43,13 @@ export class CityRemover extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().delete(RequestService.URL + "/city/delete", {
-            params: {
-                id: this.state.city.id
-            }
-        }).then(() => this.handleClose());
+        RequestService
+            .getAxios()
+            .delete(RequestService.ADMIN_URL + `/cities/${this.state.city.id}`)
+            .then(() => this.handleClose());
     }
 
     render() {
-
         return (
             <div className={"attention_center"}>
                 <Form handleSubmit={this.handleSubmit.bind(this)}>

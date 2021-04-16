@@ -1,14 +1,17 @@
 package ru.edjll.backend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"users", "posts"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -43,4 +46,12 @@ public class Group {
 
     @Column(name = "enabled")
     private Boolean enabled;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "group_id")
+    private Set<GroupUser> users;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "group_id")
+    private Set<GroupPost> posts;
 }

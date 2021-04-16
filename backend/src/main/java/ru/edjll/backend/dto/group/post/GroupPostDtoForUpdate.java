@@ -15,11 +15,6 @@ import javax.validation.constraints.Positive;
 @AllArgsConstructor
 public class GroupPostDtoForUpdate {
 
-    @NotNull
-    @Positive
-    @Exists(table = "group_post", column = "id")
-    private Long id;
-
     @NotEmpty
     private String text;
 
@@ -27,7 +22,6 @@ public class GroupPostDtoForUpdate {
         GroupPost groupPost = new GroupPost();
 
         groupPost.setText(text);
-        groupPost.setId(id);
 
         return groupPost;
     }

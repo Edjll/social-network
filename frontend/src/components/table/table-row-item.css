@@ -10,3 +10,15 @@
 .table__body__row__item:not(:last-of-type) {
     border-right: 1px solid rgb(62, 68, 70);
 }
+
+.table__body__row__item > a {
+    color: #337fcc;
+    text-decoration: none;
+}
+
+.table__body__row__item_truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 10rem;
+}

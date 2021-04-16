@@ -1,59 +1,75 @@
 package ru.edjll.backend.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.post.PostDto;
-import ru.edjll.backend.dto.post.PostDtoForDelete;
-import ru.edjll.backend.dto.post.PostDtoForSave;
-import ru.edjll.backend.dto.post.PostDtoForUpdate;
-import ru.edjll.backend.service.PostService;
+import ru.edjll.backend.dto.user.post.UserPostDtoForSave;
+import ru.edjll.backend.dto.user.post.UserPostDtoForUpdate;
+import ru.edjll.backend.service.UserPostService;
 import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import java.security.Principal;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/users")
 @Validated
 public class PostController {
 
-    private final PostService postService;
+    private final UserPostService userPostService;
 
-    public PostController(PostService postService) {
-        this.postService = postService;
+    public PostController(UserPostService userPostService) {
+        this.userPostService = userPostService;
     }
 
-    @GetMapping
+    @GetMapping("/{userId}/posts")
     @ResponseStatus(HttpStatus.OK)
     public Collection<PostDto> getAllPostDtoByUserId(
-            @RequestParam
+            @PathVariable
             @NotEmpty(message = "{post.userId.notEmpty}")
             @Exists(table = "user_entity", column = "id", message = "{post.userId.exists}") String userId
     ) {
-        return postService.getAllPostDtoByUserId(userId);
+        return userPostService.getAllPostDtoByUserId(userId);
     }
 
-    @PreAuthorize("principal.getClaim('sub') == #postDtoForSave.userId")
-    @PostMapping("/save")
+    @PostMapping("/posts")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostDto save(@RequestBody @Valid PostDtoForSave postDtoForSave) {
-        return postService.save(postDtoForSave);
+    public PostDto save(
+            Principal principal,
+            @RequestBody
+            @Valid UserPostDtoForSave userPostDtoForSave
+    ) {
+        return userPostService.save(principal, userPostDtoForSave);
     }
 
-    @PreAuthorize("principal.getClaim('sub') == #postDtoForUpdate.userId")
-    @PutMapping("/update")
+    @PutMapping("/posts/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PostDto update(@RequestBody @Valid PostDtoForUpdate postDtoForUpdate) {
-        return postService.update(postDtoForUpdate);
+    public PostDto update(
+            @PathVariable
+            @NotNull(message = "{post.id.notNull}")
+            @Positive(message = "{post.id.positive}")
+            @Exists(table = "post", column = "id", message = "{post.id.exists}") Long id,
+            Principal principal,
+            @RequestBody
+            @Valid UserPostDtoForUpdate userPostDtoForUpdate
+    ) {
+        return userPostService.update(id, principal, userPostDtoForUpdate);
     }
 
-    @PreAuthorize("principal.getClaim('sub') == #postDtoForDelete.userId or hasRole('ADMIN')")
-    @DeleteMapping("/delete")
+    @DeleteMapping("/posts/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody @Valid PostDtoForDelete postDtoForDelete) {
-        postService.delete(postDtoForDelete);
+    public void delete(
+            @PathVariable
+            @NotNull(message = "{post.id.notNull}")
+            @Positive(message = "{post.id.positive}")
+            @Exists(table = "post", column = "id", message = "{post.id.exists}") Long id,
+            Principal principal
+    ) {
+        userPostService.delete(id, principal);
     }
 }

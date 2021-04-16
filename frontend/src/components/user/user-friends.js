@@ -1,7 +1,7 @@
 import * as React from "react";
 import RequestService from "../../services/RequestService";
 import {SearchPage} from "../search/search-page";
-import {UserSubscriberCard} from "./user-card/user-subscriber-card";
+import {UserFriendCard} from "./user-card/user-friend-card";
 
 export class UserFriends extends React.Component {
 
@@ -13,9 +13,8 @@ export class UserFriends extends React.Component {
     }
 
     loadUsers(callback) {
-        RequestService.getAxios().get(RequestService.URL + `/user/friends`, {
+        RequestService.getAxios().get(RequestService.URL + `/users/${this.state.id}/friends`, {
             params: {
-                userId: this.state.id,
                 firstName: this.state.firstName,
                 lastName: this.state.lastName,
                 countryId: this.state.countryId,
@@ -33,12 +32,14 @@ export class UserFriends extends React.Component {
     }
 
     component(key, info) {
-        return <UserSubscriberCard key={key} info={info} userId={new URLSearchParams(this.props.location.search).get("id")}/>
+        return <UserFriendCard key={key} info={info}
+                               userId={new URLSearchParams(this.props.location.search).get("id")}/>
     }
 
     render() {
         return (
-            <SearchPage userId={this.state.userId} id={this.state.userId} loadUsers={this.loadUsers} card={this.component.bind(this)}>
+            <SearchPage userId={this.state.userId} id={this.state.userId} loadUsers={this.loadUsers}
+                        card={this.component.bind(this)}>
                 <h3>Friends</h3>
             </SearchPage>
         );

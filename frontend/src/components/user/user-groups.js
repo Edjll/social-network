@@ -1,0 +1,57 @@
+import * as React from "react";
+import RequestService from "../../services/RequestService";
+import {GroupCard} from "../group/group-card";
+import {Card} from "../card/card";
+import {CardHeader} from "../card/card-header";
+import {CardBody} from "../card/card-body";
+
+export class UserGroups extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            userId: new URLSearchParams(this.props.location.search).get("id"),
+            groups: [],
+            page: 0,
+            pageSize: 10
+        }
+    }
+
+    componentDidMount() {
+        this.loadGroups();
+    }
+
+    loadGroups() {
+        RequestService
+            .getAxios()
+            .get(RequestService.URL + `/users/${this.state.userId}/groups`, {
+                params: {
+                    page: this.state.page,
+                    pageSize: this.state.pageSize
+                }
+            })
+            .then(response => this.setState({groups: response.data.content}))
+    }
+
+    render() {
+        return (
+            <Card className={"user_groups"}>
+                <CardHeader>
+                    <h1>Groups</h1>
+                </CardHeader>
+                <CardBody>
+                    {
+                        this.state.groups.map(group => <GroupCard key={group.id}
+                                                                  id={group.id}
+                                                                  address={group.address}
+                                                                  title={group.title}
+                                                                  description={group.description}
+                                                                  subscribed={group.subscribed}
+                                                                  userId={this.state.userId}
+                        />)
+                    }
+                </CardBody>
+            </Card>
+        );
+    }
+}

@@ -1,12 +1,14 @@
 package ru.edjll.backend.controller;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.group.user.GroupUserDtoForGroupPage;
 import ru.edjll.backend.dto.group.user.GroupUserDtoForSubscribe;
 import ru.edjll.backend.dto.group.user.GroupUserDtoForSubscribersPage;
+import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
 import ru.edjll.backend.service.GroupUserService;
 import ru.edjll.backend.validation.exists.Exists;
 
@@ -17,7 +19,7 @@ import java.security.Principal;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/group")
+@RequestMapping("/groups/{groupId}/users")
 @Validated
 public class GroupUserController {
 
@@ -27,44 +29,45 @@ public class GroupUserController {
         this.groupUserService = groupUserService;
     }
 
-    @GetMapping("/users")
-    public Page<GroupUserDtoForGroupPage> getDtoByGroupId(
-            @RequestParam
-            @NotNull
-            @Positive
-            @Exists(table = "groups", column = "id") Long groupId,
-            @RequestParam
-            @NotNull Integer page,
-            @RequestParam
-            @NotNull
-            @Positive Integer pageSize
-    ) {
-        return groupUserService.getDtoByGroupId(groupId, page, pageSize);
-    }
-
-    @GetMapping("/subscribers")
-    public Page<GroupUserDtoForSubscribersPage> getDtoByGroupId(
+    @GetMapping
+    public Page<UserInfoDtoForSearch> getDtoByGroupId(
             @RequestParam Integer page,
             @RequestParam Integer size,
-            @RequestParam Long groupId,
+            @PathVariable Long groupId,
             @RequestParam Optional<String> firstName,
             @RequestParam Optional<String> lastName,
             @RequestParam Optional<Long> countryId,
-            @RequestParam Optional<Long> cityId
+            @RequestParam Optional<Long> cityId,
+            Principal principal
     ) {
-        return groupUserService.getSubscribers(page, size, groupId, firstName, lastName, countryId, cityId);
+        return groupUserService.getSubscribers(Optional.ofNullable(principal), page, size, groupId, firstName, lastName, countryId, cityId);
     }
 
-    @PostMapping("/subscribe")
+    @GetMapping("/{userId}")
+    public Page<GroupUserDtoForGroupPage> getDtoByGroupId(
+            @PathVariable Long groupId,
+            @PathVariable String userId,
+            @RequestParam Integer page,
+            @RequestParam Integer size
+    ) {
+        return groupUserService.getUsersWithUserByUserId(groupId, userId, page, size);
+    }
+
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void subscribe(@RequestBody @Valid GroupUserDtoForSubscribe groupUserDtoForSubscribe, Principal principal) {
-        groupUserService.subscribe(groupUserDtoForSubscribe, principal);
+    public void subscribe(
+            @PathVariable
+            @NotNull
+            @Positive
+            @Exists(table = "groups", column = "id") Long groupId,
+            Principal principal) {
+        groupUserService.subscribe(groupId, principal);
     }
 
-    @DeleteMapping("/unsubscribe")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unsubscribe(
-            @RequestParam
+            @PathVariable
             @NotNull
             @Positive
             @Exists(table = "groups", column = "id") Long groupId,

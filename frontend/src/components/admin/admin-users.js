@@ -40,7 +40,7 @@ export class AdminUsers extends React.Component {
     }
 
     loadUsers() {
-        RequestService.getAxios().get(RequestService.URL + '/user/page', {
+        RequestService.getAxios().get(RequestService.URL + '/admin/users', {
             params: {
                 page: this.state.page,
                 size: this.state.pageSize,
@@ -113,8 +113,8 @@ export class AdminUsers extends React.Component {
     }
 
     handleChangeEnabled(id, enabled, callback) {
-        RequestService.getAxios().put(RequestService.URL + `/user/enabled`, {id: id, enabled: enabled})
-            .then(response => {
+        RequestService.getAxios().put(RequestService.URL + `/admin/users/${id}`, {enabled: enabled})
+            .then(() => {
                 if (callback) callback(enabled)
             })
     }

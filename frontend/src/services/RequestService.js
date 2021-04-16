@@ -2,7 +2,8 @@ import axios from "axios";
 import AuthService from "./AuthService";
 
 const axi = axios.create();
-const URL = "http://localhost:8085";
+const URL = 'http://localhost:8085';
+const ADMIN_URL = 'http://localhost:8085/admin';
 
 const configure = () => {
     axi.interceptors.request.use((config) => {
@@ -21,6 +22,7 @@ const getAxios = () => axi;
 
 const RequestService = {
     URL,
+    ADMIN_URL,
     configure,
     getAxios
 };

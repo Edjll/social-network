@@ -5,17 +5,22 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.user.friend.UserFriendDtoForSave;
 import ru.edjll.backend.dto.user.friend.UserFriendDtoForUpdate;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForFriendsPage;
+import ru.edjll.backend.dto.user.info.UserInfoDtoForSubscribersPage;
 import ru.edjll.backend.entity.User;
 import ru.edjll.backend.entity.UserFriend;
 import ru.edjll.backend.entity.UserFriendKey;
+import ru.edjll.backend.entity.UserFriendStatus;
 import ru.edjll.backend.repository.UserFriendRepository;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,28 +40,31 @@ public class UserFriendService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void save(UserFriendDtoForSave userFriendDtoForSave, Principal principal) {
-        User user = new User();
+    public void save(String userId, Principal principal) {
+        User user = userService.getUserById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         User friend = new User();
 
-        user.setId(userFriendDtoForSave.getUserId());
         friend.setId(principal.getName());
 
-        UserFriend userFriend = userFriendDtoForSave.toUserFriend();
+        UserFriend userFriend = new UserFriend();
+        userFriend.setStatus(UserFriendStatus.SUBSCRIBER);
+        userFriend.setDate(LocalDateTime.now());
         userFriend.setId(new UserFriendKey(user, friend));
 
         this.userFriendRepository.save(userFriend);
     }
 
-    public void update(UserFriendDtoForUpdate userFriendDtoForUpdate, Principal principal) {
+    public void update(String userId, Principal principal) {
+        User friend = userService.getUserById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         User user = new User();
-        User friend = new User();
+        user.setId(principal.getName());
 
-        user.setId(userFriendDtoForUpdate.getUserId());
-        friend.setId(principal.getName());
+        UserFriend userFriend = userFriendRepository.findById(new UserFriendKey(user, friend)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        UserFriend userFriend = userFriendDtoForUpdate.toUserFriend();
-        userFriend.setId(new UserFriendKey(user, friend));
+        if (userFriend.getStatus().equals(UserFriendStatus.FRIEND)) return;
+
+        userFriend.setStatus(UserFriendStatus.FRIEND);
+        userFriend.setDate(LocalDateTime.now());
 
         this.userFriendRepository.save(userFriend);
     }
@@ -121,7 +129,7 @@ public class UserFriendService {
         return new PageImpl<>(users, PageRequest.of(page, size), count);
     }
 
-    public Page<UserInfoDtoForFriendsPage> getSubscribers(Integer page, Integer size, String userId, Optional<String> firstName, Optional<String> lastName, Optional<Long> countryId, Optional<Long> cityId) {
+    public Page<UserInfoDtoForSubscribersPage> getSubscribers(Integer page, Integer size, String userId, Optional<String> firstName, Optional<String> lastName, Optional<Long> countryId, Optional<Long> cityId) {
         Map<String, String> stringSearchParams = new HashMap<>();
         Map<String, Object> searchParams = new HashMap<>();
 
@@ -160,7 +168,7 @@ public class UserFriendService {
 
         String sql = sqlSelect + " " + sqlFrom + " " + sqlWhere + " limit " + size + " offset " + page * size;
 
-        List<UserInfoDtoForFriendsPage> users = jdbcTemplate.query(sql, (rs, rowNumber) -> new UserInfoDtoForFriendsPage(
+        List<UserInfoDtoForSubscribersPage> users = jdbcTemplate.query(sql, (rs, rowNumber) -> new UserInfoDtoForSubscribersPage(
                 rs.getString("id"),
                 rs.getString("username"),
                 rs.getString("first_name"),

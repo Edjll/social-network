@@ -25,7 +25,7 @@ export class Group extends React.Component {
                 address: '',
                 creatorId: ''
             },
-            subscribed: false,
+            subscribed: null,
             page: 0,
             pageSize: 5,
             totalPages: 0,
@@ -33,11 +33,16 @@ export class Group extends React.Component {
             posts: [],
             users: []
         };
-        this.postsRef = React.createRef();
     }
 
     componentDidMount() {
         this.loadInfo();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.location !== prevProps.location) {
+            this.componentDidMount();
+        }
     }
 
     createIntersectionObserver() {
@@ -49,7 +54,7 @@ export class Group extends React.Component {
                         if (this.state.page + 1 < this.state.totalPages) {
                             this.setState({page: this.state.page + 1}, () =>
                                 this.loadPosts(() => {
-                                    this.observer.observe(document.querySelector('.group_post:last-child'));
+                                    this.observer.observe(document.querySelector('.post:last-child'));
                                 })
                             );
                         }
@@ -59,13 +64,13 @@ export class Group extends React.Component {
                     threshold: 0.75
                 }
             );
-            this.observer.observe(document.querySelector('.group_post:last-child'));
+            this.observer.observe(document.querySelector('.post:last-child'));
         }
     }
 
     loadInfo() {
         RequestService.getAxios()
-            .get(RequestService.URL + "/group/" + this.props.match.params.address)
+            .get(RequestService.URL + "/groups/" + this.props.match.params.address)
             .then(response => this.setState({info: response.data}, () => {
                 this.loadPosts(this.createIntersectionObserver.bind(this));
                 this.loadUsers();
@@ -73,10 +78,10 @@ export class Group extends React.Component {
     }
 
     loadPosts(callback) {
-        RequestService.getAxios()
-            .get(RequestService.URL + "/group/post", {
+        RequestService
+            .getAxios()
+            .get(RequestService.URL + `/groups/${this.state.info.id}/posts`, {
                 params: {
-                    groupId: this.state.info.id,
                     page: this.state.page,
                     pageSize: this.state.pageSize
                 }
@@ -90,18 +95,40 @@ export class Group extends React.Component {
     }
 
     loadUsers() {
-        RequestService.getAxios()
-            .get(RequestService.URL + "/group/users", {
+        let url = '';
+
+        if (AuthService.isAuthenticated()) {
+            url = RequestService.URL + `/groups/${this.state.info.id}/users/${AuthService.getId()}`;
+        } else {
+            url = RequestService.URL + `/groups/${this.state.info.id}/users`;
+        }
+
+        RequestService
+            .getAxios()
+            .get(url, {
                 params: {
-                    groupId: this.state.info.id,
                     page: 0,
-                    pageSize: 9
+                    size: 9
                 }
             })
-            .then(response => this.setState({
-                users: response.data.content,
-                totalUsers: response.data.totalElements
-            }));
+            .then(response => {
+                if (AuthService.isAuthenticated()) {
+                    const user = response.data.content.find(u => u.username === AuthService.getUsername());
+                    if (user !== undefined) {
+                        this.setState({
+                            users: [user, ...response.data.content.filter(u => u.username !== AuthService.getUsername())],
+                            totalUsers: response.data.totalElements,
+                            subscribed: true
+                        });
+                        return;
+                    }
+                }
+                this.setState({
+                    users: response.data.content,
+                    totalUsers: response.data.totalElements,
+                    subscribed: false
+                })
+            });
     }
 
     handleCreatedGroupPost(post) {
@@ -121,23 +148,20 @@ export class Group extends React.Component {
 
     handleSubscribe() {
         if (!AuthService.isAuthenticated()) AuthService.login();
-        RequestService.getAxios().post(RequestService.URL + "/group/subscribe", {
-            groupId: this.state.info.id
-        })
-            .then(() => this.setState({subscribed: true}));
+        RequestService
+            .getAxios()
+            .post(RequestService.URL + `/groups/${this.state.info.id}/users`)
+            .then(() => this.setState({subscribed: true}, this.loadUsers.bind(this)));
     }
 
     handleUnsubscribe() {
-        RequestService.getAxios().delete(RequestService.URL + "/group/unsubscribe", {
-            params: {
-                groupId: this.state.info.id
-            }
-        })
-            .then(() => this.setState({subscribed: false}));
+        RequestService
+            .getAxios()
+            .delete(RequestService.URL + `/groups/${this.state.info.id}/users`)
+            .then(() => this.setState({subscribed: false}, this.loadUsers.bind(this)));
     }
 
     render() {
-
         return (
             <div className={"group"}>
                 <div className={"left_side"}>
@@ -145,24 +169,29 @@ export class Group extends React.Component {
                         <CardHeader>
                             <h3>Actions</h3>
                         </CardHeader>
-                        {
-                            this.state.info.creatorId === AuthService.getId()
-                                ? <CardBody>
-                                    <Link to={`/group/${this.state.info.address}/update`}
-                                          className={"form__button"}>Edit</Link>
-                                    <Link to={`/group/${this.state.info.address}/delete`}
-                                          className={"form__button"}>Delete</Link>
-                                </CardBody>
-                                : <CardBody>
-                                    {
-                                        this.state.subscribed
-                                            ? <FormButton
-                                                handleClick={this.handleUnsubscribe.bind(this)}>Unsubscribe</FormButton>
-                                            :
-                                            <FormButton handleClick={this.handleSubscribe.bind(this)}>Subscribe</FormButton>
-                                    }
-                                </CardBody>
-                        }
+                        <CardBody>
+                            {
+                                this.state.info.creatorId === AuthService.getId()
+                                    ? <Link to={`/group/${this.state.info.address}/update`}
+                                            className={"form__button"}>Edit</Link>
+                                    : ''
+                            }
+                            {
+                                this.state.info.creatorId === AuthService.getId()
+                                    ? <Link to={`/group/${this.state.info.address}/delete`}
+                                            className={"form__button"}>Delete</Link>
+                                    : ''
+                            }
+                            {
+                                this.state.subscribed !== null
+                                    ?   this.state.subscribed
+                                        ? <FormButton
+                                            handleClick={this.handleUnsubscribe.bind(this)}>Unsubscribe</FormButton>
+                                        : <FormButton
+                                            handleClick={this.handleSubscribe.bind(this)}>Subscribe</FormButton>
+                                    :   ''
+                            }
+                        </CardBody>
                     </Card>
                     <Card>
                         <CardHeader>
@@ -194,27 +223,14 @@ export class Group extends React.Component {
                                                 handleSubmit={this.handleCreatedGroupPost.bind(this)}/>
                             : ''
                     }
-                    <div className={"group__posts"} ref={this.postsRef}>
-                        {
-                            this.state.posts.length > 0
-                                ? <div className={"group__posts"}>
-                                    {
-                                        this.state.posts.map(post =>
-                                            <GroupPost key={post.id}
-                                                       id={post.id}
-                                                       title={this.state.info.title}
-                                                       text={post.text}
-                                                       createdDate={post.createdDate}
-                                                       modifiedDate={post.modifiedDate}
-                                                       creatorId={post.creatorId}
-                                                       handleDeleted={this.handleDeletedGroupPost.bind(this)}
-                                                       handleUpdated={this.handleUpdatedGroupPost.bind(this)}
-                                            />)
-                                    }
-                                </div>
-                                : ''
-                        }
-                    </div>
+                    {
+                        this.state.posts.map(post =>
+                            <GroupPost key={post.id}
+                                       data={post}
+                                       handleDeleted={this.handleDeletedGroupPost.bind(this)}
+                                       handleUpdated={this.handleUpdatedGroupPost.bind(this)}
+                            />)
+                    }
                 </div>
                 <Switch>
                     <Route path={"/group/:address/update"} component={GroupUpdater}/>

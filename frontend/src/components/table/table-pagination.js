@@ -5,7 +5,7 @@ export const TablePagination = (props) => {
     const maxPage = props.maxPage > 0 ? props.maxPage : 1;
 
     let buttonCount = props.maxButtons < maxPage ? props.maxButtons : maxPage;
-    let buttonCountAround = Math.floor(buttonCount / 2);
+    let buttonCountAround = Math.floor((buttonCount - ((buttonCount + 1) % 2))/ 2);
 
     let maxRightCount = maxPage - props.page - 1;
     let maxLeftCount = props.page;

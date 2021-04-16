@@ -15,20 +15,16 @@ import javax.validation.constraints.Positive;
 @AllArgsConstructor
 public class CountryDtoForUpdate {
 
-    @NotNull(message = "{country.id.notNull}")
-    @Positive(message = "{country.id.positive}")
-    @Exists(table = "country", column = "id", message = "{country.id.exists}")
-    private Long id;
-
     @NotEmpty(message = "{country.title.notEmpty}")
     private String title;
 
     public CountryDtoForUpdate(@NotNull Country country) {
-        this.id = country.getId();
         this.title = country.getTitle();
     }
 
     public Country toCountry() {
-        return new Country(id, title);
+        Country country = new Country();
+        country.setTitle(title);
+        return country;
     }
 }

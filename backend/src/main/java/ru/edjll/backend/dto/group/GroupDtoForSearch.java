@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GroupDtoForSearch {
 
+    private Long id;
     private String address;
     private String title;
     private String description;
+    private Boolean subscribed;
 }

@@ -30,6 +30,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/message**").authenticated()
+                .antMatchers("/admin**").hasRole("ADMIN")
                 .and()
                 .cors().configurationSource(corsConfigurationSource()).and()
                 .oauth2ResourceServer()

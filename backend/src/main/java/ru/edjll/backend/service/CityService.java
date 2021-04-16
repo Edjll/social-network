@@ -58,8 +58,10 @@ public class CityService {
         cityRepository.save(cityDtoForSave.toCity());
     }
 
-    public void update(CityDtoForUpdate cityDtoForUpdate) {
-        cityRepository.save(cityDtoForUpdate.toCity());
+    public void update(Long id, CityDtoForUpdate cityDtoForUpdate) {
+        City city = cityDtoForUpdate.toCity();
+        city.setId(id);
+        cityRepository.save(city);
     }
 
     public void delete(Long id) {

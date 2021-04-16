@@ -13,13 +13,10 @@ export class CountryUpdater extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: null,
             countries: [],
             loadQueue: 1,
             title: '',
-            country: {
-                id: null,
-                title: null
-            },
             errors: {
                 title: null
             }
@@ -28,10 +25,10 @@ export class CountryUpdater extends React.Component {
 
     componentDidMount() {
         document.body.style.overflow = 'hidden';
-        RequestService.getAxios().get(RequestService.URL + "/country/" + this.props.match.params.id)
+        RequestService.getAxios().get(RequestService.URL + "/countries" + this.props.match.params.id)
             .then(response => {
                 this.setState({
-                    country: response.data,
+                    id: response.data.id,
                     title: response.data.title,
                     loadQueue: this.state.loadQueue - 1
                 });
@@ -45,10 +42,11 @@ export class CountryUpdater extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().put(RequestService.URL + "/country/update", {
-            id: this.state.country.id,
-            title: this.state.title
-        })
+        RequestService
+            .getAxios()
+            .put(RequestService.ADMIN_URL + `/countries/${this.state.id}`, {
+                title: this.state.title
+            })
             .then(() => this.handleClose())
             .catch(error => this.setState({
                 errors: {
@@ -70,9 +68,13 @@ export class CountryUpdater extends React.Component {
                         <FormClose handleClick={this.handleClose.bind(this)}/>
                     </CardHeader>
                     <CardBody>
-                        <FormInput value={this.state.country.id} title={"id"} disabled={true}/>
-                        <FormInput value={this.state.country.title} handleChange={this.handleChangeTitle.bind(this)}
-                                   title={"title"} error={this.state.errors.title}/>
+                        <FormInput value={this.state.id}
+                                   title={"id"}
+                                   disabled={true}/>
+                        <FormInput value={this.state.title}
+                                   handleChange={this.handleChangeTitle.bind(this)}
+                                   title={"title"}
+                                   error={this.state.errors.title}/>
                     </CardBody>
                     <CardFooter>
                         <FormButton>Update</FormButton>

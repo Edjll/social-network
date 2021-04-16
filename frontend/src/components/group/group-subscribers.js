@@ -6,10 +6,8 @@ import {UserCard} from "../user/user-card/user-card";
 export class GroupSubscribers extends React.Component {
 
     loadUsers(callback) {
-        console.log(this.state)
-        RequestService.getAxios().get(RequestService.URL + `/group/subscribers`, {
+        RequestService.getAxios().get(RequestService.URL + `/groups/${this.state.id}/users`, {
             params: {
-                groupId: this.state.id,
                 firstName: this.state.firstName,
                 lastName: this.state.lastName,
                 countryId: this.state.countryId,

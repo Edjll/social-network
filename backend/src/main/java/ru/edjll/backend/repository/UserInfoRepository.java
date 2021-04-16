@@ -29,6 +29,6 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, String> {
                 "case when country is null then null else country.id end, " +
                 "case when country is null then null else country.title end) " +
             "from User user left join user.userInfo userInfo left join userInfo.city city left join city.country country  " +
-            "where user.username = :username" )
-    UserInfoDetailDto getUserInfoDetailByUsername(@Param("username") String username);
+            "where user.id = :id" )
+    UserInfoDetailDto getUserInfoDetailById(@Param("id") String id);
 }

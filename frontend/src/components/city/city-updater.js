@@ -14,17 +14,14 @@ export class CityUpdater extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: null,
             countries: [],
             loadQueue: 2,
             title: '',
             countryId: null,
-            city: {
+            country: {
                 id: null,
-                title: null,
-                country: {
-                    id: null,
-                    title: null
-                }
+                title: null
             },
             errors: {
                 title: null,
@@ -35,7 +32,7 @@ export class CityUpdater extends React.Component {
 
     componentDidMount() {
         document.body.style.overflow = 'hidden';
-        RequestService.getAxios().get(RequestService.URL + "/country/all")
+        RequestService.getAxios().get(RequestService.URL + "/countries")
             .then(response => {
                 this.setState({
                     countries: response.data.map(option => {
@@ -44,11 +41,12 @@ export class CityUpdater extends React.Component {
                     loadQueue: this.state.loadQueue - 1
                 });
             });
-        RequestService.getAxios().get(RequestService.URL + "/city/" + this.props.match.params.id)
+        RequestService.getAxios().get(RequestService.URL + "/cities/" + this.props.match.params.id)
             .then(response => {
                 this.setState({
-                    city: response.data,
+                    id: response.data.id,
                     countryId: response.data.country.id,
+                    country: response.data.country,
                     title: response.data.title,
                     loadQueue: this.state.loadQueue - 1
                 });
@@ -62,8 +60,7 @@ export class CityUpdater extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().put(RequestService.URL + "/city/update", {
-            id: this.state.city.id,
+        RequestService.getAxios().put(RequestService.ADMIN_URL + `/cities/${this.state.id}`, {
             title: this.state.title,
             countryId: this.state.countryId
         })
@@ -95,14 +92,14 @@ export class CityUpdater extends React.Component {
                         <FormClose handleClick={this.handleClose.bind(this)}/>
                     </CardHeader>
                     <CardBody>
-                        <FormInput value={this.state.city.id} title={"id"} disabled={true}/>
-                        <FormInput value={this.state.city.title} handleChange={this.handleChangeTitle.bind(this)}
+                        <FormInput value={this.state.id} title={"id"} disabled={true}/>
+                        <FormInput value={this.state.title} handleChange={this.handleChangeTitle.bind(this)}
                                    title={"title"}
                                    error={this.state.errors.title}/>
                         {
-                            this.state.countries.length > 0 && this.state.city.country.id !== null
+                            this.state.countries.length > 0
                                 ? <FormSelect
-                                    value={{key: this.state.city.country.id, text: this.state.city.country.title}}
+                                    value={{key: this.state.country.id, text: this.state.country.title}}
                                     options={this.state.countries} title={"country"}
                                     handleChange={this.handleSelectCountry.bind(this)}
                                     error={this.state.errors.country}/>

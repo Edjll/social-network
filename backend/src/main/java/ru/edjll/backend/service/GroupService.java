@@ -8,7 +8,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.group.*;
-import ru.edjll.backend.dto.group.user.GroupUserDtoForSubscribe;
 import ru.edjll.backend.entity.Group;
 import ru.edjll.backend.entity.User;
 import ru.edjll.backend.repository.GroupRepository;
@@ -41,20 +40,18 @@ public class GroupService {
         groupUserService.subscribe(group.getId(), principal);
     }
 
-    public void update(GroupDtoForUpdate groupDtoForUpdate, Principal principal) {
-        Group groupFromDB = groupRepository.getOne(groupDtoForUpdate.getId());
+    public void update(Long id, GroupDtoForUpdate groupDtoForUpdate, Principal principal) {
+        Group groupFromDB = groupRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         if (!groupFromDB.getCreator().getId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
-        Group group = groupDtoForUpdate.toGroup();
+        groupFromDB.setTitle(groupDtoForUpdate.getTitle());
+        groupFromDB.setAddress(groupDtoForUpdate.getAddress());
+        groupFromDB.setDescription(groupDtoForUpdate.getDescription());
 
-        group.setCreator(groupFromDB.getCreator());
-        group.setCreatedDate(groupFromDB.getCreatedDate());
-        group.setEnabled(groupFromDB.getEnabled());
-
-        groupRepository.save(group);
+        groupRepository.save(groupFromDB);
     }
 
     public void delete(Long id, JwtAuthenticationToken principal) {
@@ -64,6 +61,7 @@ public class GroupService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
+        groupUserService.deleteAllByIdGroupId(group.getId());
         groupRepository.deleteById(group.getId());
     }
 
@@ -75,11 +73,25 @@ public class GroupService {
         return groupRepository.findCreatorIdByGroupId(id);
     }
 
-    public Page<GroupDtoForUserPage> getDtoByUserId(String userId, Integer page, Integer pageSize) {
-        return groupRepository.getDtoByUserId(userId, PageRequest.of(page, pageSize));
+    public Page<GroupDtoForSearch> getDtoByUserId(String id, Optional<Principal> principal, Integer page, Integer pageSize) {
+        return principal
+                .map(pr -> groupRepository.getDtoByUserId(id, pr.getName(), PageRequest.of(page, pageSize)))
+                .orElseGet(() -> groupRepository.getDtoByUserId(id, PageRequest.of(page, pageSize)));
     }
 
-    public Page<GroupDtoForSearch> getAll(Integer page, Integer pageSize) {
-        return groupRepository.getAll(PageRequest.of(page, pageSize));
+    public Page<GroupDtoForSearch> getAll(Integer page, Integer pageSize, Optional<Principal> principal) {
+        return principal
+                .map(user -> groupRepository.getAll(user.getName(), PageRequest.of(page, pageSize)))
+                .orElseGet(() -> groupRepository.getAll(PageRequest.of(page, pageSize)));
+    }
+
+    public Page<GroupDtoForAdminPage> getAllForAdmin(Integer page, Integer size) {
+        return groupRepository.getAllForAdmin(PageRequest.of(page, size));
+    }
+
+    public void update(Long id, GroupDtoForAdminUpdate groupDtoForAdminUpdate) {
+        Group group = groupRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        group.setEnabled(groupDtoForAdminUpdate.getEnabled());
+        groupRepository.save(group);
     }
 }

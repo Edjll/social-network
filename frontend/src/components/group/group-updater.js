@@ -24,7 +24,7 @@ export class GroupUpdater extends React.Component {
 
     loadInfo() {
         RequestService.getAxios()
-            .get(RequestService.URL + "/group/" + this.props.match.params.address)
+            .get(RequestService.URL + "/groups/" + this.props.match.params.address)
             .then(response => this.setState({...response.data}));
     }
 
@@ -50,8 +50,7 @@ export class GroupUpdater extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().put(RequestService.URL + '/group/update', {
-            id: this.state.id,
+        RequestService.getAxios().put(RequestService.URL + `/groups/${this.state.id}`, {
             title: this.state.title,
             description: this.state.description,
             address: this.state.address
