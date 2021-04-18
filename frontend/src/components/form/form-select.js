@@ -1,5 +1,6 @@
 import React from "react";
 import "./form-select.css";
+import {HiddenInfo} from "../hidden-info/hidden-info";
 
 export class FormSelect extends React.Component {
 
@@ -68,10 +69,7 @@ export class FormSelect extends React.Component {
                     }
                     {
                         this.props.error
-                            ? <div className={"form__select__error"}>
-                                <div className={"form__select__error__text"}>{this.props.error}</div>
-                                <div className={"form__select__error__icon"}>❌</div>
-                            </div>
+                            ? <HiddenInfo className={'form__select__error'} text={'❌'} hidden={this.props.error}/>
                             : ''
                     }
                 </div>

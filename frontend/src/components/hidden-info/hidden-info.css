@@ -7,6 +7,8 @@
 .hidden_info__text {
     font-size: .9rem;
     color: #91a4ac;
+    user-select: none;
+    cursor: default;
 }
 
 .hidden_info__hidden {
@@ -16,13 +18,16 @@
     right: 0;
     width: max-content;
     background-color: #1f2022;
-    padding: .3rem;
+    padding: .4rem .5rem;
     border-radius: .25rem;
-    font-size: .8rem;
-    color: #91a4ac;
 }
 
-.hidden_info__hidden::after {
+.hidden_info__hidden__text {
+    font-size: .9rem;
+    color: #c5c7cb;
+}
+
+.hidden_info__hidden__icon {
     content: '';
     border: .5rem solid transparent;
     border-top-color: #1f2022;

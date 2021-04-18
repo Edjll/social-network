@@ -17,9 +17,7 @@ public class BackendApplication {
 
     @Bean
     public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource
-                = new ReloadableResourceBundleMessageSource();
-
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:errorMessages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;

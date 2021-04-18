@@ -1,5 +1,4 @@
 import * as React from "react";
-import './register.css';
 import RequestService from "../../services/RequestService";
 import AuthService from "../../services/AuthService";
 import {Form} from "../form/form";
@@ -104,19 +103,19 @@ export class Register extends React.Component {
             credentials: [{value: this.state.password ? this.state.password : ''}],
             cityId: this.state.city
         })
-            .then(() => AuthService.login())
+            .then(() => AuthService.login(this.state.username, this.state.password))
             .catch(error => this.setState({
                 errors: {
                     ...this.state.errors,
                     ...error.response.data.errors,
-                    password: error.response.data.errors['credentials[0].value']
+                    password: error.response.data.errors ? error.response.data.errors['credentials[0].value'] : null
                 }
             }))
     }
 
     render() {
         return (
-            <Form className={"register"} handleSubmit={this.handleSubmit.bind(this)}>
+            <Form className={"login_form"} handleSubmit={this.handleSubmit.bind(this)}>
                 <CardHeader>
                     <h1 className={"register__title"}>Registration</h1>
                 </CardHeader>

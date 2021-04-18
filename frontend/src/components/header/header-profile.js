@@ -9,7 +9,7 @@ export const HeaderProfile = () => {
             <div className={"header_profile__name"}>{AuthService.getFirstName()}</div>
             <div className={"header_profile__actions"}>
                 <Link to={`/user/${AuthService.getUsername()}`} className={"header_profile__profile"}>profile</Link>
-                <button className={"header_profile__logout"} onClick={() => AuthService.logout({redirectUri: window.location.origin})}>logout</button>
+                <button className={"header_profile__logout"} onClick={() => AuthService.logout(() => window.location = window.location.origin)}>logout</button>
             </div>
         </div>
     );

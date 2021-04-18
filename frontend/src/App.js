@@ -18,15 +18,16 @@ import {Admin} from "./components/admin/admin";
 import ProfileEditor from "./components/profile/profile-editor";
 import {GroupSearch} from "./components/group/group-search";
 import {UserGroups} from "./components/user/user-groups";
+import {Login} from "./components/login/login";
 
 class App extends React.Component {
-
     render() {
         return (
             <BrowserRouter>
                 <Header/>
                 <main>
                     <Switch>
+                        <Route path={'/login'} component={Login}/>
                         <Route path={`/register`} component={Register}/>
                         <PrivateRoute path={'/admin'} roles={[AuthService.Role.ADMIN]} component={Admin}/>
                         <PrivateRoute path={`/user/:username/message`} component={Dialog}/>
@@ -46,7 +47,6 @@ class App extends React.Component {
             </BrowserRouter>
         );
     }
-
 }
 
 export default App;

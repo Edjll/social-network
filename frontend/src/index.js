@@ -6,13 +6,11 @@ import AuthService from "./services/AuthService";
 import RequestService from "./services/RequestService";
 
 const app = () => ReactDOM.render(
-    <React.StrictMode>
-        <App/>
-    </React.StrictMode>,
+    <App/>,
     document.getElementById('root')
 );
 
-// app();
-
-AuthService.initKeycloak(app);
-RequestService.configure();
+AuthService.init(() => {
+    app();
+    RequestService.configure();
+});

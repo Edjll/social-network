@@ -14,7 +14,7 @@ export function PrivateRoute({component: Component, roles, ...rest}) {
                                ? <Component {...props}/>
                                : <Redirect to={{pathname: '/',}}/>
                        } else {
-                           AuthService.login();
+                           AuthService.toLoginPage();
                        }
                    }
                }

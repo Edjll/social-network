@@ -11,7 +11,7 @@ const Header = () => {
         element = <HeaderProfile/>
     } else {
         element = <div>
-            <button className={"header__nav__link"} onClick={() => AuthService.login()}>Login</button>
+            <Link className={"header__nav__link"} to={"/login"}>Login</Link>
             <span className={"header__nav__link"}>|</span>
             <Link className={"header__nav__link"} to={"/register"}>Register</Link>
         </div>
