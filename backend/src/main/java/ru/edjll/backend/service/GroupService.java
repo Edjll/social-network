@@ -28,8 +28,9 @@ public class GroupService {
         this.groupUserService = groupUserService;
     }
 
-    public Optional<GroupDto> getDtoByAddress(String address) {
-        return groupRepository.getDtoByAddress(address);
+    public GroupDto getDtoByAddress(String address) {
+        return groupRepository.getDtoByAddress(address)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group with address '" + address + "' not found"));
     }
 
     public void save(GroupDtoForSave groupDtoForSave, Principal principal) {

@@ -13,6 +13,7 @@ import {UserPost} from "../user/user-post/user-post";
 import {UserPostCreator} from "../user/user-post/user-post-creator";
 import IntersectionObserverService from "../../services/IntersectionObserverService";
 import PostType from "../../services/PostType";
+import {Error} from "../error/error";
 
 export class Profile extends React.Component {
 
@@ -66,11 +67,7 @@ export class Profile extends React.Component {
                 }
             })
             .catch(error => {
-                const errors = [];
-                for (let k in error.response.data.errors) {
-                    errors.push(error.response.data.errors[k]);
-                }
-                this.setState({error: errors, loadQueue: this.state.loadQueue - 1})
+                this.setState({error: error.response.data.message, loadQueue: this.state.loadQueue - 1})
             })
     }
 
@@ -139,7 +136,16 @@ export class Profile extends React.Component {
     }
 
     render() {
-        if (this.state.error !== null) return (<div>{this.state.error}</div>);
+        if (this.state.error !== null) {
+            return (
+                <Error>
+                    <p className={'error__text'}>
+                        {this.state.error}
+                    </p>
+                    <Link to={'/'} className={'error__link'}>Go home</Link>
+                </Error>
+            );
+        }
         if (this.state.loadQueue > 0) return (<Spinner/>);
         return (
             <div className="profile">

@@ -14,6 +14,7 @@ import {FormButton} from "../form/form-button";
 import {UserCardMini} from "../user/user-card/user-card-mini";
 import IntersectionObserverService from "../../services/IntersectionObserverService";
 import PostType from "../../services/PostType";
+import {Error} from "../error/error";
 
 export class Group extends React.Component {
 
@@ -33,7 +34,8 @@ export class Group extends React.Component {
             totalPages: 0,
             totalUsers: 0,
             posts: [],
-            users: []
+            users: [],
+            error: null
         };
     }
 
@@ -53,7 +55,10 @@ export class Group extends React.Component {
             .then(response => this.setState({info: response.data}, () => {
                 this.loadPosts(() => IntersectionObserverService.create('post', this));
                 this.loadUsers();
-            }));
+            }))
+            .catch(error => {
+                this.setState({error: error.response.data.message, loadQueue: this.state.loadQueue - 1})
+            })
     }
 
     loadPosts(callback) {
@@ -134,6 +139,16 @@ export class Group extends React.Component {
     }
 
     render() {
+        if (this.state.error !== null) {
+            return (
+                <Error>
+                    <p className={'error__text'}>
+                        {this.state.error}
+                    </p>
+                    <Link to={'/'} className={'error__link'}>Go home</Link>
+                </Error>
+            );
+        }
         return (
             <div className={"group"}>
                 <div className={"left_side"}>

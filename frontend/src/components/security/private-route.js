@@ -1,7 +1,7 @@
 import React from 'react';
-import {Redirect, Route} from 'react-router-dom';
+import {Link, Redirect, Route} from 'react-router-dom';
 import AuthService from "../../services/AuthService";
-
+import {Error} from "../error/error";
 
 export function PrivateRoute({component: Component, roles, ...rest}) {
 
@@ -14,7 +14,12 @@ export function PrivateRoute({component: Component, roles, ...rest}) {
                                ? <Component {...props}/>
                                : <Redirect to={{pathname: '/',}}/>
                        } else {
-                           AuthService.toLoginPage();
+                           return <Error>
+                               <div>
+                                   <Link to={'/login'} className={'error__link'}>Login</Link>
+                                   <span className={'error__text'}> to see this content</span>
+                               </div>
+                           </Error>
                        }
                    }
                }

@@ -37,7 +37,7 @@ public class GroupController {
     }
 
     @GetMapping("/{address}")
-    public Optional<GroupDto> getByAddress(
+    public GroupDto getByAddress(
             @PathVariable
             @NotEmpty
             @Exists(table = "groups", column = "address") String address

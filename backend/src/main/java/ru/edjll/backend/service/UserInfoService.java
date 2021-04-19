@@ -6,8 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.user.info.UserInfoDetailDto;
 import ru.edjll.backend.dto.user.info.UserInfoDto;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSave;
@@ -70,8 +72,9 @@ public class UserInfoService {
         return userInfoRepository.findById(id);
     }
 
-    public Optional<UserInfoDto> getUserInfoByUsername(String username) {
-        return userInfoRepository.getUserInfoByUsername(username);
+    public UserInfoDto getUserInfoByUsername(String username) {
+        return userInfoRepository.getUserInfoByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User with username '" + username + "' not found"));
     }
 
     public Page<UserInfoDtoForSearch> searchUserInfo(Integer page, Integer size, Optional<String> firstName, Optional<String> lastName, Optional<Long> countryId, Optional<Long> cityId, Optional<Principal> principal) {
@@ -82,7 +85,7 @@ public class UserInfoService {
         String sqlFrom   = "from user_entity " +
                                 "left join user_info on user_entity.id = user_info.user_id " +
                                 "left join city on user_info.city_id = city.id";
-        String sqlWhere  = "where realm_id = 'social-network' and service_account_client_link is null and user_entity.enabled = true";
+        String sqlWhere  = "where realm_id = 'social-network' and service_account_client_link is null and user_entity.enabled = true and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7' ";
 
         firstName.ifPresent(s -> stringSearchParams.put("first_name", s));
         lastName.ifPresent(s -> stringSearchParams.put("last_name", s));

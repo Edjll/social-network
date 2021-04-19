@@ -2,7 +2,7 @@ import './App.css';
 import React from "react";
 import Header from "./components/header/header";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
-import {PrivateRoute} from "./components/security/PrivateRoute";
+import {PrivateRoute} from "./components/security/private-route";
 import {Home} from "./components/home/home";
 import {Profile} from "./components/profile/profile";
 import {Dialog} from "./components/dialog/dialog";
@@ -41,7 +41,7 @@ class App extends React.Component {
                         <Route path={"/groups"} component={GroupSearch}/>
                         <Route path={"/group/subscribers"} component={GroupSubscribers}/>
                         <Route path={"/group/:address"} component={Group}/>
-                        <Route path={"/"} component={Home}/>
+                        <PrivateRoute path={"/"} component={Home}/>
                     </Switch>
                 </main>
             </BrowserRouter>

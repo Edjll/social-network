@@ -33,7 +33,9 @@ export class Home extends React.Component {
             .then(response => this.setState({
                 totalPages: response.data.totalPages,
                 posts: [...this.state.posts, ...response.data.content]
-            }, () => { if (callback) callback()}))
+            }, () => {
+                if (callback) callback()
+            }))
     }
 
     render() {

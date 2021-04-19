@@ -57,10 +57,9 @@ public class UserController {
 
     @GetMapping("/username/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<UserInfoDto> getByUsername(
+    public UserInfoDto getByUsername(
             @PathVariable
-            @NotEmpty(message = "{user.username.notEmpty}")
-            @Exists(table = "user_entity", column = "username", message = "{user.username.exists}") String username) {
+            @NotEmpty(message = "{user.username.notEmpty}") String username) {
         return userInfoService.getUserInfoByUsername(username);
     }
 
