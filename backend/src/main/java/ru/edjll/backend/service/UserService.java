@@ -161,7 +161,7 @@ public class UserService {
                         "join " +
                             "(select user_friend.friend_id as id " +
                             " from user_friend " +
-                            " where user_friend.user_id = '" + id + "' " +
+                            " where user_friend.user_id = '" + id + "' and user_friend.status = 0 " +
                             " union " +
                             " select user_friend.user_id as id " +
                             " from user_friend " +
