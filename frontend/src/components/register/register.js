@@ -8,6 +8,7 @@ import {FormButton} from "../form/form-button";
 import {FormInput} from "../form/form-input";
 import {FormSelect} from "../form/form-select";
 import {CardBody} from "../card/card-body";
+import {Redirect} from "react-router-dom";
 
 export class Register extends React.Component {
 
@@ -114,6 +115,7 @@ export class Register extends React.Component {
     }
 
     render() {
+        if (AuthService.isAuthenticated()) return (<Redirect to={'/'}/>);
         return (
             <Form className={"login_form"} handleSubmit={this.handleSubmit.bind(this)}>
                 <CardHeader>

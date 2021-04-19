@@ -1,5 +1,8 @@
 package ru.edjll.backend.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -59,8 +62,8 @@ public class UserPostService {
         userPostRepository.deleteById(id);
     }
 
-    public Collection<PostDto> getAllPostDtoByUserId(String id) {
-        return userPostRepository.getAllPostDtoByUserId(id);
+    public Page<PostDto> getAllPostDtoByUserId(String id, Integer page, Integer size) {
+        return userPostRepository.getAllPostDtoByUserId(id, PageRequest.of(page, size, Sort.by("createdDate").descending()));
     }
 
     public PostDto getPostDtoById(long id) {

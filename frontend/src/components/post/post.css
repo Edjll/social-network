@@ -1,5 +1,5 @@
-.post__header__info > * {
-    margin: 0 .25rem;
+.post__header__info > *:not(:last-child) {
+    margin-right: .5rem;
 }
 
 .post__header__info__link {
@@ -31,7 +31,7 @@
 }
 
 .post__text {
-    padding: .75rem;
+    margin: .5rem 0;
     font-size: 1.1rem;
     color: #fcfcfc;
 }

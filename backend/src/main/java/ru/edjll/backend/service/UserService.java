@@ -12,12 +12,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import ru.edjll.backend.dto.post.PostDto;
+import ru.edjll.backend.dto.post.PostType;
 import ru.edjll.backend.dto.user.UserDtoForAdminPage;
 import ru.edjll.backend.dto.user.UserDtoForChangeEnabled;
 import ru.edjll.backend.dto.user.UserDtoWrapperForSave;
 import ru.edjll.backend.entity.User;
 import ru.edjll.backend.repository.UserRepository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -125,5 +129,63 @@ public class UserService {
         ));
 
         return new PageImpl<>(users, PageRequest.of(page, size, Sort.by(orders)), count);
+    }
+
+    public Page<PostDto> getFeed(String id, Integer page, Integer size) {
+        int count = jdbcTemplate.queryForObject(
+                "select sum(value) " +
+                    "from   (select count(*) as value " +
+                            "from post " +
+                                "join " +
+                                    "(select user_friend.friend_id as id " +
+                                    " from user_friend " +
+                                    " where user_friend.user_id = '" + id + "' " +
+                                    " union " +
+                                    " select user_friend.user_id as id " +
+                                    " from user_friend " +
+                                    " where user_friend.friend_id = '" + id + "') as users " +
+                                "on post.user_id = users.id " +
+                            "union all " +
+                            "select count(*) as value " +
+                            "from group_post " +
+                            "join group_user on group_user.user_id = '" + id + "' " +
+                                "and group_user.group_id = group_post.group_id) as size",
+                Integer.class
+        );
+
+        if (count == 0) return new PageImpl<>(Collections.EMPTY_LIST, PageRequest.of(page, size), 0);
+
+        List<PostDto> posts = jdbcTemplate.query(
+                "select post.id, post.text, post.created_date, post.modified_date, post.user_id as creator_id, concat(user_entity.first_name, ' ', user_entity.last_name) as name, user_entity.username as address, '" + PostType.USER + "' as type " +
+                    "from post " +
+                        "join " +
+                            "(select user_friend.friend_id as id " +
+                            " from user_friend " +
+                            " where user_friend.user_id = '" + id + "' " +
+                            " union " +
+                            " select user_friend.user_id as id " +
+                            " from user_friend " +
+                            " where user_friend.friend_id = '" + id + "') as users " +
+                            "on post.user_id = users.id " +
+                        "join user_entity on user_entity.id = post.user_id " +
+                        "union all " +
+                        "select group_post.id, group_post.text, group_post.created_date, group_post.modified_date, groups.creator_id as creator_id, groups.title as name, groups.address as address, '" + PostType.GROUP + "' as type " +
+                        "from group_post " +
+                            "join groups on group_post.group_id = groups.id " +
+                            "join group_user on group_user.user_id = '" + id + "' " +
+                                "and groups.id = group_user.group_id " +
+                        "order by created_date desc " +
+                        "limit " + size + " offset " + page * size,
+                (rs, rowNumber) -> new PostDto(
+                        rs.getLong("id"),
+                        rs.getString("text"),
+                        rs.getObject("created_date", LocalDateTime.class),
+                        rs.getObject("modified_date", LocalDateTime.class),
+                        rs.getString("creator_id"),
+                        rs.getString("name"),
+                        rs.getString("address"),
+                        PostType.valueOf(rs.getString("type"))
+                ));
+        return new PageImpl<>(posts, PageRequest.of(page, size), count);
     }
 }

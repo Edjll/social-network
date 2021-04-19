@@ -2,6 +2,7 @@ import './group-post.css';
 import * as React from "react";
 import RequestService from "../../../services/RequestService";
 import {Post} from "../../post/post";
+import PostType from "../../../services/PostType";
 
 export const GroupPost = (props) => {
 
@@ -12,7 +13,7 @@ export const GroupPost = (props) => {
                 text: text,
                 createdDate: context.state.post.createdDate
             }).then(response => {
-            context.setState({post: response.data});
+            context.setState({post: {...response.data, type: PostType.GROUP}});
         });
         context.setState({editable: false});
     }

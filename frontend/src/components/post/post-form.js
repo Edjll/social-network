@@ -1,5 +1,4 @@
 import * as React from "react";
-import './post-form.css';
 import {Form} from "../form/form";
 import {CardBody} from "../card/card-body";
 import {FormTextarea} from "../form/form-textarea";

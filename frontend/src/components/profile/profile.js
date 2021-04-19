@@ -11,6 +11,8 @@ import {UserCardMini} from "../user/user-card/user-card-mini";
 import {UserGroupCard} from "../user/user-card/user-group-card";
 import {UserPost} from "../user/user-post/user-post";
 import {UserPostCreator} from "../user/user-post/user-post-creator";
+import IntersectionObserverService from "../../services/IntersectionObserverService";
+import PostType from "../../services/PostType";
 
 export class Profile extends React.Component {
 
@@ -19,6 +21,9 @@ export class Profile extends React.Component {
         this.state = {
             user: null,
             posts: [],
+            page: 0,
+            size: 10,
+            totalPages: 0,
             friends: [],
             groups: [],
             subscribers: [],
@@ -48,9 +53,10 @@ export class Profile extends React.Component {
                 if (response.data) {
                     this.setState({
                         user: response.data,
-                        loadQueue: this.state.loadQueue - 1
+                        loadQueue: this.state.loadQueue - 1,
+                        posts: []
                     }, () => {
-                        this.loadUserPosts();
+                        this.loadPosts(() => IntersectionObserverService.create('post', this));
                         this.loadFriends();
                         this.loadGroups();
                         this.loadSubscribers();
@@ -68,11 +74,19 @@ export class Profile extends React.Component {
             })
     }
 
-    loadUserPosts() {
+    loadPosts(callback) {
         RequestService
             .getAxios()
-            .get(RequestService.URL + `/users/${this.state.user.id}/posts`)
-            .then(response => this.setState({posts: response.data}));
+            .get(RequestService.URL + `/users/${this.state.user.id}/posts`, {
+                params: {
+                    page: this.state.page,
+                    size: this.state.size
+                }
+            })
+            .then(response => this.setState({
+                totalPages: response.data.totalPages,
+                posts: [...this.state.posts, ...response.data.content.map(post => { return { ...post, type: PostType.USER } })]
+            }, () => { if (callback) callback() }));
     }
 
     loadFriends() {
@@ -116,12 +130,12 @@ export class Profile extends React.Component {
             }));
     }
 
-    handlePostDelete(id) {
+    handleDeletePost(id) {
         this.setState({posts: this.state.posts.filter(post => post.id !== id)});
     }
 
-    handlePostCreate(post) {
-        this.setState({posts: [post, ...this.state.posts]});
+    handleCreatePost(post) {
+        this.setState({posts: [{...post, type: PostType.USER}, ...this.state.posts]});
     }
 
     render() {
@@ -213,13 +227,13 @@ export class Profile extends React.Component {
                     </Card>
                     {
                         AuthService.isAuthenticated() && AuthService.getUsername() === this.state.user.username
-                            ? <UserPostCreator handleSubmit={this.handlePostCreate.bind(this)}
+                            ? <UserPostCreator handleSubmit={this.handleCreatePost.bind(this)}
                                            className={"profile__create-post"}/>
                             : ''
                     }
                     {
                         this.state.posts.map(post => <UserPost key={post.id} data={post}
-                                                           handleDelete={this.handlePostDelete.bind(this)}/>)
+                                                           handleDelete={this.handleDeletePost.bind(this)}/>)
                     }
                 </div>
             </div>

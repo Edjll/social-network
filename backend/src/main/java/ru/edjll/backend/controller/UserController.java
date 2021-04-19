@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.group.GroupDtoForSearch;
 import ru.edjll.backend.dto.group.GroupDtoForUserPage;
+import ru.edjll.backend.dto.post.PostDto;
 import ru.edjll.backend.dto.user.UserDtoWrapperForSave;
 import ru.edjll.backend.dto.user.info.UserInfoDetailDto;
 import ru.edjll.backend.dto.user.info.UserInfoDto;
@@ -87,6 +88,22 @@ public class UserController {
             Principal principal
     ) {
         return groupService.getDtoByUserId(id, Optional.ofNullable(principal), page, pageSize);
+    }
+
+    @GetMapping("/{id}/feed")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<PostDto> getFeed(
+            @PathVariable
+            @NotEmpty
+            @Exists(table = "user_entity", column = "id") String id,
+            @RequestParam
+            @NotNull
+            @PositiveOrZero Integer page,
+            @RequestParam
+            @NotNull
+            @Positive Integer size
+    ) {
+        return userService.getFeed(id, page, size);
     }
 
     @PostMapping

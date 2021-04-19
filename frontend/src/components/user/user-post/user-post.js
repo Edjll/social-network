@@ -1,5 +1,6 @@
 import RequestService from "../../../services/RequestService";
 import {Post} from "../../post/post";
+import PostType from "../../../services/PostType";
 
 export const UserPost = (props) => {
 
@@ -9,7 +10,7 @@ export const UserPost = (props) => {
             .put(RequestService.URL + `/users/posts/${context.state.post.id}`, {
                 text: text
             }).then(response => {
-            context.setState({post: response.data});
+            context.setState({post: {...response.data, type: PostType.USER}});
         });
         context.setState({editable: false});
     }

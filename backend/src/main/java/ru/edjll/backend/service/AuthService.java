@@ -5,7 +5,6 @@ import org.keycloak.authorization.client.resource.AuthorizationResource;
 import org.keycloak.representations.idm.authorization.AuthorizationRequest;
 import org.keycloak.representations.idm.authorization.AuthorizationResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 public class AuthService {

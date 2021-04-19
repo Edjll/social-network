@@ -1,5 +1,7 @@
 package ru.edjll.backend.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,7 +21,6 @@ public interface UserPostRepository extends JpaRepository<UserPost, Long> {
 
     @Query( "select new ru.edjll.backend.dto.post.PostDto(p.id, p.text, p.createdDate, p.modifiedDate, u.id, concat(u.firstName, ' ', u.lastName), u.username) " +
             "from UserPost p join p.user u " +
-            "where u.id = :id " +
-            "order by p.createdDate desc" )
-    Collection<PostDto> getAllPostDtoByUserId(@Param("id") String id);
+            "where u.id = :id " )
+    Page<PostDto> getAllPostDtoByUserId(@Param("id") String id, Pageable pageable);
 }

@@ -1,5 +1,6 @@
 package ru.edjll.backend.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -13,28 +14,35 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 import java.util.Collection;
 
 @RestController
 @RequestMapping("/users")
 @Validated
-public class PostController {
+public class UserPostController {
 
     private final UserPostService userPostService;
 
-    public PostController(UserPostService userPostService) {
+    public UserPostController(UserPostService userPostService) {
         this.userPostService = userPostService;
     }
 
     @GetMapping("/{userId}/posts")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<PostDto> getAllPostDtoByUserId(
+    public Page<PostDto> getAllPostDtoByUserId(
             @PathVariable
             @NotEmpty(message = "{post.userId.notEmpty}")
-            @Exists(table = "user_entity", column = "id", message = "{post.userId.exists}") String userId
+            @Exists(table = "user_entity", column = "id", message = "{post.userId.exists}") String userId,
+            @RequestParam
+            @NotNull
+            @PositiveOrZero Integer page,
+            @RequestParam
+            @NotNull
+            @Positive Integer size
     ) {
-        return userPostService.getAllPostDtoByUserId(userId);
+        return userPostService.getAllPostDtoByUserId(userId, page, size);
     }
 
     @PostMapping("/posts")

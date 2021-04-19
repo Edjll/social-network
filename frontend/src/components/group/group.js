@@ -12,6 +12,8 @@ import {GroupPostCreator} from "./group-post/group-post-creator";
 import {GroupPost} from "./group-post/group-post";
 import {FormButton} from "../form/form-button";
 import {UserCardMini} from "../user/user-card/user-card-mini";
+import IntersectionObserverService from "../../services/IntersectionObserverService";
+import PostType from "../../services/PostType";
 
 export class Group extends React.Component {
 
@@ -45,34 +47,11 @@ export class Group extends React.Component {
         }
     }
 
-    createIntersectionObserver() {
-        if (this.state.totalPages > 1) {
-            this.observer = new IntersectionObserver(
-                entries => entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        this.observer.unobserve(entry.target);
-                        if (this.state.page + 1 < this.state.totalPages) {
-                            this.setState({page: this.state.page + 1}, () =>
-                                this.loadPosts(() => {
-                                    this.observer.observe(document.querySelector('.post:last-child'));
-                                })
-                            );
-                        }
-                    }
-                }),
-                {
-                    threshold: 0.75
-                }
-            );
-            this.observer.observe(document.querySelector('.post:last-child'));
-        }
-    }
-
     loadInfo() {
         RequestService.getAxios()
             .get(RequestService.URL + "/groups/" + this.props.match.params.address)
             .then(response => this.setState({info: response.data}, () => {
-                this.loadPosts(this.createIntersectionObserver.bind(this));
+                this.loadPosts(() => IntersectionObserverService.create('post', this));
                 this.loadUsers();
             }));
     }
@@ -87,7 +66,7 @@ export class Group extends React.Component {
                 }
             })
             .then(response => this.setState({
-                posts: [...this.state.posts, ...response.data.content],
+                posts: [...this.state.posts, ...response.data.content.map(post => { return {...post, type: PostType.GROUP}})],
                 totalPages: response.data.totalPages
             }, () => {
                 if (callback) callback();
@@ -132,17 +111,10 @@ export class Group extends React.Component {
     }
 
     handleCreatedGroupPost(post) {
-        this.setState({posts: [post, ...this.state.posts]});
+        this.setState({posts: [{...post, type: PostType.GROUP}, ...this.state.posts]});
     }
 
-    handleUpdatedGroupPost(post) {
-        const posts = [...this.state.posts];
-        const index = posts.findIndex(value => value.id === post.id);
-        posts[index] = post;
-        this.setState({posts: posts});
-    }
-
-    handleDeletedGroupPost(id) {
+    handleDeletePost(id) {
         this.setState({posts: this.state.posts.filter(post => post.id !== id)});
     }
 
@@ -193,20 +165,24 @@ export class Group extends React.Component {
                             }
                         </CardBody>
                     </Card>
-                    <Card>
-                        <CardHeader>
-                            <Link to={{
-                                pathname: `/group/subscribers`,
-                                search: `?id=${this.state.info.id}`
-                            }}>Subscribers</Link>
-                            <span>{this.state.totalUsers}</span>
-                        </CardHeader>
-                        <CardBody className={"group__users"}>
-                            {
-                                this.state.users.map(user => <UserCardMini key={user.username} info={user}/>)
-                            }
-                        </CardBody>
-                    </Card>
+                    {
+                        this.state.totalUsers > 0
+                            ?   <Card>
+                                    <CardHeader>
+                                        <Link to={{
+                                            pathname: `/group/subscribers`,
+                                            search: `?id=${this.state.info.id}`
+                                        }}>Subscribers</Link>
+                                        <span>{this.state.totalUsers}</span>
+                                    </CardHeader>
+                                    <CardBody className={"group__users"}>
+                                        {
+                                            this.state.users.map(user => <UserCardMini key={user.username} info={user}/>)
+                                        }
+                                    </CardBody>
+                                </Card>
+                            :   ''
+                    }
                 </div>
                 <div className={"right_side"}>
                     <Card className={"group__info"}>
@@ -227,8 +203,7 @@ export class Group extends React.Component {
                         this.state.posts.map(post =>
                             <GroupPost key={post.id}
                                        data={post}
-                                       handleDeleted={this.handleDeletedGroupPost.bind(this)}
-                                       handleUpdated={this.handleUpdatedGroupPost.bind(this)}
+                                       handleDelete={this.handleDeletePost.bind(this)}
                             />)
                     }
                 </div>

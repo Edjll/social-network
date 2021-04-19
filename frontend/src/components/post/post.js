@@ -6,6 +6,7 @@ import AuthService from "../../services/AuthService";
 import {HiddenInfo} from "../hidden-info/hidden-info";
 import {Card} from "../card/card";
 import {CardHeader} from "../card/card-header";
+import {CardBody} from "../card/card-body";
 
 export class Post extends React.Component {
 
@@ -26,7 +27,7 @@ export class Post extends React.Component {
             <Card className={"post"}>
                 <CardHeader>
                     <div className={"post__header__info"}>
-                        <Link to={`/user/${this.state.post.address}`}
+                        <Link to={`/${this.state.post.type.toLowerCase()}/${this.state.post.address}`}
                               className={"post__header__info__link"}>{this.state.post.name}</Link>
                         <span
                             className={"post__header__info__date"}>{new Date(this.state.post.createdDate).toLocaleString()}</span>
@@ -66,7 +67,7 @@ export class Post extends React.Component {
                 {
                     this.state.editable
                         ? <PostForm handleSubmit={(text) => this.props.handleSubmit(this, text)} text={this.state.post.text}/>
-                        : <div className={"post__text"}>{this.state.post.text}</div>
+                        : <CardBody className={"post__text"}>{this.state.post.text}</CardBody>
                 }
             </Card>
         );

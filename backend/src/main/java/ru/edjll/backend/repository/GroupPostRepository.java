@@ -17,8 +17,7 @@ public interface GroupPostRepository extends JpaRepository<GroupPost, Long> {
 
     @Query( "select new ru.edjll.backend.dto.post.PostDto(gp.id, gp.text, gp.createdDate, gp.modifiedDate, gp.group.creator.id, gp.group.title, gp.group.address) " +
             "from GroupPost gp " +
-            "where gp.group.id = :groupId " +
-            "order by gp.createdDate desc")
+            "where gp.group.id = :groupId ")
     Page<PostDto> getDtoByGroupId(@Param("groupId") Long groupId, Pageable pageable);
 
     @Query("select new ru.edjll.backend.dto.post.PostDto(gp.id, gp.text, gp.createdDate, gp.modifiedDate, gp.group.creator.id, gp.group.title, gp.group.address) " +

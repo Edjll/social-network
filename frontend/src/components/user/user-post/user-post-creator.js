@@ -16,12 +16,10 @@ export const UserPostCreator = (props) => {
     }
 
     return (
-        <div className={`card ${props.className ? props.className : ''}`}>
-            <PostForm handleSubmit={handleSubmit}>
-                <CardHeader>
-                    <h1>Creating post</h1>
-                </CardHeader>
-            </PostForm>
-        </div>
+        <PostForm handleSubmit={handleSubmit}>
+            <CardHeader>
+                <h1>Creating post</h1>
+            </CardHeader>
+        </PostForm>
     );
 }

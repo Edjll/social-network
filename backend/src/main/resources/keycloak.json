@@ -3,6 +3,6 @@
   "auth-server-url" : "http://keycloak:8080/auth",
   "resource" : "spring-boot-admin",
   "credentials": {
-    "secret": "c06479b0-3473-4583-ab8c-b9d05719afb9"
+    "secret": "f65963b5-46ec-4035-a855-12e99e6a4eab"
   }
 }

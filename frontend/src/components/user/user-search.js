@@ -2,7 +2,6 @@ import * as React from "react";
 import RequestService from "../../services/RequestService";
 import {SearchPage} from "../search/search-page";
 import {UserCard} from "./user-card/user-card";
-import AuthService from "../../services/AuthService";
 
 export class UserSearch extends React.Component {
 
