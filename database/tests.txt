@@ -1,0 +1,58 @@
+select count(*) from user_info where city_id = 5526;    -- Moscow           700 000
+select count(*) from user_info where city_id = 25988;   -- Saratov          100 000
+select count(*) from user_info where city_id = 41413;   -- Volgograd        100 000
+select count(*) from user_info where city_id = 1773;    -- Saint-Petersburg 100 000
+
+explain analyze
+select
+       user_entity.id, user_entity.username, user_entity.first_name,
+       user_entity.last_name, city.title as city, user_friend.status,
+       user_friend.friend_id
+from user_entity
+    left join user_info on user_entity.id = user_info.user_id
+    left join city on user_info.city_id = city.id
+    left join (
+        select friend_id as id, status, friend_id
+        from user_friend
+        where user_friend.user_id = 'ec580ddf-28aa-4296-b01c-b3d5f14c8585'
+        union
+        select user_id as id, status, friend_id
+        from user_friend
+        where user_friend.friend_id = 'ec580ddf-28aa-4296-b01c-b3d5f14c8585'
+    ) as user_friend
+    on user_entity.id = user_friend.id
+where realm_id = 'social-network'
+  and service_account_client_link is null
+  and user_entity.enabled = true
+  and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'
+limit 12 offset 36
+
+Limit  (cost=38.08..44.50 rows=12 width=590) (actual time=0.757..0.889 rows=12 loops=1)
+  ->  Merge Left Join  (cost=18.83..534773.38 rows=1000004 width=590) (actual time=0.273..0.883 rows=48 loops=1)
+        Merge Cond: ((user_entity.id)::text = (user_friend.id)::text)
+        ->  Nested Loop Left Join  (cost=1.23..532255.62 rows=1000004 width=70) (actual time=0.133..0.712 rows=48 loops=1)
+              ->  Merge Left Join  (cost=0.94..222814.73 rows=1000004 width=69) (actual time=0.097..0.361 rows=48 loops=1)
+                    Merge Cond: ((user_entity.id)::text = (user_info.user_id)::text)
+                    ->  Index Scan using user_entity__index__id__enabled on user_entity  (cost=0.42..118000.51 rows=1000004 width=61) (actual time=0.087..0.204 rows=48 loops=1)
+                          Index Cond: (enabled = true)
+                          Filter: ((service_account_client_link IS NULL) AND ((id)::text <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'::text) AND ((realm_id)::text = 'social-network'::text))
+                    ->  Index Scan using user_info_pkey on user_info  (cost=0.42..89814.41 rows=1000000 width=45) (actual time=0.008..0.094 rows=48 loops=1)
+              ->  Index Scan using city_pkey on city  (cost=0.29..0.31 rows=1 width=13) (actual time=0.005..0.005 rows=1 loops=48)
+                    Index Cond: (id = user_info.city_id)
+        ->  Sort  (cost=17.60..17.63 rows=10 width=1036) (actual time=0.138..0.139 rows=1 loops=1)
+              Sort Key: user_friend.id
+              Sort Method: quicksort  Memory: 26kB
+              ->  Subquery Scan on user_friend  (cost=17.23..17.44 rows=10 width=1036) (actual time=0.116..0.123 rows=9 loops=1)
+                    ->  HashAggregate  (cost=17.23..17.34 rows=10 width=1036) (actual time=0.116..0.120 rows=9 loops=1)
+"                          Group Key: user_friend_1.friend_id, user_friend_1.status, user_friend_1.friend_id"
+                          Batches: 1  Memory Usage: 24kB
+                          ->  Append  (cost=0.42..17.16 rows=10 width=1036) (actual time=0.037..0.102 rows=9 loops=1)
+                                ->  Index Scan using user_friend_index__user_id on user_friend user_friend_1  (cost=0.42..8.58 rows=9 width=78) (actual time=0.036..0.064 rows=9 loops=1)
+                                      Index Cond: ((user_id)::text = '23aea132-18bf-4fce-aec1-e7904ff4a5cd'::text)
+                                ->  Index Scan using user_friend_index__friend_id on user_friend user_friend_2  (cost=0.42..8.44 rows=1 width=78) (actual time=0.035..0.035 rows=0 loops=1)
+                                      Index Cond: ((friend_id)::text = '23aea132-18bf-4fce-aec1-e7904ff4a5cd'::text)
+Planning Time: 2.978 ms
+Execution Time: 1.002 ms
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+

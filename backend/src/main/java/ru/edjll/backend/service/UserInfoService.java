@@ -140,6 +140,8 @@ public class UserInfoService {
                 rs.getString("friend_id")
         ));
 
+        logger.info(sql);
+
         return new PageImpl<>(users, PageRequest.of(page, size), count);
     }
 

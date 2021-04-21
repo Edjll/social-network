@@ -93,7 +93,7 @@ export class Dialog extends React.Component {
     }
 
     handleDelete(value) {
-        RequestService.getAxios().delete(RequestService.URL + `/users/messages/${this.state.id}`, {
+        RequestService.getAxios().delete(RequestService.URL + `/users/messages/${value.id}`, {
             data: {
                 id: value.id,
                 senderId: AuthService.getId()
