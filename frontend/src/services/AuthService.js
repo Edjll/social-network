@@ -155,9 +155,10 @@ export default class AuthService {
         try {
             jwt.verify(
                 token,
-                '-----BEGIN PUBLIC KEY-----\n' +
-                this.#publicKey + '\n' +
-                '-----END PUBLIC KEY-----', {
+                "-----BEGIN PUBLIC KEY-----\n" +
+                                this.#publicKey +
+                                "-----END PUBLIC KEY-----",
+                {
                     algorithms: ['RS256']
                 }
             );

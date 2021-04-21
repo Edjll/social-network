@@ -3,10 +3,13 @@ package ru.edjll.backend.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.country.CountryDtoForSave;
 import ru.edjll.backend.dto.country.CountryDtoForUpdate;
 import ru.edjll.backend.entity.Country;
+import ru.edjll.backend.exception.ResponseParameterException;
 import ru.edjll.backend.repository.CountryRepository;
 
 import java.util.ArrayList;
@@ -44,8 +47,9 @@ public class CountryService {
         }
     }
 
-    public Optional<Country> getById(Long id) {
-        return countryRepository.findById(id);
+    public Country getById(Long id) {
+        return countryRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
     }
 
     public void save(CountryDtoForSave countryDtoForSave) {
@@ -53,8 +57,11 @@ public class CountryService {
     }
 
     public void update(Long id, CountryDtoForUpdate countryDtoForUpdate) {
-        Country country = countryDtoForUpdate.toCountry();
-        country.setId(id);
+        Country country = countryRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
+
+        country.setTitle(countryDtoForUpdate.getTitle());
+
         countryRepository.save(country);
     }
 

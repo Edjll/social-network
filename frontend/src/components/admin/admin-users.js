@@ -21,7 +21,7 @@ export class AdminUsers extends React.Component {
             users: [],
             page: 0,
             maxPage: 0,
-            pageSize: 10,
+            size: 10,
             idDirection: null,
             usernameDirection: null,
             emailDirection: null,
@@ -43,7 +43,7 @@ export class AdminUsers extends React.Component {
         RequestService.getAxios().get(RequestService.URL + '/admin/users', {
             params: {
                 page: this.state.page,
-                size: this.state.pageSize,
+                size: this.state.size,
                 idDirection: this.state.idDirection,
                 usernameDirection: this.state.usernameDirection,
                 emailDirection: this.state.emailDirection,
@@ -68,7 +68,7 @@ export class AdminUsers extends React.Component {
     }
 
     handleChangePageSize(value) {
-        this.setState({pageSize: value}, () => this.loadUsers());
+        this.setState({size: value}, () => this.loadUsers());
     }
 
     handleChangeDirection(directionName) {
@@ -205,7 +205,7 @@ export class AdminUsers extends React.Component {
                             handleClick={this.handleClick.bind(this)}
                         />
                         <TablePageSize handleChange={this.handleChangePageSize.bind(this)}
-                                       value={this.state.pageSize}/>
+                                       value={this.state.size}/>
                     </TableFooter>
                 </Table>
             </div>

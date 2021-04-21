@@ -14,7 +14,7 @@ export class Post extends React.Component {
         super(props);
         this.state = {
             post: props.data,
-            editable: false
+            editable: false,
         };
     }
 
@@ -66,8 +66,11 @@ export class Post extends React.Component {
                 </CardHeader>
                 {
                     this.state.editable
-                        ? <PostForm handleSubmit={(text) => this.props.handleSubmit(this, text)} text={this.state.post.text}/>
-                        : <CardBody className={"post__text"}>{this.state.post.text}</CardBody>
+                        ? <PostForm handleSubmit={(text) => this.props.handleSubmit(this, text)}
+                                    text={this.state.post.text}/>
+                        : <CardBody>
+                            <pre className={"post__text"}>{this.state.post.text}</pre>
+                        </CardBody>
                 }
             </Card>
         );

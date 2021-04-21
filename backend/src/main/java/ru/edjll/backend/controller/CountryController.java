@@ -31,11 +31,8 @@ public class CountryController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<Country> getById(
-            @PathVariable
-            @NotNull(message = "{country.id.notNull}")
-            @Positive(message = "{country.id.positive}")
-            @Exists(table = "country", column = "id", message = "{country.id.exists}") Long id
+    public Country getById(
+            @PathVariable @Positive Long id
     ) {
         return countryService.getById(id);
     }

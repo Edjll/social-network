@@ -3,6 +3,7 @@ package ru.edjll.backend.dto.city;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import ru.edjll.backend.entity.City;
 import ru.edjll.backend.entity.Country;
 import ru.edjll.backend.validation.exists.Exists;
@@ -15,11 +16,11 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class CityDtoForSave {
 
-    @NotEmpty(message = "{city.title.notEmpty}")
+    @Length(min = 1, max = 20)
     private String title;
 
-    @NotNull(message = "{city.countryId.notNull}")
-    @Exists(table = "country", column = "id", message = "{country.id.exists}")
+    @NotNull
+    @Exists(table = "country", column = "id")
     private Long countryId;
 
     public CityDtoForSave(@NotNull City city) {

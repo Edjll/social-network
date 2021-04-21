@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.group.*;
 import ru.edjll.backend.entity.Group;
 import ru.edjll.backend.entity.User;
+import ru.edjll.backend.exception.ResponseParameterException;
 import ru.edjll.backend.repository.GroupRepository;
 
 import java.security.Principal;
@@ -30,11 +31,13 @@ public class GroupService {
 
     public GroupDto getDtoByAddress(String address) {
         return groupRepository.getDtoByAddress(address)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group with address '" + address + "' not found"));
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "address", address, "exists"));
     }
 
     public void save(GroupDtoForSave groupDtoForSave, Principal principal) {
-        User creator = userService.getUserById(principal.getName()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        User creator = userService.getUserById(principal.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
         Group group = groupDtoForSave.toGroup();
         group.setCreator(creator);
         groupRepository.save(group);
@@ -42,7 +45,8 @@ public class GroupService {
     }
 
     public void update(Long id, GroupDtoForUpdate groupDtoForUpdate, Principal principal) {
-        Group groupFromDB = groupRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Group groupFromDB = groupRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
 
         if (!groupFromDB.getCreator().getId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -56,10 +60,11 @@ public class GroupService {
     }
 
     public void delete(Long id, JwtAuthenticationToken principal) {
-        Group group = groupRepository.getOne(id);
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
 
         if (!principal.getName().equals(group.getCreator().getId()) && principal.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new ResponseParameterException(HttpStatus.FORBIDDEN, "user", principal.getName(), "forbidden");
         }
 
         groupUserService.deleteAllByIdGroupId(group.getId());
@@ -74,16 +79,16 @@ public class GroupService {
         return groupRepository.findCreatorIdByGroupId(id);
     }
 
-    public Page<GroupDtoForSearch> getDtoByUserId(String id, Optional<Principal> principal, Integer page, Integer pageSize) {
+    public Page<GroupDtoForSearch> getDtoByUserId(String id, Optional<Principal> principal, Integer page, Integer size) {
         return principal
-                .map(pr -> groupRepository.getDtoByUserId(id, pr.getName(), PageRequest.of(page, pageSize)))
-                .orElseGet(() -> groupRepository.getDtoByUserId(id, PageRequest.of(page, pageSize)));
+                .map(pr -> groupRepository.getDtoByUserId(id, pr.getName(), PageRequest.of(page, size)))
+                .orElseGet(() -> groupRepository.getDtoByUserId(id, PageRequest.of(page, size)));
     }
 
-    public Page<GroupDtoForSearch> getAll(Integer page, Integer pageSize, Optional<Principal> principal) {
+    public Page<GroupDtoForSearch> getAll(Integer page, Integer size, Optional<Principal> principal) {
         return principal
-                .map(user -> groupRepository.getAll(user.getName(), PageRequest.of(page, pageSize)))
-                .orElseGet(() -> groupRepository.getAll(PageRequest.of(page, pageSize)));
+                .map(user -> groupRepository.getAll(user.getName(), PageRequest.of(page, size)))
+                .orElseGet(() -> groupRepository.getAll(PageRequest.of(page, size)));
     }
 
     public Page<GroupDtoForAdminPage> getAllForAdmin(Integer page, Integer size) {
@@ -91,7 +96,8 @@ public class GroupService {
     }
 
     public void update(Long id, GroupDtoForAdminUpdate groupDtoForAdminUpdate) {
-        Group group = groupRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
         group.setEnabled(groupDtoForAdminUpdate.getEnabled());
         groupRepository.save(group);
     }

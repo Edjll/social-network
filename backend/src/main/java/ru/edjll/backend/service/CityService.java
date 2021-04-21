@@ -3,10 +3,14 @@ package ru.edjll.backend.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.city.CityDtoForSave;
 import ru.edjll.backend.dto.city.CityDtoForUpdate;
 import ru.edjll.backend.entity.City;
+import ru.edjll.backend.entity.Country;
+import ru.edjll.backend.exception.ResponseParameterException;
 import ru.edjll.backend.repository.CityRepository;
 
 import java.util.ArrayList;
@@ -50,8 +54,9 @@ public class CityService {
                 .orElseGet(this::getAll);
     }
 
-    public Optional<City> getById(Long id) {
-        return cityRepository.findById(id);
+    public City getById(Long id) {
+        return cityRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
     }
 
     public void save(CityDtoForSave cityDtoForSave) {
@@ -59,8 +64,14 @@ public class CityService {
     }
 
     public void update(Long id, CityDtoForUpdate cityDtoForUpdate) {
-        City city = cityDtoForUpdate.toCity();
-        city.setId(id);
+        City city = cityRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
+        Country country = new Country();
+        country.setId(cityDtoForUpdate.getCountryId());
+
+        city.setTitle(cityDtoForUpdate.getTitle());
+        city.setCountry(country);
+
         cityRepository.save(city);
     }
 

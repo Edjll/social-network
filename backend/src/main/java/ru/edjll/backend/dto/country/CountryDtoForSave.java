@@ -3,6 +3,7 @@ package ru.edjll.backend.dto.country;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import ru.edjll.backend.entity.Country;
 
 import javax.validation.constraints.NotEmpty;
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class CountryDtoForSave {
 
-    @NotEmpty(message = "{country.title.notEmpty}")
+    @Length(min = 1, max = 20)
     private String title;
 
     public CountryDtoForSave(@NotNull Country country) {

@@ -11,17 +11,24 @@
     margin-left: .3rem;
 }
 
-.form__textarea__value {
+.form__textarea__wrapper {
     border-radius: .5rem;
     background-color: #222529;
+    border: 1px solid rgb(62, 68, 70);
+    display: flex;
+}
+
+.form__textarea__value {
+    background-color: transparent;
     min-height: 3rem;
     max-height: 6rem;
-    border: 1px solid rgb(62, 68, 70);
+    border: none;
     outline: none;
     padding: .5rem;
     color: white;
     font: inherit;
     resize: vertical;
+    width: 100%;
 }
 
 .form__textarea__value:disabled {
@@ -31,4 +38,8 @@
 .form__textarea__value::-webkit-scrollbar {
     width: .5rem;
     border-radius: 0 .25rem .25rem 0;
+}
+
+.form__textarea__error {
+    margin: .3rem;
 }

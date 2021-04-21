@@ -3,11 +3,14 @@ package ru.edjll.backend.dto.group;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import ru.edjll.backend.entity.Group;
 import ru.edjll.backend.validation.exists.Exists;
+import ru.edjll.backend.validation.unique.Unique;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 
 @Data
@@ -15,13 +18,15 @@ import javax.validation.constraints.Positive;
 @AllArgsConstructor
 public class GroupDtoForUpdate {
 
-    @NotEmpty
+    @Length(min = 5, max = 40)
     private String title;
 
-    @NotEmpty
+    @Length(min = 10, max = 150)
     private String description;
 
-    @NotEmpty
+    @Length(min = 3, max = 15)
+    @Pattern(regexp = "^\\w+$")
+    @Unique(table = "groups", column = "address")
     private String address;
 
     public Group toGroup() {

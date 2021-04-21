@@ -32,9 +32,7 @@ public class MessageController {
     @GetMapping("/{userId}/messages")
     @ResponseStatus(HttpStatus.OK)
     public Collection<MessageDto> getAllMessageDtoBetweenUsersById(
-            @PathVariable
-            @NotEmpty(message = "{message.senderId.notEmpty}")
-            @Exists(table = "user_entity", column = "id", message = "{message.senderId.exists}") String userId,
+            @PathVariable @Exists(table = "user_entity", column = "id") String userId,
             Principal principal
     ) {
         return messageService.getAllMessageDtoBetweenUsersById(userId, principal);
@@ -43,35 +41,27 @@ public class MessageController {
     @PostMapping("/{userId}/messages")
     @ResponseStatus(HttpStatus.CREATED)
     public MessageDto save(
-            @PathVariable
-            @NotEmpty(message = "{message.senderId.notEmpty}")
-            @Exists(table = "user_entity", column = "id", message = "{message.senderId.exists}") String userId,
+            @PathVariable String userId,
             Principal principal,
-            @RequestBody
-            @Valid MessageDtoForSave messageDtoForSave) {
+            @RequestBody @Valid MessageDtoForSave messageDtoForSave
+    ) {
         return messageService.save(userId, principal, messageDtoForSave);
     }
 
     @PutMapping("/messages/{id}")
     @ResponseStatus(HttpStatus.OK)
     public MessageDto update(
-            @PathVariable
-            @NotNull(message = "{message.id.notNull}")
-            @Positive(message = "{message.id.positive}")
-            @Exists(table = "message", column = "id", message = "{message.id.exists}") Long id,
+            @PathVariable @Positive(message = "{message.id.positive}") Long id,
             Principal principal,
-            @RequestBody
-            @Valid MessageDtoForUpdate messageDtoForUpdate) {
+            @RequestBody @Valid MessageDtoForUpdate messageDtoForUpdate
+    ) {
         return messageService.update(id, principal, messageDtoForUpdate);
     }
 
     @DeleteMapping("/messages/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-            @PathVariable
-            @NotNull(message = "{message.id.notNull}")
-            @Positive(message = "{message.id.positive}")
-            @Exists(table = "message", column = "id", message = "{message.id.exists}") Long id,
+            @PathVariable @Positive(message = "{message.id.positive}") Long id,
             Principal principal
     ) {
         messageService.delete(id, principal);

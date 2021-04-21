@@ -2,6 +2,7 @@ package ru.edjll.backend.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +45,8 @@ public class UserController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<UserInfoDtoForSearch> get(
-            @RequestParam Integer page,
-            @RequestParam Integer size,
+            @RequestParam @NotNull @PositiveOrZero Integer page,
+            @RequestParam @NotNull @Positive Integer size,
             @RequestParam Optional<String> firstName,
             @RequestParam Optional<String> lastName,
             @RequestParam Optional<Long> countryId,
@@ -58,16 +59,15 @@ public class UserController {
     @GetMapping("/username/{username}")
     @ResponseStatus(HttpStatus.OK)
     public UserInfoDto getByUsername(
-            @PathVariable
-            @NotEmpty(message = "{user.username.notEmpty}") String username) {
+            @PathVariable @NotEmpty String username
+    ) {
         return userInfoService.getUserInfoByUsername(username);
     }
 
     @GetMapping("/{id}/details")
     @ResponseStatus(HttpStatus.OK)
     public UserInfoDetailDto getDetails(
-            @PathVariable
-            @NotEmpty(message = "{user.username.notEmpty}") String id
+            @PathVariable @NotEmpty @Exists(table = "user_entity", column = "id") String id
     ) {
         return userInfoService.getUserInfoDetailById(id);
     }
@@ -75,47 +75,38 @@ public class UserController {
     @GetMapping("/{id}/groups")
     @ResponseStatus(HttpStatus.OK)
     public Page<GroupDtoForSearch> getGroups(
-            @PathVariable
-            @NotEmpty
-            @Exists(table = "user_entity", column = "id") String id,
-            @RequestParam
-            @NotNull
-            @PositiveOrZero Integer page,
-            @RequestParam
-            @NotNull
-            @Positive Integer pageSize,
+            @PathVariable @Exists(table = "user_entity", column = "id") String id,
+            @RequestParam @NotNull @PositiveOrZero Integer page,
+            @RequestParam @NotNull @Positive Integer size,
             Principal principal
     ) {
-        return groupService.getDtoByUserId(id, Optional.ofNullable(principal), page, pageSize);
+        return groupService.getDtoByUserId(id, Optional.ofNullable(principal), page, size);
     }
 
     @GetMapping("/{id}/feed")
     @ResponseStatus(HttpStatus.OK)
     public Page<PostDto> getFeed(
-            @PathVariable
-            @NotEmpty
-            @Exists(table = "user_entity", column = "id") String id,
-            @RequestParam
-            @NotNull
-            @PositiveOrZero Integer page,
-            @RequestParam
-            @NotNull
-            @Positive Integer size
+            @PathVariable @Exists(table = "user_entity", column = "id") String id,
+            @RequestParam @NotNull @PositiveOrZero Integer page,
+            @RequestParam @NotNull @Positive Integer size
     ) {
         return userService.getFeed(id, page, size);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void register(@RequestBody @Valid UserDtoWrapperForSave userDtoWrapperForSave) {
+    public void register(
+            @RequestBody @Valid UserDtoWrapperForSave userDtoWrapperForSave
+    ) {
         userService.register(userDtoWrapperForSave);
     }
 
     @PutMapping
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(
             @RequestBody @Valid UserInfoDtoForSave userInfoDtoForSave,
-            @AuthenticationPrincipal Principal principal
+            Principal principal
     ) {
         userInfoService.update(userInfoDtoForSave, principal);
     }

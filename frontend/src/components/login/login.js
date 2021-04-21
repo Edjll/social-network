@@ -8,6 +8,8 @@ import {FormButton} from "../form/form-button";
 import AuthService from "../../services/AuthService";
 import './login.css';
 import {Redirect} from "react-router-dom";
+import Validator from "../../services/Validator";
+import validation from "../../services/validation.json";
 
 export class Login extends React.Component {
 
@@ -15,7 +17,8 @@ export class Login extends React.Component {
         super(props);
         this.state = {
             username: '',
-            password: ''
+            password: '',
+            errors: null
         }
     }
 
@@ -28,7 +31,28 @@ export class Login extends React.Component {
     }
 
     handleLogin() {
-        AuthService.login(this.state.username, this.state.password);
+        if (this.validate() === 0) {
+            AuthService.login(this.state.username, this.state.password);
+        }
+    }
+
+    validate() {
+        let size = 0;
+        let errors = {...this.state.errors};
+        const usernameError = Validator.validate('Username', this.state.username, validation.user.username.params);
+        if (usernameError) {
+            errors = {...errors, username: usernameError};
+            size++;
+        }
+
+        const passwordError = Validator.validate('Password', this.state.password, validation.user.password.params);
+        if (passwordError) {
+            errors = {...errors, password: passwordError};
+            size++;
+        }
+
+        this.setState({errors: errors});
+        return size;
     }
 
     render() {
@@ -41,8 +65,8 @@ export class Login extends React.Component {
                     <h1>Login</h1>
                 </CardHeader>
                 <CardBody>
-                    <FormInput value={this.state.username} title={"username"} handleChange={this.handleChangeUsername.bind(this)}/>
-                    <FormInput value={this.state.password} title={"password"} type={"password"} handleChange={this.handleChangePassword.bind(this)}/>
+                    <FormInput error={this.state.errors ? this.state.errors.username : null} value={this.state.username} title={"username"} handleChange={this.handleChangeUsername.bind(this)}/>
+                    <FormInput error={this.state.errors ? this.state.errors.password : null} value={this.state.password} title={"password"} type={"password"} handleChange={this.handleChangePassword.bind(this)}/>
                 </CardBody>
                 <CardFooter>
                     <FormButton>Login</FormButton>

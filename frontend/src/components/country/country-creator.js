@@ -7,6 +7,8 @@ import {CardBody} from "../card/card-body";
 import {FormInput} from "../form/form-input";
 import {CardFooter} from "../card/card-footer";
 import {FormButton} from "../form/form-button";
+import Validator from "../../services/Validator";
+import validation from "../../services/validation.json";
 
 export class CountryCreator extends React.Component {
 
@@ -28,17 +30,34 @@ export class CountryCreator extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService
-            .getAxios()
-            .post(RequestService.ADMIN_URL + "/countries", {
-                title: this.state.title
-            })
-            .then(() => this.handleClose())
-            .catch(error => this.setState({
-                errors: {
-                    title: error.response.data.errors.title
-                }
-            }));
+        if (this.validate() === 0) {
+            RequestService
+                .getAxios()
+                .post(RequestService.ADMIN_URL + "/countries", {
+                    title: this.state.title
+                })
+                .then(() => this.handleClose())
+                .catch(error => this.setState({
+                    errors: {
+                        title: error.response.data.errors.title
+                    }
+                }));
+        }
+    }
+
+    validate() {
+        let size = 0;
+        let errors = {...this.state.errors};
+        const titleError = Validator.validate('Title', this.state.title, validation.country.title.params);
+        if (titleError) {
+            errors = {...errors, title: titleError};
+            size++;
+        }
+
+        console.log(errors)
+
+        this.setState({errors: errors}, () => console.log(this.state.errors));
+        return size;
     }
 
     handleChangeTitle(value) {

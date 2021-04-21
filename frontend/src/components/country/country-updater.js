@@ -7,6 +7,8 @@ import {CardBody} from "../card/card-body";
 import {FormInput} from "../form/form-input";
 import {CardFooter} from "../card/card-footer";
 import {FormButton} from "../form/form-button";
+import Validator from "../../services/Validator";
+import validation from "../../services/validation.json";
 
 export class CountryUpdater extends React.Component {
 
@@ -25,7 +27,7 @@ export class CountryUpdater extends React.Component {
 
     componentDidMount() {
         document.body.style.overflow = 'hidden';
-        RequestService.getAxios().get(RequestService.URL + "/countries" + this.props.match.params.id)
+        RequestService.getAxios().get(RequestService.URL + "/countries/" + this.props.match.params.id)
             .then(response => {
                 this.setState({
                     id: response.data.id,
@@ -42,17 +44,32 @@ export class CountryUpdater extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService
-            .getAxios()
-            .put(RequestService.ADMIN_URL + `/countries/${this.state.id}`, {
-                title: this.state.title
-            })
-            .then(() => this.handleClose())
-            .catch(error => this.setState({
-                errors: {
-                    title: error.response.data.errors.title
-                }
-            }));
+        if (this.validate() === 0) {
+            RequestService
+                .getAxios()
+                .put(RequestService.ADMIN_URL + `/countries/${this.state.id}`, {
+                    title: this.state.title
+                })
+                .then(() => this.handleClose())
+                .catch(error => this.setState({
+                    errors: {
+                        title: error.response.data.errors.title
+                    }
+                }));
+        }
+    }
+
+    validate() {
+        let size = 0;
+        let errors = {...this.state.errors};
+        const titleError = Validator.validate('Title', this.state.title, validation.country.title.params);
+        if (titleError) {
+            errors = {...errors, title: titleError};
+            size++;
+        }
+
+        this.setState({errors: errors});
+        return size;
     }
 
     handleChangeTitle(value) {

@@ -7,5 +7,5 @@
   "verify-token-audience": true,
   "use-resource-role-mappings": true,
   "confidential-port": 0,
-  "public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp5x2fKLrZt1HYoS0PONe/iXJc+f24vH/6EA+U+jW4sWCVzyYj0CicXlx+nxJgf3A2Lyzt77DeP0tIH84QWjjs3a+pyJj4jyiEUitdJod0c9Tn+qigNFuWglyn4DODwo8SafKA481Pg6jWc0G6fLedQvN8XuIvOXeYi42xQETNqNDLtHD5DSvKm+YHEpTlOwpnNRL2ok9j8A2aNk0SFJHeI2if9N4qzoS+pVb1xdoDqNli/lzywoaYurvbFtLgHc4wPDuNqtCC6snz9CSXw/afEkt6hhci7uRnp6XJtSI3ECqxHT4b+7MW1hOIts3sIWWb5VCgTyfJyPlUjMNB83OSwIDAQAB"
+  "public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlG0n9gfIHrLVkH05p0dY\nph3BUhuAJJqy0GgLcJkk089pZRn4flG1bmJ8ZcTN+i12KtoLSYlT4WaC2DigOqnQ\nxx2Qwv+8NeA6MscaZdle4xWZx8W3x2mW0EbAID8L+xrC1HtXgAQkLOeupB2srOWv\nR2oo8DaXstOy7LwMx+HEZNDO9ygT6/OBt3TyEH7i5VksNEL/9xQon/lNJT2fXFaz\nJ8mYUJdacqV7fFQfqq6HLMOuMbooFwEbygTjmt/2VIBLkCXfgT48OIOLifhNFYUJ\nGaaPv44XDDWPqkf2OrO7I8KSJGbBtf6cs7zD0zKymAnROb3kuF47TQXg/g2BTCh9\nwQIDAQAB\n"
 }

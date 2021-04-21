@@ -3,4 +3,6 @@
     border: 1px solid rgb(62, 68, 70);
     background-color: #2b2e34;
     height: max-content;
+    max-width: 350px;
+    width: 100%;
 }

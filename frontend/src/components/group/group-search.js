@@ -15,7 +15,7 @@ export class GroupSearch extends React.Component {
         this.state = {
             groups: [],
             page: 0,
-            pageSize: 10,
+            size: 10,
             totalPages: 0
         }
     }
@@ -28,7 +28,7 @@ export class GroupSearch extends React.Component {
         RequestService.getAxios().get(RequestService.URL + "/groups", {
             params: {
                 page: this.state.page,
-                pageSize: this.state.pageSize
+                size: this.state.size
             }
         })
             .then(response => this.setState({

@@ -118,7 +118,7 @@ export class Profile extends React.Component {
         RequestService.getAxios().get(RequestService.URL + `/users/${this.state.user.id}/groups`, {
             params: {
                 page: 0,
-                pageSize: 9
+                size: 9
             }
         })
             .then(response => this.setState({

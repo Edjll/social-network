@@ -1,5 +1,7 @@
 package ru.edjll.backend.controller;
 
+import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,17 +27,16 @@ public class CityController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<City> getCities(@RequestParam(required = false) Optional<Long> countryId) {
+    public Collection<City> getCities(
+            @RequestParam(required = false) Optional<Long> countryId
+    ) {
         return cityService.getAll(countryId);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<City> getById(
-            @PathVariable
-            @NotNull(message = "{city.id.notNull}")
-            @Positive(message = "{city.id.positive}")
-            @Exists(table = "city", column = "id", message = "{city.id.exists}") Long id
+    public City getById(
+            @PathVariable @Positive Long id
     ) {
         return cityService.getById(id);
     }

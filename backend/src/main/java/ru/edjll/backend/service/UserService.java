@@ -92,13 +92,13 @@ public class UserService {
                         "from user_entity " +
                             "left join user_info on user_entity.id = user_info.user_id " +
                             "left join city on user_info.city_id = city.id " +
-                        "where realm_id = 'social-network' and service_account_client_link is null";
+                        "where realm_id = 'social-network' and service_account_client_link is null and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'";
 
         String countSql =   "select count(*) " +
                             "from user_entity " +
                                 "left join user_info on user_entity.id = user_info.user_id " +
                                 "left join city on user_info.city_id = city.id " +
-                            "where realm_id = 'social-network' and service_account_client_link is null";
+                            "where realm_id = 'social-network' and service_account_client_link is null and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'";
 
         if (!searchParams.isEmpty()) {
             String tmp = searchParams.entrySet().stream()

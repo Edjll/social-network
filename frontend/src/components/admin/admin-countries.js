@@ -23,7 +23,7 @@ export class AdminCountries extends React.Component {
             countries: [],
             page: 0,
             maxPage: 0,
-            pageSize: 10,
+            size: 10,
             idDirection: null,
             titleDirection: null,
             id: null,
@@ -33,14 +33,14 @@ export class AdminCountries extends React.Component {
     }
 
     componentDidMount() {
-        this.loadCountries(this.state.page, this.state.pageSize);
+        this.loadCountries(this.state.page, this.state.size);
     }
 
     loadCountries() {
         RequestService.getAxios().get(RequestService.ADMIN_URL + '/countries', {
             params: {
                 page: this.state.page,
-                size: this.state.pageSize,
+                size: this.state.size,
                 idDirection: this.state.idDirection,
                 titleDirection: this.state.titleDirection,
                 id: this.state.id,
@@ -60,7 +60,7 @@ export class AdminCountries extends React.Component {
     }
 
     handleChangePageSize(value) {
-        this.setState({pageSize: value}, () => this.loadCountries());
+        this.setState({size: value}, () => this.loadCountries());
     }
 
     handleChangeDirection(directionName) {
@@ -164,7 +164,7 @@ export class AdminCountries extends React.Component {
                                 handleClick={this.handleClick.bind(this)}
                             />
                             <TablePageSize handleChange={this.handleChangePageSize.bind(this)}
-                                           value={this.state.pageSize}/>
+                                           value={this.state.size}/>
                         </TableFooter>
                     </Table>
                 </div>

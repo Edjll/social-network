@@ -11,6 +11,6 @@ const app = () => ReactDOM.render(
 );
 
 AuthService.init(() => {
-    app();
     RequestService.configure();
+    app();
 });

@@ -1,18 +1,24 @@
 import './form-textarea.css';
 import * as React from "react";
+import {HiddenInfo} from "../hidden-info/hidden-info";
 
-export class FormTextarea extends React.Component {
+export const FormTextarea = (props) => {
 
-    handleChange(e) {
-        if (this.props.handleChange) this.props.handleChange(e.target.value);
+    const handleChange = (e) => {
+        if (props.handleChange) props.handleChange(e.target.value);
     }
-
-    render() {
-        return (
-            <label className={"form__textarea"}>
-                <span className={"form__textarea__title"}>{this.props.title}</span>
-                <textarea className={"form__textarea__value"} onChange={this.handleChange.bind(this)} value={this.props.value} disabled={this.props.disabled}/>
-            </label>
-        );
-    }
+    
+    return (
+        <label className={"form__textarea"}>
+            <span className={"form__textarea__title"}>{props.title}</span>
+            <div className={'form__textarea__wrapper'}>
+                <textarea className={"form__textarea__value"} onChange={handleChange.bind(this)} value={props.value} disabled={props.disabled}/>
+                {
+                    props.error
+                        ?   <HiddenInfo className={'form__textarea__error'} text={'❌'} hidden={props.error}/>
+                        :   ''
+                }
+            </div>
+        </label>
+    );
 }

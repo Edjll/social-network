@@ -17,6 +17,7 @@ import ru.edjll.backend.entity.User;
 import ru.edjll.backend.entity.UserFriend;
 import ru.edjll.backend.entity.UserFriendKey;
 import ru.edjll.backend.entity.UserFriendStatus;
+import ru.edjll.backend.exception.ResponseParameterException;
 import ru.edjll.backend.repository.UserFriendRepository;
 
 import java.security.Principal;
@@ -41,7 +42,8 @@ public class UserFriendService {
     }
 
     public void save(String userId, Principal principal) {
-        User user = userService.getUserById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User user = userService.getUserById(userId)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "userId", userId, "exists"));
         User friend = new User();
 
         friend.setId(principal.getName());
@@ -55,11 +57,14 @@ public class UserFriendService {
     }
 
     public void update(String userId, Principal principal) {
-        User friend = userService.getUserById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User friend = userService.getUserById(userId)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "userId", userId, "exists"));
         User user = new User();
         user.setId(principal.getName());
 
-        UserFriend userFriend = userFriendRepository.findById(new UserFriendKey(user, friend)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        UserFriend userFriend = userFriendRepository
+                .findById(new UserFriendKey(user, friend))
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", "(userId, " + principal.getName() + ")", "exists"));
 
         if (userFriend.getStatus().equals(UserFriendStatus.FRIEND)) return;
 

@@ -2,6 +2,7 @@ package ru.edjll.backend.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,52 +34,40 @@ public class GroupPostController {
     @GetMapping("/{groupId}/posts")
     @ResponseStatus(HttpStatus.OK)
     public Page<PostDto> get(
-            @PathVariable
-            @NotNull
-            @Positive
-            @Exists(table = "groups", column = "id") Long groupId,
-            @RequestParam
-            @NotNull
-            @PositiveOrZero Integer page,
-            @RequestParam
-            @NotNull
-            @Positive Integer pageSize
+            @PathVariable @Positive @Exists(table = "groups", column = "id") Long groupId,
+            @RequestParam @NotNull @PositiveOrZero Integer page,
+            @RequestParam @NotNull @Positive Integer size
     ) {
-        return groupPostService.getDtoByGroupId(groupId, page, pageSize);
+        return groupPostService.getDtoByGroupId(groupId, page, size);
     }
 
     @PostMapping("/{groupId}/posts")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.CREATED)
     public Optional<PostDto> save(
-            @PathVariable
-            @NotNull
-            @Positive
-            @Exists(table = "groups", column = "id") Long groupId,
-            @RequestBody
-            @Valid GroupPostDtoForSave groupPostDtoForSave,
-            Principal principal) {
+            @PathVariable @Positive Long groupId,
+            @RequestBody @Valid GroupPostDtoForSave groupPostDtoForSave,
+            Principal principal
+    ) {
         return groupPostService.save(groupId, groupPostDtoForSave, principal);
     }
 
     @PutMapping("/posts/{id}")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
     public Optional<PostDto> update(
-            @PathVariable
-            @NotNull
-            @Positive
-            @Exists(table = "group_post", column = "id") Long id,
-            @RequestBody
-            @Valid GroupPostDtoForUpdate groupPostDtoForUpdate, Principal principal) {
+            @PathVariable @Positive Long id,
+            @RequestBody @Valid GroupPostDtoForUpdate groupPostDtoForUpdate,
+            Principal principal
+    ) {
         return groupPostService.update(id, groupPostDtoForUpdate, principal);
     }
 
     @DeleteMapping("/posts/{id}")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-            @PathVariable
-            @NotNull
-            @Positive
-            @Exists(table = "group_post", column = "id") Long id,
+            @PathVariable @Positive Long id,
             JwtAuthenticationToken principal
     ) {
         groupPostService.delete(id, principal);

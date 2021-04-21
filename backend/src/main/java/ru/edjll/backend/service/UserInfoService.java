@@ -15,6 +15,7 @@ import ru.edjll.backend.dto.user.info.UserInfoDto;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSave;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
 import ru.edjll.backend.entity.UserInfo;
+import ru.edjll.backend.exception.ResponseParameterException;
 import ru.edjll.backend.repository.UserInfoRepository;
 
 import java.security.Principal;
@@ -61,7 +62,7 @@ public class UserInfoService {
 
         if (userInfo.getCity() == null || !userInfo.getCity().getId().equals(userInfoDtoForSave.getCityId())) {
             if (userInfoDtoForSave.getCityId() != null) {
-                cityService.getById(userInfoDtoForSave.getCityId())
+                Optional.ofNullable(cityService.getById(userInfoDtoForSave.getCityId()))
                         .ifPresent(userInfo::setCity);
             }
         }
@@ -74,7 +75,7 @@ public class UserInfoService {
 
     public UserInfoDto getUserInfoByUsername(String username) {
         return userInfoRepository.getUserInfoByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User with username '" + username + "' not found"));
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "username", username, "exists"));
     }
 
     public Page<UserInfoDtoForSearch> searchUserInfo(Integer page, Integer size, Optional<String> firstName, Optional<String> lastName, Optional<Long> countryId, Optional<Long> cityId, Optional<Principal> principal) {

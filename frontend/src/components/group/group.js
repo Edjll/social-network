@@ -30,7 +30,7 @@ export class Group extends React.Component {
             },
             subscribed: null,
             page: 0,
-            pageSize: 5,
+            size: 5,
             totalPages: 0,
             totalUsers: 0,
             posts: [],
@@ -67,7 +67,7 @@ export class Group extends React.Component {
             .get(RequestService.URL + `/groups/${this.state.info.id}/posts`, {
                 params: {
                     page: this.state.page,
-                    pageSize: this.state.pageSize
+                    size: this.state.size
                 }
             })
             .then(response => this.setState({

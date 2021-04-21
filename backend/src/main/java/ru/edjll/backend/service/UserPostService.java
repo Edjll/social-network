@@ -11,6 +11,7 @@ import ru.edjll.backend.dto.user.post.UserPostDtoForSave;
 import ru.edjll.backend.dto.user.post.UserPostDtoForUpdate;
 import ru.edjll.backend.entity.User;
 import ru.edjll.backend.entity.UserPost;
+import ru.edjll.backend.exception.ResponseParameterException;
 import ru.edjll.backend.repository.UserPostRepository;
 
 import java.security.Principal;
@@ -39,10 +40,11 @@ public class UserPostService {
     }
 
     public PostDto update(Long id, Principal principal, UserPostDtoForUpdate userPostDtoForUpdate) {
-        UserPost userPost = userPostRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        UserPost userPost = userPostRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
 
         if (!userPost.getUser().getId().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new ResponseParameterException(HttpStatus.FORBIDDEN, "user", principal.getName(), "forbidden");
         }
 
         userPost.setText(userPostDtoForUpdate.getText());
@@ -53,10 +55,11 @@ public class UserPostService {
     }
 
     public void delete(Long id, Principal principal) {
-        UserPost userPost = userPostRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        UserPost userPost = userPostRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
 
         if (!userPost.getUser().getId().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new ResponseParameterException(HttpStatus.FORBIDDEN, "user", principal.getName(), "forbidden");
         }
 
         userPostRepository.deleteById(id);

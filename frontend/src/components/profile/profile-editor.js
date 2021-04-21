@@ -83,7 +83,7 @@ export default class ProfileEditor extends React.Component {
             });
 
         RequestService.getAxios()
-            .get(RequestService.URL + `/users/${AuthService.getUsername()}/details`)
+            .get(RequestService.URL + `/users/${AuthService.getId()}/details`)
             .then(response => {
                 this.setState({
                     city: {

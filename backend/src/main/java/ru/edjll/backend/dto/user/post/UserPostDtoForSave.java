@@ -3,6 +3,7 @@ package ru.edjll.backend.dto.user.post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import ru.edjll.backend.entity.UserPost;
 
 import javax.validation.constraints.NotEmpty;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserPostDtoForSave {
 
-    @NotEmpty(message = "{post.text.notEmpty}")
+    @Length(min = 1, max = 150)
     private String text;
 
     public UserPost toPost() {

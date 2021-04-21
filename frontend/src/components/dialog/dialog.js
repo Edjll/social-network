@@ -5,6 +5,9 @@ import {Spinner} from "../spinner/spinner";
 import './dialog.css';
 import AuthService from "../../services/AuthService";
 import {Link} from "react-router-dom";
+import Validator from "../../services/Validator";
+import validation from "../../services/validation.json";
+import {Toast} from "../toast/toast";
 
 export class Dialog extends React.Component {
 
@@ -18,7 +21,10 @@ export class Dialog extends React.Component {
             text: "",
             editing: false,
             createdDate: null,
-            tmpText: ""
+            tmpText: "",
+            errors: {
+                text: null
+            }
         }
         this.messagesRef = React.createRef();
     }
@@ -38,34 +44,52 @@ export class Dialog extends React.Component {
     }
 
     handleSubmit() {
-        if (this.state.editing === true) {
-            this.editMessage();
-        } else {
-            this.saveMessage();
+        if (this.validate() === 0) {
+            if (this.state.editing === true) {
+                this.editMessage();
+                this.handleCancelEdit();
+            } else {
+                this.saveMessage();
+            }
         }
-
-        this.handleCancelEdit();
     }
 
     saveMessage() {
-        RequestService.getAxios().post(RequestService.URL + `/users/${this.state.interlocutor.id}/messages`, {
-            text: this.state.text.replace(/\n\n+/g, '\n')
-        }).then(response => {
-            this.setState({messages: [...this.state.messages, response.data]});
-            this.messagesRef.current.scrollTop = this.messagesRef.current.scrollHeight;
-        });
+        RequestService
+            .getAxios()
+            .post(RequestService.URL + `/users/${this.state.interlocutor.id}/messages`, {
+                text: this.state.text.replace(/\n\n+/g, '\n')
+            }).then(response => {
+                this.setState({messages: [...this.state.messages, response.data]});
+                this.messagesRef.current.scrollTop = this.messagesRef.current.scrollHeight;
+            });
     }
 
     editMessage() {
-        RequestService.getAxios().put(RequestService.URL + `/users/messages/${this.state.id}`, {
-            text: this.state.text.replace(/\n\n/g, '\n')
-        }).then(response => {
-            const newMessages = [...this.state.messages];
-            const index = newMessages.findIndex(value => value.id === response.data.id);
-            newMessages[index] = response.data;
+        RequestService
+            .getAxios()
+            .put(RequestService.URL + `/users/messages/${this.state.id}`, {
+                text: this.state.text.replace(/\n\n/g, '\n')
+            }).then(response => {
+                const newMessages = [...this.state.messages];
+                const index = newMessages.findIndex(value => value.id === response.data.id);
+                newMessages[index] = response.data;
 
-            this.setState({messages: newMessages});
-        });
+                this.setState({messages: newMessages});
+            });
+    }
+
+    validate() {
+        let size = 0;
+        let errors = {...this.state.errors};
+        const textError = Validator.validate('Text', this.state.text.replace(/\n\n/g, '\n'), validation.message.text.params);
+        if (textError) {
+            errors = {...errors, text: textError};
+            size++;
+        }
+
+        this.setState({errors: errors});
+        return size;
     }
 
     handleDelete(value) {
@@ -83,7 +107,7 @@ export class Dialog extends React.Component {
     }
 
     handleChange(e) {
-        this.setState({text: e.target.value})
+        this.setState({text: e.target.value, errors: {text: null}})
     }
 
     handleEdit(value) {
@@ -92,7 +116,8 @@ export class Dialog extends React.Component {
             text: value.text,
             id: value.id,
             createdDate: value.createdDate,
-            tmpText: this.state.text
+            tmpText: this.state.text,
+            errors: {text: null}
         });
     }
 
@@ -102,7 +127,8 @@ export class Dialog extends React.Component {
             id: null,
             editing: false,
             createdDate: null,
-            tmpText: ""
+            tmpText: "",
+            errors: {text: null}
         });
     }
 
@@ -111,6 +137,10 @@ export class Dialog extends React.Component {
             e.preventDefault();
             this.handleSubmit();
         }
+    }
+
+    handleClose() {
+        this.setState({errors: {text: null}});
     }
 
     render() {
@@ -151,6 +181,11 @@ export class Dialog extends React.Component {
                               onKeyDown={this.handleKeyDown.bind(this)}/>
                     <button className={"dialog__form__button"}>✉</button>
                 </form>
+                {
+                    this.state.errors.text
+                        ?   <Toast header={"Error"} body={this.state.errors.text} handleClose={this.handleClose.bind(this)} time={2}/>
+                        :   ''
+                }
             </div>
         );
     }

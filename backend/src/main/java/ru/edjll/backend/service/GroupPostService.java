@@ -13,6 +13,7 @@ import ru.edjll.backend.dto.group.post.GroupPostDtoForUpdate;
 import ru.edjll.backend.dto.post.PostDto;
 import ru.edjll.backend.entity.Group;
 import ru.edjll.backend.entity.GroupPost;
+import ru.edjll.backend.exception.ResponseParameterException;
 import ru.edjll.backend.repository.GroupPostRepository;
 
 import java.security.Principal;
@@ -31,13 +32,13 @@ public class GroupPostService {
     }
 
     public Optional<PostDto> save(Long groupId, GroupPostDtoForSave groupPostDtoForSave, Principal principal) {
-        String creatorId = groupService.findCreatorIdByGroupId(groupId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
         Group group = groupService.findById(groupId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "group", groupId.toString(), "exists"));
+
+        String creatorId = group.getCreator().getId();
 
         if (!creatorId.equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new ResponseParameterException(HttpStatus.FORBIDDEN, "user", principal.getName(), "forbidden");
         }
 
         GroupPost groupPost = groupPostDtoForSave.toGroupPost();
@@ -49,10 +50,11 @@ public class GroupPostService {
     }
 
     public Optional<PostDto> update(Long id, GroupPostDtoForUpdate groupPostDtoForUpdate, Principal principal) {
-        GroupPost groupPostFromDB = groupPostRepository.getOne(id);
+        GroupPost groupPostFromDB = groupPostRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
 
         if (!groupPostFromDB.getGroup().getCreator().getId().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new ResponseParameterException(HttpStatus.FORBIDDEN, "user", principal.getName(), "forbidden");
         }
 
         groupPostFromDB.setText(groupPostDtoForUpdate.getText());
@@ -64,16 +66,17 @@ public class GroupPostService {
     }
 
     public void delete(Long id, JwtAuthenticationToken principal) {
-        GroupPost groupPostFromDB = groupPostRepository.getOne(id);
+        GroupPost groupPostFromDB = groupPostRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
 
         if (!principal.getName().equals(groupPostFromDB.getGroup().getCreator().getId()) && principal.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new ResponseParameterException(HttpStatus.FORBIDDEN, "user", principal.getName(), "forbidden");
         }
 
         groupPostRepository.deleteById(groupPostFromDB.getId());
     }
 
-    public Page<PostDto> getDtoByGroupId(Long groupId, Integer page, Integer pageSize) {
-        return groupPostRepository.getDtoByGroupId(groupId, PageRequest.of(page, pageSize, Sort.by("createdDate").descending()));
+    public Page<PostDto> getDtoByGroupId(Long groupId, Integer page, Integer size) {
+        return groupPostRepository.getDtoByGroupId(groupId, PageRequest.of(page, size, Sort.by("createdDate").descending()));
     }
 }

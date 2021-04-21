@@ -8,6 +8,8 @@ import {FormSelect} from "../form/form-select";
 import {CardFooter} from "../card/card-footer";
 import {FormButton} from "../form/form-button";
 import * as React from "react";
+import Validator from "../../services/Validator";
+import validation from "../../services/validation.json";
 
 export class CityUpdater extends React.Component {
 
@@ -60,17 +62,40 @@ export class CityUpdater extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().put(RequestService.ADMIN_URL + `/cities/${this.state.id}`, {
-            title: this.state.title,
-            countryId: this.state.countryId
-        })
-            .then(() => this.handleClose())
-            .catch(error => this.setState({
-                errors: {
-                    title: error.response.data.errors.title,
-                    country: error.response.data.errors.countryId
-                }
-            }));
+        if (this.validate() === 0) {
+            RequestService
+                .getAxios()
+                .put(RequestService.ADMIN_URL + `/cities/${this.state.id}`, {
+                    title: this.state.title,
+                    countryId: this.state.countryId
+                })
+                .then(() => this.handleClose())
+                .catch(error => this.setState({
+                    errors: {
+                        title: error.response.data.errors.title,
+                        country: error.response.data.errors.countryId
+                    }
+                }));
+        }
+    }
+
+    validate() {
+        let size = 0;
+        let errors = {...this.state.errors};
+        const titleError = Validator.validate('Title', this.state.title, validation.city.title.params);
+        if (titleError) {
+            errors = {...errors, title: titleError};
+            size++;
+        }
+
+        const countryError = Validator.validate('Country', this.state.countryId, validation.city.country.params);
+        if (countryError) {
+            errors = {...errors, country: countryError};
+            size++;
+        }
+
+        this.setState({errors: errors});
+        return size;
     }
 
     handleChangeTitle(value) {
@@ -97,7 +122,7 @@ export class CityUpdater extends React.Component {
                                    title={"title"}
                                    error={this.state.errors.title}/>
                         {
-                            this.state.countries.length > 0
+                            this.state.countries.length > 0 && this.state.country.id
                                 ? <FormSelect
                                     value={{key: this.state.country.id, text: this.state.country.title}}
                                     options={this.state.countries} title={"country"}

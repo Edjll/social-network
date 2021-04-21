@@ -13,8 +13,10 @@ import ru.edjll.backend.service.GroupUserService;
 import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -31,9 +33,9 @@ public class GroupUserController {
 
     @GetMapping
     public Page<UserInfoDtoForSearch> getDtoByGroupId(
-            @RequestParam Integer page,
-            @RequestParam Integer size,
-            @PathVariable Long groupId,
+            @RequestParam @NotNull @PositiveOrZero Integer page,
+            @RequestParam @NotNull @Positive Integer size,
+            @PathVariable @Positive @Exists(table = "groups", column = "id") Long groupId,
             @RequestParam Optional<String> firstName,
             @RequestParam Optional<String> lastName,
             @RequestParam Optional<Long> countryId,
@@ -45,10 +47,10 @@ public class GroupUserController {
 
     @GetMapping("/{userId}")
     public Page<GroupUserDtoForGroupPage> getDtoByGroupId(
-            @PathVariable Long groupId,
-            @PathVariable String userId,
-            @RequestParam Integer page,
-            @RequestParam Integer size
+            @PathVariable @Positive @Exists(table = "groups", column = "id") Long groupId,
+            @PathVariable @NotEmpty @Exists(table = "user_entity", column = "id") String userId,
+            @RequestParam @NotNull @PositiveOrZero Integer page,
+            @RequestParam @NotNull @Positive Integer size
     ) {
         return groupUserService.getUsersWithUserByUserId(groupId, userId, page, size);
     }
@@ -56,21 +58,16 @@ public class GroupUserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void subscribe(
-            @PathVariable
-            @NotNull
-            @Positive
-            @Exists(table = "groups", column = "id") Long groupId,
-            Principal principal) {
+            @PathVariable @Positive @Exists(table = "groups", column = "id") Long groupId,
+            Principal principal
+    ) {
         groupUserService.subscribe(groupId, principal);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unsubscribe(
-            @PathVariable
-            @NotNull
-            @Positive
-            @Exists(table = "groups", column = "id") Long groupId,
+            @PathVariable @Positive @Exists(table = "groups", column = "id") Long groupId,
             Principal principal
     ) {
         groupUserService.unsubscribe(groupId, principal);

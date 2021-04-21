@@ -21,7 +21,7 @@ export class AdminGroups extends React.Component {
             groups: [],
             page: 0,
             maxPage: 0,
-            pageSize: 10
+            size: 10
         }
     }
 
@@ -33,7 +33,7 @@ export class AdminGroups extends React.Component {
         RequestService.getAxios().get(RequestService.URL + '/admin/groups', {
             params: {
                 page: this.state.page,
-                size: this.state.pageSize
+                size: this.state.size
             }
         }).then(response => {
             this.setState({
@@ -49,7 +49,7 @@ export class AdminGroups extends React.Component {
     }
 
     handleChangePageSize(value) {
-        this.setState({pageSize: value}, () => this.loadGroups());
+        this.setState({size: value}, () => this.loadGroups());
     }
 
     handleBlur() {
@@ -118,7 +118,7 @@ export class AdminGroups extends React.Component {
                             handleClick={this.handleClick.bind(this)}
                         />
                         <TablePageSize handleChange={this.handleChangePageSize.bind(this)}
-                                       value={this.state.pageSize}/>
+                                       value={this.state.size}/>
                     </TableFooter>
                 </Table>
             </div>

@@ -1,0 +1,113 @@
+{
+  "defaultMessage": {
+    "notNull": "must not be null",
+    "minLength": "must be more than",
+    "maxLength": "must be less than",
+    "pattern": "is not correct"
+  },
+  "user": {
+    "username": {
+      "params": {
+        "notNull": true,
+        "minLength": 3,
+        "maxLength": 15,
+        "pattern": "^\\w+$"
+      }
+    },
+    "email": {
+      "params": {
+        "notNull": true,
+        "minLength": 9,
+        "maxLength": 30,
+        "pattern": "\\w+@\\w+\\.\\w+"
+      }
+    },
+    "firstName": {
+      "params": {
+        "notNull": true,
+        "minLength": 1,
+        "maxLength": 15,
+        "pattern": "^\\w+$"
+      }
+    },
+    "lastName": {
+      "params": {
+        "notNull": true,
+        "minLength": 1,
+        "maxLength": 15,
+        "pattern": "^\\w+$"
+      }
+    },
+    "password": {
+      "params": {
+        "notNull": true,
+        "minLength": 3,
+        "maxLength": 15
+      }
+    }
+  },
+  "group": {
+    "title": {
+      "params": {
+        "notNull": true,
+        "minLength": 5,
+        "maxLength": 40
+      }
+    },
+    "description": {
+      "params": {
+        "notNull": true,
+        "minLength": 10,
+        "maxLength": 150
+      }
+    },
+    "address": {
+      "params": {
+        "notNull": true,
+        "minLength": 3,
+        "maxLength": 15,
+        "pattern": "^\\w+$"
+      }
+    }
+  },
+  "post": {
+    "text": {
+      "params": {
+        "notNull": true,
+        "maxLength": 100
+      }
+    }
+  },
+  "city": {
+    "title": {
+      "params": {
+        "notNull": true,
+        "minLength": 1,
+        "maxLength": 20
+      }
+    },
+    "country": {
+      "params": {
+        "notNull": true
+      }
+    }
+  },
+  "country": {
+    "title": {
+      "params": {
+        "notNull": true,
+        "minLength": 1,
+        "maxLength": 20
+      }
+    }
+  },
+  "message": {
+    "text": {
+      "params": {
+        "notNull": true,
+        "minLength": 1,
+        "maxLength": 150
+      }
+    }
+  }
+}

@@ -23,7 +23,7 @@ export class AdminCities extends React.Component {
             cities: [],
             page: 0,
             maxPage: 0,
-            pageSize: 10,
+            size: 10,
             idDirection: null,
             titleDirection: null,
             countryDirection: null,
@@ -35,14 +35,14 @@ export class AdminCities extends React.Component {
     }
 
     componentDidMount() {
-        this.loadCities(this.state.page, this.state.pageSize);
+        this.loadCities(this.state.page, this.state.size);
     }
 
     loadCities() {
         RequestService.getAxios().get(RequestService.ADMIN_URL + '/cities', {
             params: {
                 page: this.state.page,
-                size: this.state.pageSize,
+                size: this.state.size,
                 idDirection: this.state.idDirection,
                 titleDirection: this.state.titleDirection,
                 countryDirection: this.state.countryDirection,
@@ -64,7 +64,7 @@ export class AdminCities extends React.Component {
     }
 
     handleChangePageSize(value) {
-        this.setState({pageSize: value}, () => this.loadCities());
+        this.setState({size: value}, () => this.loadCities());
     }
 
     handleChangeDirection(directionName) {
@@ -180,7 +180,7 @@ export class AdminCities extends React.Component {
                                 handleClick={this.handleClick.bind(this)}
                             />
                             <TablePageSize handleChange={this.handleChangePageSize.bind(this)}
-                                           value={this.state.pageSize}/>
+                                           value={this.state.size}/>
                         </TableFooter>
                     </Table>
                 </div>

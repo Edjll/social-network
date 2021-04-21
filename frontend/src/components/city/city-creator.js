@@ -8,6 +8,8 @@ import {CardHeader} from "../card/card-header";
 import {CardBody} from "../card/card-body";
 import {CardFooter} from "../card/card-footer";
 import {FormClose} from "../form/form-close";
+import Validator from "../../services/Validator";
+import validation from "../../services/validation.json";
 
 export class CityCreator extends React.Component {
 
@@ -45,17 +47,40 @@ export class CityCreator extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().post(RequestService.ADMIN_URL + '/cities', {
-            title: this.state.title,
-            countryId: this.state.countryId
-        })
-            .then(() => this.handleClose())
-            .catch(error => this.setState({
-                errors: {
-                    title: error.response.data.errors.title,
-                    country: error.response.data.errors.countryId
-                }
-            }));
+        if (this.validate() === 0) {
+            RequestService
+                .getAxios()
+                .post(RequestService.ADMIN_URL + '/cities', {
+                    title: this.state.title,
+                    countryId: this.state.countryId
+                })
+                .then(() => this.handleClose())
+                .catch(error => this.setState({
+                    errors: {
+                        title: error.response.data.errors.title,
+                        country: error.response.data.errors.countryId
+                    }
+                }));
+        }
+    }
+
+    validate() {
+        let size = 0;
+        let errors = {...this.state.errors};
+        const titleError = Validator.validate('Title', this.state.title, validation.city.title.params);
+        if (titleError) {
+            errors = {...errors, title: titleError};
+            size++;
+        }
+
+        const countryError = Validator.validate('Country', this.state.countryId, validation.city.country.params);
+        if (countryError) {
+            errors = {...errors, country: countryError};
+            size++;
+        }
+
+        this.setState({errors: errors});
+        return size;
     }
 
     handleChangeTitle(value) {

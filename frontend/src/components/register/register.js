@@ -9,6 +9,8 @@ import {FormInput} from "../form/form-input";
 import {FormSelect} from "../form/form-select";
 import {CardBody} from "../card/card-body";
 import {Redirect} from "react-router-dom";
+import Validator from "../../services/Validator";
+import validation from '../../services/validation.json';
 
 export class Register extends React.Component {
 
@@ -95,23 +97,62 @@ export class Register extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        RequestService.getAxios().post(RequestService.URL + '/users', {
-            username: this.state.username,
-            email: this.state.email,
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            birthday: this.state.birthday,
-            credentials: [{value: this.state.password ? this.state.password : ''}],
-            cityId: this.state.city
-        })
-            .then(() => AuthService.login(this.state.username, this.state.password))
-            .catch(error => this.setState({
-                errors: {
-                    ...this.state.errors,
-                    ...error.response.data.errors,
-                    password: error.response.data.errors ? error.response.data.errors['credentials[0].value'] : null
-                }
-            }))
+        if (this.validate() === 0) {
+            RequestService.getAxios().post(RequestService.URL + '/users', {
+                username: this.state.username,
+                email: this.state.email,
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                birthday: this.state.birthday,
+                credentials: [{value: this.state.password ? this.state.password : ''}],
+                cityId: this.state.city
+            })
+                .then(() => AuthService.login(this.state.username, this.state.password))
+                .catch(error => this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        ...error.response.data.errors,
+                        password: error.response.data.errors ? error.response.data.errors['credentials[0].value'] : null
+                    }
+                }))
+        }
+    }
+
+    validate() {
+        let size = 0;
+        let errors = {...this.state.errors};
+        const usernameError = Validator.validate('Username', this.state.username, validation.user.username.params);
+        if (usernameError) {
+            errors = {...errors, username: usernameError};
+            size++;
+        }
+
+        const emailError = Validator.validate('Email', this.state.email, validation.user.email.params);
+        if (emailError) {
+            errors = {...errors, email: emailError};
+            size++;
+        }
+
+        const firstNameError = Validator.validate('First name', this.state.firstName, validation.user.firstName.params);
+        if (firstNameError) {
+            errors = {...errors, firstName: firstNameError};
+            size++;
+        }
+
+        const lastNameError = Validator.validate('Last name', this.state.lastName, validation.user.lastName.params);
+        if (lastNameError) {
+            errors = {...errors, lastName: lastNameError};
+            size++;
+        }
+
+        const passwordError = Validator.validate('Password', this.state.password, validation.user.password.params);
+        if (passwordError) {
+            errors = {...errors, password: passwordError};
+            size++;
+        }
+
+        this.setState({errors: errors});
+        return size;
     }
 
     render() {
@@ -125,7 +166,7 @@ export class Register extends React.Component {
                     <FormInput value={this.state.username} title={"username*"} error={this.state.errors.username}
                            handleChange={this.handleChangeUsername.bind(this)}/>
                     <FormInput value={this.state.email} title={"email*"} error={this.state.errors.email}
-                           handleChange={this.handleChangeEmail.bind(this)} type={"email"}/>
+                           handleChange={this.handleChangeEmail.bind(this)}/>
                     <FormInput value={this.state.firstName} title={"first name*"} error={this.state.errors.firstName}
                            handleChange={this.handleChangeFirstName.bind(this)}/>
                     <FormInput value={this.state.lastName} title={"last name*"} error={this.state.errors.lastName}

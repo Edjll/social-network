@@ -2,6 +2,7 @@ package ru.edjll.backend.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.post.PostDto;
@@ -32,50 +33,39 @@ public class UserPostController {
     @GetMapping("/{userId}/posts")
     @ResponseStatus(HttpStatus.OK)
     public Page<PostDto> getAllPostDtoByUserId(
-            @PathVariable
-            @NotEmpty(message = "{post.userId.notEmpty}")
-            @Exists(table = "user_entity", column = "id", message = "{post.userId.exists}") String userId,
-            @RequestParam
-            @NotNull
-            @PositiveOrZero Integer page,
-            @RequestParam
-            @NotNull
-            @Positive Integer size
+            @PathVariable @Exists(table = "user_entity", column = "id", message = "{post.userId.exists}") String userId,
+            @RequestParam @NotNull @PositiveOrZero Integer page,
+            @RequestParam @NotNull @Positive Integer size
     ) {
         return userPostService.getAllPostDtoByUserId(userId, page, size);
     }
 
     @PostMapping("/posts")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.CREATED)
     public PostDto save(
             Principal principal,
-            @RequestBody
-            @Valid UserPostDtoForSave userPostDtoForSave
+            @RequestBody @Valid UserPostDtoForSave userPostDtoForSave
     ) {
         return userPostService.save(principal, userPostDtoForSave);
     }
 
     @PutMapping("/posts/{id}")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
     public PostDto update(
-            @PathVariable
-            @NotNull(message = "{post.id.notNull}")
-            @Positive(message = "{post.id.positive}")
-            @Exists(table = "post", column = "id", message = "{post.id.exists}") Long id,
+            @PathVariable @Positive(message = "{post.id.positive}") Long id,
             Principal principal,
-            @RequestBody
-            @Valid UserPostDtoForUpdate userPostDtoForUpdate
+            @RequestBody @Valid UserPostDtoForUpdate userPostDtoForUpdate
     ) {
         return userPostService.update(id, principal, userPostDtoForUpdate);
     }
 
     @DeleteMapping("/posts/{id}")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-            @PathVariable
-            @NotNull(message = "{post.id.notNull}")
-            @Positive(message = "{post.id.positive}")
-            @Exists(table = "post", column = "id", message = "{post.id.exists}") Long id,
+            @PathVariable @Positive Long id,
             Principal principal
     ) {
         userPostService.delete(id, principal);

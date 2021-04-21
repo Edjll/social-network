@@ -3,6 +3,7 @@ package ru.edjll.backend.dto.city;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.edjll.backend.entity.City;
 import ru.edjll.backend.entity.Country;
@@ -16,11 +17,11 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class CityDtoForUpdate {
 
-    @NotEmpty(message = "{city.title.notEmpty}")
+    @Length(min = 1, max = 20)
     private String title;
 
-    @NotNull(message = "{city.countryId.notNull}")
-    @Exists(table = "country", column = "id", message = "{country.id.exists}")
+    @NotNull
+    @Exists(table = "country", column = "id")
     private Long countryId;
 
     public CityDtoForUpdate(@NotNull City city) {

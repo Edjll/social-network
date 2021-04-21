@@ -18,7 +18,7 @@ export class SearchPage extends React.Component {
             countries: [],
             cities: [],
             page: 0,
-            pageSize: 12,
+            size: 12,
             totalPages: 0,
             id: props.id,
             firstName: null,

@@ -9,6 +9,7 @@ import ru.edjll.backend.dto.message.MessageDtoForSave;
 import ru.edjll.backend.dto.message.MessageDtoForUpdate;
 import ru.edjll.backend.entity.Message;
 import ru.edjll.backend.entity.User;
+import ru.edjll.backend.exception.ResponseParameterException;
 import ru.edjll.backend.repository.MessageRepository;
 
 import java.security.Principal;
@@ -26,7 +27,8 @@ public class MessageService {
     }
 
     public MessageDto save(String userId, Principal principal, MessageDtoForSave messageDtoForSave) {
-        User user = userService.getUserById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User user = userService.getUserById(userId)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "user", userId.toString(), "exists"));
 
         Message message = messageDtoForSave.toMessage();
         User sender = new User();
@@ -41,10 +43,11 @@ public class MessageService {
     }
 
     public MessageDto update(Long id, Principal principal, MessageDtoForUpdate messageDtoForUpdate) {
-        Message message = messageRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Message message = messageRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
 
         if (!message.getSender().getId().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new ResponseParameterException(HttpStatus.FORBIDDEN, "user", principal.getName(), "forbidden");
         }
 
         message.setText(messageDtoForUpdate.getText());
@@ -55,10 +58,11 @@ public class MessageService {
     }
 
     public void delete(Long id, Principal principal) {
-        Message message = messageRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Message message = messageRepository.findById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
 
         if (!message.getSender().getId().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new ResponseParameterException(HttpStatus.FORBIDDEN, "user", principal.getName(), "forbidden");
         }
 
         messageRepository.deleteById(id);
