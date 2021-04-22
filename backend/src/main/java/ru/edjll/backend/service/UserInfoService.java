@@ -92,7 +92,7 @@ public class UserInfoService {
         lastName.ifPresent(s -> stringSearchParams.put("last_name", s));
         cityId.ifPresent(s -> searchParams.put("city.id", s));
 
-        if (countryId.isPresent()) {
+        if (!cityId.isPresent() && countryId.isPresent()) {
             sqlFrom += " join country on city.country_id = country.id";
             searchParams.put("country.id", countryId.get());
         }

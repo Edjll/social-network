@@ -13,7 +13,8 @@ import java.time.LocalDate;
 @Table(
         name = "user_info",
         indexes = {
-                @Index(name = "user_info_city_id", columnList = "city_id")
+                @Index(name = "user_info__city_id", columnList = "city_id"),
+                @Index(name = "user_info__user_id__city_id", columnList = "user_id, city_id")
         }
 )
 public class UserInfo {

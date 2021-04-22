@@ -11,7 +11,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_friend")
+@Table(
+        name = "user_friend",
+        indexes = {
+                @Index(name = "user_friend_index__user_id", columnList = "user_id"),
+                @Index(name = "user_friend_index__friend_id", columnList = "friend_id")
+        })
 public class UserFriend {
 
     @EmbeddedId

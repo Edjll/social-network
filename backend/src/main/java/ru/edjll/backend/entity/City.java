@@ -10,7 +10,12 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "city")
+@Table(
+        name = "city",
+        indexes = {
+                @Index(name = "city_index__id__country_id", columnList = "id, country_id")
+        }
+)
 public class City {
 
     @Id

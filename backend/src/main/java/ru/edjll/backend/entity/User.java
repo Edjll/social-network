@@ -11,7 +11,12 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_entity")
+@Table(
+        name = "user_entity",
+        indexes = {
+                @Index(name = "user_entity_index__id__enabled", columnList = "id, enabled")
+        }
+)
 public class User {
 
     @Id
