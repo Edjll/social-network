@@ -17,9 +17,11 @@ import ru.edjll.backend.dto.post.PostType;
 import ru.edjll.backend.dto.user.UserDtoForAdminPage;
 import ru.edjll.backend.dto.user.UserDtoForChangeEnabled;
 import ru.edjll.backend.dto.user.UserDtoWrapperForSave;
+import ru.edjll.backend.dto.user.UserFtoForMessage;
 import ru.edjll.backend.entity.User;
 import ru.edjll.backend.repository.UserRepository;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -187,5 +189,9 @@ public class UserService {
                         PostType.valueOf(rs.getString("type"))
                 ));
         return new PageImpl<>(posts, PageRequest.of(page, size), count);
+    }
+
+    public Page<UserFtoForMessage> getInterlocutors(Principal principal, Integer page, Integer size) {
+        return userRepository.findAllInterlocutors(principal.getName(), PageRequest.of(page, size));
     }
 }

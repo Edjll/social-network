@@ -1,5 +1,7 @@
 package ru.edjll.backend.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,8 +20,8 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "from Message m join m.sender s join m.recipient r " +
             "where m.sender.id in (:senderId, :recipientId) " +
             "and m.recipient.id in (:senderId, :recipientId) " +
-            "order by m.createdDate")
-    Collection<MessageDto> getAllMessageDtoBetweenUsersById(@Param("senderId") String senderId, @Param("recipientId") String recipientId);
+            "order by m.createdDate desc ")
+    Page<MessageDto> getAllMessageDtoBetweenUsersById(@Param("senderId") String senderId, @Param("recipientId") String recipientId, Pageable pageable);
 
     @Query("select new ru.edjll.backend.dto.message.MessageDto(" +
                 "m.id, m.text, m.createdDate, m.modifiedDate, " +

@@ -13,7 +13,7 @@ export class UserGroups extends React.Component {
             userId: new URLSearchParams(this.props.location.search).get("id"),
             groups: [],
             page: 0,
-            pageSize: 10
+            size: 10
         }
     }
 
@@ -27,7 +27,7 @@ export class UserGroups extends React.Component {
             .get(RequestService.URL + `/users/${this.state.userId}/groups`, {
                 params: {
                     page: this.state.page,
-                    pageSize: this.state.pageSize
+                    size: this.state.size
                 }
             })
             .then(response => this.setState({groups: response.data.content}))

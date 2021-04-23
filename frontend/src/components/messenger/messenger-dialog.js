@@ -2,45 +2,111 @@ import * as React from "react";
 import {Message} from "../message/message";
 import RequestService from "../../services/RequestService";
 import {Spinner} from "../spinner/spinner";
-import './dialog.css';
+import './messenger-dialog.css';
 import AuthService from "../../services/AuthService";
 import {Link} from "react-router-dom";
 import Validator from "../../services/Validator";
 import validation from "../../services/validation.json";
 import {Toast} from "../toast/toast";
+import IntersectionObserverService from "../../services/IntersectionObserverService";
 
-export class Dialog extends React.Component {
+export class MessengerDialog extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
+        this.defaultState = {
             id: null,
             messages: [],
             interlocutor: null,
-            loadQueue: 2,
             text: "",
             editing: false,
             createdDate: null,
             tmpText: "",
             errors: {
                 text: null
-            }
+            },
+            page: 0,
+            size: 10,
+            totalPages: 0
         }
+        this.state = {...this.defaultState};
         this.messagesRef = React.createRef();
     }
 
     componentDidMount() {
+        if (this.props.info) {
+            this.setState({ interlocutor: this.props.info }, () => this.loadMessages(() => {
+                IntersectionObserverService.create('.message:last-child', this, this.loadMessages);
+            }));
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.info !== this.props.info) {
+            this.setState({...this.defaultState}, () => this.componentDidMount());
+        }
+        if (prevProps.notification !== this.props.notification && this.props.notification !== null) {
+            switch (this.props.notification.action) {
+                case 'CREATED':
+                    this.createMessage(this.props.notification.id);
+                    break;
+                case 'UPDATED':
+                    this.updateMessage(this.props.notification.id);
+                    break;
+                case 'DELETED':
+                    this.deleteMessage(this.props.notification.id);
+                    break;
+            }
+        }
+    }
+
+    loadMessages(callback) {
         RequestService.getAxios()
-            .get(RequestService.URL + `/users/username/${this.props.match.params.username}`)
-            .then(response => {
-                this.setState({interlocutor: response.data, loadQueue: this.state.loadQueue - 1});
-                return RequestService.getAxios()
-                    .get(RequestService.URL + `/users/${this.state.interlocutor.id}/messages`)
+            .get(RequestService.URL + `/users/${this.state.interlocutor.id}/messages`, {
+                params: {
+                    page: this.state.page,
+                    size: this.state.size
+                }
             })
             .then(response => {
-                this.setState({messages: response.data, loadQueue: this.state.loadQueue - 1});
+                this.setState({messages: [...this.state.messages, ...response.data.content], totalPages: response.data.totalPages}, () => {
+                    if (callback) callback();
+                });
+            })
+    }
+
+    createMessage(id) {
+        this.loadMessage(id)
+            .then(response => {
+                this.setState({messages: [response.data, ...this.state.messages]});
                 this.messagesRef.current.scrollTop = this.messagesRef.current.scrollHeight;
             })
+    }
+
+    updateMessage(id) {
+        this.loadMessage(id)
+            .then(response => {
+                const messageIndex = this.state.messages.findIndex(message => message.id === response.data.id);
+                if (messageIndex > -1) {
+                    const messages = [...this.state.messages];
+                    messages[messageIndex] = response.data;
+                    this.setState({messages: messages});
+                }
+            })
+    }
+
+    deleteMessage(id) {
+        const messageIndex = this.state.messages.findIndex(message => message.id === id);
+        if (messageIndex > -1) {
+            const messages = [...this.state.messages];
+            messages.splice(messageIndex, 1);
+            this.setState({messages: messages});
+        }
+    }
+
+    loadMessage(id) {
+        return RequestService.getAxios()
+            .get(RequestService.URL + `/users/messages/${id}`);
     }
 
     handleSubmit() {
@@ -59,10 +125,8 @@ export class Dialog extends React.Component {
             .getAxios()
             .post(RequestService.URL + `/users/${this.state.interlocutor.id}/messages`, {
                 text: this.state.text.replace(/\n\n+/g, '\n')
-            }).then(response => {
-                this.setState({messages: [...this.state.messages, response.data]});
-                this.messagesRef.current.scrollTop = this.messagesRef.current.scrollHeight;
             });
+        this.setState({text: ''});
     }
 
     editMessage() {
@@ -70,13 +134,7 @@ export class Dialog extends React.Component {
             .getAxios()
             .put(RequestService.URL + `/users/messages/${this.state.id}`, {
                 text: this.state.text.replace(/\n\n/g, '\n')
-            }).then(response => {
-                const newMessages = [...this.state.messages];
-                const index = newMessages.findIndex(value => value.id === response.data.id);
-                newMessages[index] = response.data;
-
-                this.setState({messages: newMessages});
-            });
+            })
     }
 
     validate() {
@@ -93,17 +151,14 @@ export class Dialog extends React.Component {
     }
 
     handleDelete(value) {
-        RequestService.getAxios().delete(RequestService.URL + `/users/messages/${value.id}`, {
-            data: {
-                id: value.id,
-                senderId: AuthService.getId()
-            }
-        }).then(() => {
-            const newMessages = [...this.state.messages];
-            const index = newMessages.findIndex(message => message.id === value.id);
-            newMessages.splice(index, 1);
-            this.setState({messages: newMessages});
-        });
+        RequestService
+            .getAxios()
+            .delete(RequestService.URL + `/users/messages/${value.id}`, {
+                data: {
+                    id: value.id,
+                    senderId: AuthService.getId()
+                }
+            })
     }
 
     handleChange(e) {
@@ -148,18 +203,17 @@ export class Dialog extends React.Component {
         return (
             <div className={"dialog"}>
                 <div className={"dialog__interlocutor-info"}>
-                    {this.state.loadQueue === 0
-                        ? <Link to={`/user/${this.props.match.params.username}`}
+                    {this.state.interlocutor
+                        ? <Link to={`/user/${this.state.interlocutor.username}`}
                                 className={"dialog__interlocutor-info__name"}>{this.state.interlocutor.firstName} {this.state.interlocutor.lastName}</Link>
                         : ""
                     }
                 </div>
                 <div className={"dialog__messages"} ref={this.messagesRef}>
-                    {this.state.loadQueue === 0
-                        ? this.state.messages.map(message => <Message key={message.id} data={message}
+                    {
+                        this.state.messages.map(message => <Message key={message.id} data={message}
                                                                       handleEdit={this.handleEdit.bind(this)}
                                                                       handleDelete={this.handleDelete.bind(this)}/>)
-                        : <Spinner/>
                     }
                 </div>
                 <form className={"dialog__form"} onSubmit={(e) => {

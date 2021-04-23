@@ -78,6 +78,11 @@ public class UserInfoService {
                 .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "username", username, "exists"));
     }
 
+    public UserInfoDto getUserInfoDtoById(String id) {
+        return userInfoRepository.getUserInfoById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id, "exists"));
+    }
+
     public Page<UserInfoDtoForSearch> searchUserInfo(Integer page, Integer size, Optional<String> firstName, Optional<String> lastName, Optional<Long> countryId, Optional<Long> cityId, Optional<Principal> principal) {
         Map<String, String> stringSearchParams = new HashMap<>();
         Map<String, Object> searchParams = new HashMap<>();

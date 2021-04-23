@@ -10,6 +10,7 @@ import ru.edjll.backend.dto.group.GroupDtoForSearch;
 import ru.edjll.backend.dto.group.GroupDtoForUserPage;
 import ru.edjll.backend.dto.post.PostDto;
 import ru.edjll.backend.dto.user.UserDtoWrapperForSave;
+import ru.edjll.backend.dto.user.UserFtoForMessage;
 import ru.edjll.backend.dto.user.info.UserInfoDetailDto;
 import ru.edjll.backend.dto.user.info.UserInfoDto;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSave;
@@ -56,6 +57,14 @@ public class UserController {
         return userInfoService.searchUserInfo(page, size, firstName, lastName, countryId, cityId, Optional.ofNullable(principal));
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserInfoDto getById(
+            @PathVariable @NotEmpty String id
+    ) {
+        return userInfoService.getUserInfoDtoById(id);
+    }
+
     @GetMapping("/username/{username}")
     @ResponseStatus(HttpStatus.OK)
     public UserInfoDto getByUsername(
@@ -81,6 +90,17 @@ public class UserController {
             Principal principal
     ) {
         return groupService.getDtoByUserId(id, Optional.ofNullable(principal), page, size);
+    }
+
+    @GetMapping("/interlocutors")
+    @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<UserFtoForMessage> getInterlocutors(
+            @RequestParam @NotNull @PositiveOrZero Integer page,
+            @RequestParam @NotNull @Positive Integer size,
+            Principal principal
+    ) {
+        return userService.getInterlocutors(principal, page, size);
     }
 
     @GetMapping("/{id}/feed")

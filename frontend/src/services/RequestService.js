@@ -1,5 +1,7 @@
 import axios from "axios";
 import AuthService from "./AuthService";
+import SockJS from 'sockjs-client';
+import { Stomp } from '@stomp/stompjs';
 
 const axi = axios.create();
 const URL = 'http://localhost:8085';
@@ -20,11 +22,29 @@ const configure = () => {
 
 const getAxios = () => axi;
 
+const sockJS = new SockJS(URL + "/ws");
+const stompClient = Stomp.over(sockJS);
+
+const stompConnect = (onConnected, onError) => {
+    stompClient.connect({ "Authorization": `Bearer ${AuthService.getToken()}` } , onConnected, onError);
+}
+
+const stompSubscribe = (url, messageReceived) => {
+    stompClient.subscribe(url, messageReceived);
+}
+
+const stompSend = (url, body) => {
+    stompClient.send(url, {}, JSON.stringify(body));
+}
+
 const RequestService = {
     URL,
     ADMIN_URL,
     configure,
-    getAxios
+    getAxios,
+    stompConnect,
+    stompSubscribe,
+    stompSend
 };
 
 export default RequestService;

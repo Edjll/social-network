@@ -1,4 +1,4 @@
-const create = (className, context) => {
+const create = (className, context, load) => {
     if (context.state.totalPages > 1) {
         context.observer = new IntersectionObserver(
             entries => entries.forEach(entry => {
@@ -6,18 +6,18 @@ const create = (className, context) => {
                     context.observer.unobserve(entry.target);
                     if (context.state.page + 1 < context.state.totalPages) {
                         context.setState({page: context.state.page + 1}, () =>
-                            context.loadPosts(() => {
-                                context.observer.observe(document.querySelector(`.${className}:last-child`));
+                            load.bind(context)(() => {
+                                context.observer.observe(document.querySelector(`${className}`));
                             })
                         );
                     }
                 }
             }),
             {
-                threshold: 0.75
+                threshold: 0.9
             }
         );
-        context.observer.observe(document.querySelector(`.${className}:last-child`));
+        context.observer.observe(document.querySelector(`${className}`));
     }
 }
 

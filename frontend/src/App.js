@@ -5,7 +5,6 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 import {PrivateRoute} from "./components/security/private-route";
 import {Home} from "./components/home/home";
 import {Profile} from "./components/profile/profile";
-import {Dialog} from "./components/dialog/dialog";
 import AuthService from "./services/AuthService";
 import {Register} from "./components/register/register";
 import {Group} from "./components/group/group";
@@ -19,6 +18,7 @@ import ProfileEditor from "./components/profile/profile-editor";
 import {GroupSearch} from "./components/group/group-search";
 import {UserGroups} from "./components/user/user-groups";
 import {Login} from "./components/login/login";
+import {Messenger} from "./components/messenger/messenger";
 
 class App extends React.Component {
     render() {
@@ -30,7 +30,7 @@ class App extends React.Component {
                         <Route path={'/login'} component={Login}/>
                         <Route path={`/register`} component={Register}/>
                         <PrivateRoute path={'/admin'} roles={[AuthService.Role.ADMIN]} component={Admin}/>
-                        <PrivateRoute path={`/user/:username/message`} component={Dialog}/>
+                        <PrivateRoute path={`/messenger`} component={Messenger}/>
                         <Route path={`/users`} component={UserSearch}/>
                         <Route path={"/profile/edit"} component={ProfileEditor}/>
                         <Route path={"/user/friends"} component={UserFriends}/>

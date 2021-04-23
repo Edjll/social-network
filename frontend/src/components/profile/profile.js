@@ -57,7 +57,7 @@ export class Profile extends React.Component {
                         loadQueue: this.state.loadQueue - 1,
                         posts: []
                     }, () => {
-                        this.loadPosts(() => IntersectionObserverService.create('post', this));
+                        this.loadPosts(() => IntersectionObserverService.create('.post:last-child', this, this.loadPosts));
                         this.loadFriends();
                         this.loadGroups();
                         this.loadSubscribers();
@@ -161,8 +161,11 @@ export class Profile extends React.Component {
                                         info</Link>
                                     : ''
                             }
-                            <Link to={`/user/${this.state.user.username}/message`}
-                                  className="form__button profile__actions__item">Send message</Link>
+                            {
+                                this.state.user
+                                    ?   <Link to={{pathname: `/messenger`, search:`?id=${this.state.user.id}`}} className="form__button profile__actions__item">Send message</Link>
+                                    :   ''
+                            }
                         </CardBody>
                     </Card>
                     {

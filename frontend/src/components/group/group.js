@@ -53,7 +53,7 @@ export class Group extends React.Component {
         RequestService.getAxios()
             .get(RequestService.URL + "/groups/" + this.props.match.params.address)
             .then(response => this.setState({info: response.data}, () => {
-                this.loadPosts(() => IntersectionObserverService.create('post', this));
+                this.loadPosts(() => IntersectionObserverService.create('.post:last-child', this, this.loadPosts));
                 this.loadUsers();
             }))
             .catch(error => {

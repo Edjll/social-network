@@ -1,12 +1,12 @@
 package ru.edjll.backend.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import ru.edjll.backend.dto.message.MessageDto;
-import ru.edjll.backend.dto.message.MessageDtoForDelete;
-import ru.edjll.backend.dto.message.MessageDtoForSave;
-import ru.edjll.backend.dto.message.MessageDtoForUpdate;
+import ru.edjll.backend.dto.message.*;
 import ru.edjll.backend.entity.Message;
 import ru.edjll.backend.entity.User;
 import ru.edjll.backend.exception.ResponseParameterException;
@@ -26,7 +26,7 @@ public class MessageService {
         this.userService = userService;
     }
 
-    public MessageDto save(String userId, Principal principal, MessageDtoForSave messageDtoForSave) {
+    public MessageNotification save(String userId, Principal principal, MessageDtoForSave messageDtoForSave) {
         User user = userService.getUserById(userId)
                 .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "user", userId.toString(), "exists"));
 
@@ -39,10 +39,10 @@ public class MessageService {
 
         Message savedMessage = messageRepository.save(message);
 
-        return this.getMessageDtoById(savedMessage.getId());
+        return new MessageNotification(savedMessage.getId(), MessageNotificationAction.CREATED, principal.getName(), savedMessage.getRecipient().getId());
     }
 
-    public MessageDto update(Long id, Principal principal, MessageDtoForUpdate messageDtoForUpdate) {
+    public MessageNotification update(Long id, Principal principal, MessageDtoForUpdate messageDtoForUpdate) {
         Message message = messageRepository.findById(id)
                 .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
 
@@ -54,10 +54,10 @@ public class MessageService {
         message.setModifiedDate(messageDtoForUpdate.getModifiedDate());
 
         Message savedMessage = messageRepository.save(message);
-        return this.getMessageDtoById(savedMessage.getId());
+        return new MessageNotification(savedMessage.getId(), MessageNotificationAction.UPDATED, principal.getName(), savedMessage.getRecipient().getId());
     }
 
-    public void delete(Long id, Principal principal) {
+    public MessageNotification delete(Long id, Principal principal) {
         Message message = messageRepository.findById(id)
                 .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
 
@@ -66,13 +66,19 @@ public class MessageService {
         }
 
         messageRepository.deleteById(id);
+
+        return new MessageNotification(id, MessageNotificationAction.DELETED, principal.getName(), message.getRecipient().getId());
     }
 
-    public Collection<MessageDto> getAllMessageDtoBetweenUsersById(String senderId, Principal principal) {
-        return messageRepository.getAllMessageDtoBetweenUsersById(senderId, principal.getName());
+    public Page<MessageDto> getAllMessageDtoBetweenUsersById(String senderId, Integer page, Integer size, Principal principal) {
+        return messageRepository.getAllMessageDtoBetweenUsersById(senderId, principal.getName(), PageRequest.of(page, size));
     }
 
-    public MessageDto getMessageDtoById(Long id) {
-        return messageRepository.getMessageDtoById(id);
+    public MessageDto getMessageDtoById(Long id, Principal principal) {
+        MessageDto messageDto = messageRepository.getMessageDtoById(id);
+        if (!messageDto.getSender().getId().equals(principal.getName()) && !messageDto.getRecipient().getId().equals(principal.getName())) {
+            throw new ResponseParameterException(HttpStatus.FORBIDDEN, "id", principal.getName(), "forbidden");
+        }
+        return messageDto;
     }
 }

@@ -18,7 +18,7 @@ export class Home extends React.Component {
     }
 
     componentDidMount() {
-        this.loadPosts(() => IntersectionObserverService.create('post', this));
+        this.loadPosts(() => IntersectionObserverService.create('.post:last-child', this));
     }
 
     loadPosts(callback) {

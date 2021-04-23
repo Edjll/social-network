@@ -7,6 +7,7 @@ import {GroupCard} from "./group-card";
 import {Link} from "react-router-dom";
 import './group-search.css';
 import AuthService from "../../services/AuthService";
+import IntersectionObserverService from "../../services/IntersectionObserverService";
 
 export class GroupSearch extends React.Component {
 
@@ -21,7 +22,7 @@ export class GroupSearch extends React.Component {
     }
 
     componentDidMount() {
-        this.loadGroups(this.createIntersectionObserver.bind(this));
+        this.loadGroups(() => IntersectionObserverService.create('.group_card:last-child', this, this.loadGroups));
     }
 
     loadGroups(callback) {
@@ -37,29 +38,6 @@ export class GroupSearch extends React.Component {
             }, () => {
                 if (callback) callback();
             }))
-    }
-
-    createIntersectionObserver() {
-        if (this.state.totalPages > 1) {
-            this.observer = new IntersectionObserver(
-                entries => entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        this.observer.unobserve(entry.target);
-                        if (this.state.page + 1 < this.state.totalPages) {
-                            this.setState({page: this.state.page + 1}, () =>
-                                this.loadGroups(() => {
-                                    this.observer.observe(document.querySelector('.group_card:last-child'));
-                                })
-                            );
-                        }
-                    }
-                }),
-                {
-                    threshold: 0.75
-                }
-            );
-            this.observer.observe(document.querySelector('.group_card:last-child'));
-        }
     }
 
     render() {

@@ -21,6 +21,14 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, String> {
             "where user.realmId = 'social-network' and user.serviceAccountClientLink is null and user.enabled = true and user.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7' and user.username = :username" )
     Optional<UserInfoDto> getUserInfoByUsername(@Param("username") String username);
 
+    @Query( "select new ru.edjll.backend.dto.user.info.UserInfoDto(" +
+            "user.id, user.firstName, user.lastName, user.username, " +
+            "case when userInfo is null then null else userInfo.birthday end, " +
+            "case when city is null then null else city.title end) " +
+            "from User user left join user.userInfo userInfo left join userInfo.city city " +
+            "where user.realmId = 'social-network' and user.serviceAccountClientLink is null and user.enabled = true and user.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7' and user.id = :id" )
+    Optional<UserInfoDto> getUserInfoById(@Param("id") String id);
+
     @Query( "select new ru.edjll.backend.dto.user.info.UserInfoDetailDto(" +
                 "user.id, user.firstName, user.lastName, user.username, " +
                 "case when userInfo is null then null else userInfo.birthday end, " +

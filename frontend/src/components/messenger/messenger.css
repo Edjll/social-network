@@ -1,0 +1,22 @@
+.messenger {
+    display: flex;
+    border: 1px solid rgb(62, 68, 70);
+    background-color: #2b2e34;
+    height: calc(100vh - 63px - 1rem);
+    border-radius: .25rem;
+}
+
+.messenger__interlocutors {
+    height: 100%;
+    border-right: 1px solid rgb(62, 68, 70);
+    min-width: 220px;
+}
+
+.messenger__interlocutors__header {
+    padding: 1rem;
+    background-color: #2b2e34;
+    border-bottom: 1px solid rgb(62, 68, 70);
+    border-radius: .25rem .25rem 0 0;
+    font-size: 1.2rem;
+    color: white;
+}

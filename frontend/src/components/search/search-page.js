@@ -8,6 +8,7 @@ import {Card} from "../card/card";
 import {CardHeader} from "../card/card-header";
 import {FormSelect} from "../form/form-select";
 import {FormButton} from "../form/form-button";
+import IntersectionObserverService from "../../services/IntersectionObserverService";
 
 export class SearchPage extends React.Component {
 
@@ -31,7 +32,7 @@ export class SearchPage extends React.Component {
     }
 
     componentDidMount() {
-        this.loadUsers(this.createIntersectionObserver.bind(this));
+        this.loadUsers(() => IntersectionObserverService.create('.user_card:last-child', this, this.loadUsers));
         this.loadCountries();
     }
 
@@ -77,29 +78,6 @@ export class SearchPage extends React.Component {
 
     handleSearch() {
         this.setState({users: [], page: 0}, this.loadUsers);
-    }
-
-    createIntersectionObserver() {
-        if (this.state.totalPages > 1) {
-            this.observer = new IntersectionObserver(
-                entries => entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        this.observer.unobserve(entry.target);
-                        if (this.state.page + 1 < this.state.totalPages) {
-                            this.setState({page: this.state.page + 1}, () =>
-                                this.loadUsers(() => {
-                                    this.observer.observe(document.querySelector('.user_card:last-child'));
-                                })
-                            );
-                        }
-                    }
-                }),
-                {
-                    threshold: 0.75
-                }
-            );
-            this.observer.observe(document.querySelector('.user_card:last-child'));
-        }
     }
 
     render() {
