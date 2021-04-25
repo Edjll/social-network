@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import ru.edjll.backend.dto.message.MessageUserDto;
 import ru.edjll.backend.dto.post.PostDto;
 import ru.edjll.backend.dto.post.PostType;
 import ru.edjll.backend.dto.user.UserDtoForAdminPage;
@@ -192,6 +193,96 @@ public class UserService {
     }
 
     public Page<UserFtoForMessage> getInterlocutors(Principal principal, Integer page, Integer size) {
-        return userRepository.findAllInterlocutors(principal.getName(), PageRequest.of(page, size));
+        int count = jdbcTemplate.queryForObject(
+                "select count(*) " +
+                    "from (select sender_id as user_id " +
+                            "from message " +
+                            "where recipient_id = '" + principal.getName() + "' " +
+                            "union " +
+                            "select recipient_id as user_id " +
+                            "from message " +
+                            "where sender_id = '" + principal.getName() + "') as info",
+                Integer.class);
+
+        if (count == 0) return new PageImpl<>(Collections.EMPTY_LIST, PageRequest.of(page, size), 0);
+
+        List<UserFtoForMessage> users = jdbcTemplate.query(
+                "select user_entity.id, user_entity.username, user_entity.first_name, user_entity.last_name, newMessages " +
+                "from user_entity " +
+                    "join ( " +
+                        "select user_id, max(date) as date, sum(count) as newMessages " +
+                        "from ( " +
+                            " select " +
+                                "sender_id as user_id, " +
+                                "max(created_date) as date, " +
+                                "count(case when viewed = false then 1 end) as count " +
+                            " from message " +
+                            " where recipient_id = '" + principal.getName() + "' " +
+                            " group by user_id " +
+                            " union all " +
+                            " select " +
+                                "recipient_id as user_id, " +
+                                "max(created_date) as date, " +
+                                "'0' " +
+                            " from message " +
+                            " where sender_id = '" + principal.getName() + "' " +
+                            " group by user_id " +
+                        ") as info " +
+                        "group by user_id " +
+                    ") as info " +
+                    "on user_entity.id = info.user_id " +
+                "order by info.date desc " +
+                "limit " + size + " offset " + page * size,
+                (rs, rowNumber) -> new UserFtoForMessage(
+                        rs.getString("id"),
+                        rs.getString("username"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        null,
+                        rs.getInt("newMessages")
+                )
+        );
+        return new PageImpl<>(users, PageRequest.of(page, size), count);
+    }
+
+    public UserFtoForMessage getInterlocutor(String id, Principal principal) {
+        List<UserFtoForMessage> user = jdbcTemplate.query(
+                "select user_entity.id, user_entity.username, user_entity.first_name, user_entity.last_name, position, newMessages " +
+                    "from user_entity join ( " +
+                            "select user_id, row_number() over (order by max(date) desc) as position, sum(count) as newMessages " +
+                            "from ( " +
+                                    " select " +
+                                            " sender_id as user_id, " +
+                                            " max(created_date) as date, " +
+                                            " count(case when viewed = false then 1 end) as count " +
+                                    " from message " +
+                                    " where recipient_id = '" + principal.getName() + "' " +
+                                    " group by user_id " +
+                                    " union all " +
+                                    " select " +
+                                            " recipient_id as user_id, " +
+                                            " max(created_date) as date, " +
+                                            "'0' " +
+                                    " from message " +
+                                    " where sender_id = '" + principal.getName() + "' " +
+                                    " group by user_id " +
+                            " ) as info " +
+                            "group by user_id) as info " +
+                    "on user_entity.id = '" + id + "' and user_entity.id = user_id",
+                (rs, rowNumber) -> {
+                    System.out.println(rs);
+                    return new UserFtoForMessage(
+                            rs.getString("id"),
+                            rs.getString("username"),
+                            rs.getString("first_name"),
+                            rs.getString("last_name"),
+                            rs.getInt("position"),
+                            rs.getInt("newMessages")
+                    );
+                }
+        );
+
+        if (user.isEmpty()) return null;
+        return user.get(0);
     }
 }

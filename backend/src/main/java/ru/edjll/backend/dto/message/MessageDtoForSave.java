@@ -21,6 +21,8 @@ public class MessageDtoForSave {
 
     private LocalDateTime createdDate = LocalDateTime.now();
 
+    private Boolean viewed = false;
+
     public MessageDtoForSave(Message message) {
         this.text = message.getText();
         this.createdDate = message.getCreatedDate();
@@ -31,6 +33,7 @@ public class MessageDtoForSave {
 
         message.setText(text);
         message.setCreatedDate(createdDate);
+        message.setViewed(viewed);
 
         return message;
     }

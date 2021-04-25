@@ -20,3 +20,17 @@
     font-size: 1.2rem;
     color: white;
 }
+
+.messenger__unselected_interlocutor {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3rem;
+    color: white;
+}
+
+.messenger__unselected_interlocutor a {
+    text-decoration: none;
+    color: #337fcc;
+}

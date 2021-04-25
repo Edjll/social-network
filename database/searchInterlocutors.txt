@@ -1,0 +1,98 @@
+explain analyze
+select user_entity.id, user_entity.username, user_entity.first_name, user_entity.last_name, count
+from user_entity
+         join (explain analyze select case
+                          when sender_id = '5b1fb508-ddad-4676-96ee-c359479f282c' then recipient_id
+                          else sender_id
+                          end           as user_id,
+                      max(created_date) as date
+                      count(case when viewed = false and '5b1fb508-ddad-4676-96ee-c359479f282c' = recipient_id then 1 end) as count
+               from message
+                where sender_id = '5b1fb508-ddad-4676-96ee-c359479f282c' or recipient_id = '5b1fb508-ddad-4676-96ee-c359479f282c'
+               group by user_id) as info
+         on user_entity.id = info.user_id
+order by info.date desc;
+
+Gather Merge  (cost=60235.15..61162.95 rows=7952 width=77) (actual time=4286.915..4287.126 rows=100 loops=1)
+  Workers Planned: 2
+  Workers Launched: 2
+  ->  Sort  (cost=59235.13..59245.07 rows=3976 width=77) (actual time=4136.443..4136.453 rows=33 loops=3)
+        Sort Key: info.date DESC
+        Sort Method: quicksort  Memory: 29kB
+        Worker 0:  Sort Method: quicksort  Memory: 30kB
+        Worker 1:  Sort Method: quicksort  Memory: 29kB
+        ->  Hash Join  (cost=27466.98..58997.42 rows=3976 width=77) (actual time=163.009..4136.251 rows=33 loops=3)
+              Hash Cond: ((user_entity.id)::text = (info.user_id)::text)
+              ->  Parallel Seq Scan on user_entity  (cost=0.00..20831.69 rows=416669 width=61) (actual time=0.947..2207.032 rows=333336 loops=3)
+              ->  Hash  (cost=26694.69..26694.69 rows=9543 width=532) (actual time=33.155..33.159 rows=100 loops=3)
+                    Buckets: 8192  Batches: 2  Memory Usage: 68kB
+                    ->  Subquery Scan on info  (cost=26355.25..26694.69 rows=9543 width=532) (actual time=22.021..29.687 rows=100 loops=3)
+                          ->  GroupAggregate  (cost=26355.25..26599.26 rows=9543 width=532) (actual time=22.020..29.636 rows=100 loops=3)
+                                Group Key: (CASE WHEN ((message.sender_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text) THEN message.recipient_id ELSE message.sender_id END)
+                                ->  Sort  (cost=26355.25..26380.19 rows=9978 width=562) (actual time=21.939..23.426 rows=10001 loops=3)
+                                      Sort Key: (CASE WHEN ((message.sender_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text) THEN message.recipient_id ELSE message.sender_id END)
+                                      Sort Method: quicksort  Memory: 1791kB
+                                      Worker 0:  Sort Method: quicksort  Memory: 1791kB
+                                      Worker 1:  Sort Method: quicksort  Memory: 1791kB
+                                      ->  Bitmap Heap Scan on message  (cost=152.69..23165.48 rows=9978 width=562) (actual time=0.782..6.747 rows=10001 loops=3)
+                                            Recheck Cond: (((sender_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text) OR ((recipient_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text))
+                                            Heap Blocks: exact=194
+                                            ->  BitmapOr  (cost=152.69..152.69 rows=9979 width=0) (actual time=0.753..0.754 rows=0 loops=3)
+                                                  ->  Bitmap Index Scan on message_sender_id  (cost=0.00..5.22 rows=106 width=0) (actual time=0.068..0.069 rows=1 loops=3)
+                                                        Index Cond: ((sender_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                                                  ->  Bitmap Index Scan on message_recipient_id  (cost=0.00..142.48 rows=9874 width=0) (actual time=0.677..0.677 rows=10001 loops=3)
+                                                        Index Cond: ((recipient_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+Planning Time: 0.520 ms
+Execution Time: 4287.465 ms
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+explain analyze
+select user_entity.id, user_entity.username, user_entity.first_name, user_entity.last_name, count
+from user_entity
+        join (
+                select user_id, max(date) as date, sum(count) as count
+                from (
+                         select
+                            sender_id as user_id,
+                            max(created_date) as date,
+                            count(case when viewed = false then 1 end) as count
+                         from message
+                         where recipient_id = '5b1fb508-ddad-4676-96ee-c359479f282c'
+                         group by user_id
+                         union all
+                         select
+                            recipient_id as user_id,
+                            max(created_date) as date,
+                            '0'
+                         from message
+                         where sender_id = '5b1fb508-ddad-4676-96ee-c359479f282c'
+                         group by user_id
+                    ) as info
+                group by user_id
+        ) as info
+        on user_entity.id = info.user_id
+order by info.date desc;
+
+Sort  (cost=2673.34..2673.84 rows=200 width=101) (actual time=8.072..8.082 rows=100 loops=1)
+  Sort Key: (max((max(message.created_date)))) DESC
+  Sort Method: quicksort  Memory: 39kB
+  ->  Nested Loop  (cost=985.12..2665.70 rows=200 width=101) (actual time=7.346..8.004 rows=100 loops=1)
+        ->  HashAggregate  (cost=984.70..987.20 rows=200 width=77) (actual time=7.325..7.382 rows=100 loops=1)
+              Group Key: message.sender_id
+              Batches: 1  Memory Usage: 64kB
+              ->  Append  (cost=721.30..938.36 rows=6178 width=53) (actual time=7.154..7.271 rows=101 loops=1)
+                    ->  HashAggregate  (cost=721.30..782.42 rows=6112 width=53) (actual time=7.153..7.238 rows=100 loops=1)
+                          Group Key: message.sender_id
+                          Batches: 1  Memory Usage: 225kB
+                          ->  Index Scan using message_recipient_id on message  (cost=0.42..647.25 rows=9874 width=46) (actual time=0.030..2.552 rows=10000 loops=1)
+                                Index Cond: ((recipient_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                    ->  HashAggregate  (cost=62.61..63.27 rows=66 width=53) (actual time=0.019..0.020 rows=1 loops=1)
+                          Group Key: message_1.recipient_id
+                          Batches: 1  Memory Usage: 24kB
+                          ->  Index Scan using message_sender_id on message message_1  (cost=0.42..62.08 rows=106 width=45) (actual time=0.015..0.015 rows=1 loops=1)
+                                Index Cond: ((sender_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+        ->  Index Scan using user_entity_id_enabled_service_account_client_link_index on user_entity  (cost=0.42..8.38 rows=1 width=61) (actual time=0.005..0.005 rows=1 loops=100)
+              Index Cond: ((id)::text = (message.sender_id)::text)
+Planning Time: 0.470 ms
+Execution Time: 8.203 ms

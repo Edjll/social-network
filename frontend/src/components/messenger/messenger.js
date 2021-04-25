@@ -4,6 +4,7 @@ import {MessengerDialog} from "./messenger-dialog";
 import {MessengerInterlocutorCard} from "./messenger-interlocutor-card";
 import './messenger.css';
 import AuthService from "../../services/AuthService";
+import {Link} from "react-router-dom";
 
 export class Messenger extends React.Component {
 
@@ -26,9 +27,18 @@ export class Messenger extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.location.search !== this.props.location.search) {
             const id = new URLSearchParams(this.props.location.search).get("id");
-            const currentInterlocutor = this.state.interlocutors.find(inter => inter.id === id);
-            currentInterlocutor.newMessages = 0;
-            this.setState({interlocutors: this.state.interlocutors, currentInterlocutor: currentInterlocutor});
+            if (id !== null) {
+                const currentInterlocutor = this.state.interlocutors.find(inter => inter.id === id);
+                if (currentInterlocutor.newMessages !== 0) {
+                    RequestService
+                        .getAxios()
+                        .put(RequestService.URL + `/users/${currentInterlocutor.id}/messages`)
+                }
+                currentInterlocutor.newMessages = 0;
+                this.setState({interlocutors: this.state.interlocutors, currentInterlocutor: currentInterlocutor});
+            } else {
+                this.setState({currentInterlocutor: null})
+            }
         }
     }
 
@@ -43,24 +53,26 @@ export class Messenger extends React.Component {
             .then(response => {
                 const id = new URLSearchParams(this.props.location.search).get("id");
                 this.setState({
-                    interlocutors: response.data.content.map(data => { return {...data, newMessages: 0} })},
+                    interlocutors: response.data.content},
                     () => {
-                        const currentInterlocutor = this.state.interlocutors.find(inter => inter.id === id);
-                        if (currentInterlocutor) {
-                            this.setState({currentInterlocutor: currentInterlocutor});
-                        } else {
-                            this.loadInterlocutor(id)
-                                .then(response => {
-                                    this.setState({
-                                        currentInterlocutor: {
-                                            id: response.data.id,
-                                            username: response.data.username,
-                                            firstName: response.data.firstName,
-                                            lastName: response.data.lastName,
-                                            newMessages: 0
-                                        }
+                        if (new URLSearchParams(this.props.location.search).get("id")) {
+                            const currentInterlocutor = this.state.interlocutors.find(inter => inter.id === id);
+                            if (currentInterlocutor) {
+                                this.setState({currentInterlocutor: currentInterlocutor});
+                            } else {
+                                this.loadInterlocutorInfo(id)
+                                    .then(response => {
+                                        this.setState({
+                                            currentInterlocutor: {
+                                                id: response.data.id,
+                                                username: response.data.username,
+                                                firstName: response.data.firstName,
+                                                lastName: response.data.lastName,
+                                                newMessages: 0
+                                            }
+                                        });
                                     });
-                                });
+                            }
                         }
                     }
                 );
@@ -68,6 +80,11 @@ export class Messenger extends React.Component {
     }
 
     loadInterlocutor(id) {
+        return RequestService.getAxios()
+            .get(RequestService.URL + `/users/interlocutors/${id}`);
+    }
+
+    loadInterlocutorInfo(id) {
         return RequestService.getAxios()
             .get(RequestService.URL + `/users/${id}`);
     }
@@ -77,31 +94,49 @@ export class Messenger extends React.Component {
         const interlocutors = [...this.state.interlocutors];
         const searchId = notification.senderId === AuthService.getId() ? notification.recipientId : notification.senderId;
         const interlocutorIndex = interlocutors.findIndex(interlocutor => interlocutor.id === searchId);
-        const authIsNotSender = notification.senderId !== AuthService.getId() && notification.senderId !== this.state.currentInterlocutor.id;
+        const authIsNotSender = notification.senderId !== AuthService.getId() && (this.state.currentInterlocutor === null || notification.senderId !== this.state.currentInterlocutor.id);
         if (notification.action === 'CREATED') {
             if (interlocutorIndex > -1) {
                 const interlocutor = interlocutors.splice(interlocutorIndex, 1);
                 if (authIsNotSender) interlocutor[0].newMessages++;
+                else if (notification.senderId !== AuthService.getId()) RequestService.getAxios().put(RequestService.URL + `/users/messages/${notification.id}/viewed`);
                 this.setState({interlocutors: [...interlocutor, ...interlocutors]});
             } else {
-                this.loadInterlocutor(searchId)
+                this.loadInterlocutorInfo(searchId)
                     .then(response => {
+                        if (AuthService.getId() !== notification.senderId && this.state.currentInterlocutor && response.data.id === this.state.currentInterlocutor.id) {
+                            RequestService.getAxios().put(RequestService.URL + `/users/messages/${notification.id}/viewed`);
+                        }
                         this.setState({interlocutors: [
                                 {
                                     id: response.data.id,
                                     username: response.data.username,
                                     firstName: response.data.firstName,
                                     lastName: response.data.lastName,
-                                    newMessages: authIsNotSender ? 1 : 0
+                                    newMessages: 0
                                 },
                                 ...this.state.interlocutors
                             ]}
                         );
                     })
             }
-        } else if (notification.action === 'DELETED' && interlocutorIndex > -1) {
-            interlocutors.splice(interlocutorIndex, 1);
-            this.setState({interlocutors: interlocutors});
+        } else if (notification.action === 'DELETED') {
+            RequestService
+                .getAxios()
+                .get(RequestService.URL + `/users/interlocutors/${searchId}`)
+                .then(response => {
+                    if (interlocutorIndex > -1) {
+                        if (response.data.position - 1 !== interlocutorIndex) {
+                            interlocutors.splice(interlocutorIndex, 1);
+                            if (response.data.position - 1 <= interlocutors.length) {
+                                interlocutors.splice(response.data.position - 1, 0, response.data);
+                            }
+                        } else {
+                            interlocutors[interlocutorIndex].newMessages = response.data.newMessages;
+                        }
+                        this.setState({interlocutors: interlocutors});
+                    }
+                });
         }
         if (!authIsNotSender) {
             this.setState({notification: notification});
@@ -125,7 +160,9 @@ export class Messenger extends React.Component {
                     this.state.currentInterlocutor
                         ? <MessengerDialog info={this.state.currentInterlocutor}
                                            notification={this.state.notification}/>
-                        : ''
+                        : <div className={"messenger__unselected_interlocutor"}>
+                            <div>Select interlocutor in the column or <Link to={"/users"}>find</Link> him</div>
+                        </div>
                 }
             </div>
         );

@@ -13,4 +13,6 @@ public class UserFtoForMessage {
     private String username;
     private String firstName;
     private String lastName;
+    private Integer position;
+    private Integer newMessages;
 }

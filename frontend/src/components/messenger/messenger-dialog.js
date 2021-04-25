@@ -1,7 +1,5 @@
 import * as React from "react";
-import {Message} from "../message/message";
 import RequestService from "../../services/RequestService";
-import {Spinner} from "../spinner/spinner";
 import './messenger-dialog.css';
 import AuthService from "../../services/AuthService";
 import {Link} from "react-router-dom";
@@ -9,6 +7,7 @@ import Validator from "../../services/Validator";
 import validation from "../../services/validation.json";
 import {Toast} from "../toast/toast";
 import IntersectionObserverService from "../../services/IntersectionObserverService";
+import {MessengerMessage} from "./messenger-message";
 
 export class MessengerDialog extends React.Component {
 
@@ -35,7 +34,7 @@ export class MessengerDialog extends React.Component {
 
     componentDidMount() {
         if (this.props.info) {
-            this.setState({ interlocutor: this.props.info }, () => this.loadMessages(() => {
+            this.setState({interlocutor: this.props.info}, () => this.loadMessages(() => {
                 IntersectionObserverService.create('.message:last-child', this, this.loadMessages);
             }));
         }
@@ -69,7 +68,10 @@ export class MessengerDialog extends React.Component {
                 }
             })
             .then(response => {
-                this.setState({messages: [...this.state.messages, ...response.data.content], totalPages: response.data.totalPages}, () => {
+                this.setState({
+                    messages: [...this.state.messages, ...response.data.content],
+                    totalPages: response.data.totalPages
+                }, () => {
                     if (callback) callback();
                 });
             })
@@ -211,9 +213,9 @@ export class MessengerDialog extends React.Component {
                 </div>
                 <div className={"dialog__messages"} ref={this.messagesRef}>
                     {
-                        this.state.messages.map(message => <Message key={message.id} data={message}
-                                                                      handleEdit={this.handleEdit.bind(this)}
-                                                                      handleDelete={this.handleDelete.bind(this)}/>)
+                        this.state.messages.map(message => <MessengerMessage key={message.id} data={message}
+                                                                             handleEdit={this.handleEdit.bind(this)}
+                                                                             handleDelete={this.handleDelete.bind(this)}/>)
                     }
                 </div>
                 <form className={"dialog__form"} onSubmit={(e) => {
@@ -237,8 +239,10 @@ export class MessengerDialog extends React.Component {
                 </form>
                 {
                     this.state.errors.text
-                        ?   <Toast header={"Error"} body={this.state.errors.text} handleClose={this.handleClose.bind(this)} time={2}/>
-                        :   ''
+                        ?
+                        <Toast header={"Error"} body={this.state.errors.text} handleClose={this.handleClose.bind(this)}
+                               time={2}/>
+                        : ''
                 }
             </div>
         );

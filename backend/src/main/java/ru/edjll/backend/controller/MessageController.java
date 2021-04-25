@@ -27,11 +27,9 @@ import java.util.Collection;
 public class MessageController {
 
     private final MessageService messageService;
-    private final SimpMessagingTemplate messagingTemplate;
 
-    public MessageController(MessageService messageService, SimpMessagingTemplate messagingTemplate) {
+    public MessageController(MessageService messageService) {
         this.messageService = messageService;
-        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/users/{userId}/messages")
@@ -61,9 +59,7 @@ public class MessageController {
             Principal principal,
             @RequestBody @Valid MessageDtoForSave messageDtoForSave
     ) {
-        MessageNotification notification =  messageService.save(userId, principal, messageDtoForSave);
-        messagingTemplate.convertAndSendToUser(notification.getRecipientId(), "/queue/messages", notification);
-        messagingTemplate.convertAndSendToUser(principal.getName(), "/queue/messages", notification);
+        messageService.save(userId, principal, messageDtoForSave);
     }
 
     @PutMapping("/users/messages/{id}")
@@ -73,9 +69,25 @@ public class MessageController {
             Principal principal,
             @RequestBody @Valid MessageDtoForUpdate messageDtoForUpdate
     ) {
-        MessageNotification notification =  messageService.update(id, principal, messageDtoForUpdate);
-        messagingTemplate.convertAndSendToUser(notification.getRecipientId(), "/queue/messages", notification);
-        messagingTemplate.convertAndSendToUser(principal.getName(), "/queue/messages", notification);
+        messageService.update(id, principal, messageDtoForUpdate);
+    }
+
+    @PutMapping("/users/messages/{id}/viewed")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateViewed(
+            @PathVariable @Positive(message = "{message.id.positive}") Long id,
+            Principal principal
+    ) {
+        messageService.updateViewed(id, principal);
+    }
+
+    @PutMapping("/users/{userId}/messages")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateViewed(
+            @PathVariable String userId,
+            Principal principal
+    ) {
+        messageService.updateViewed(userId, principal);
     }
 
     @DeleteMapping("/users/messages/{id}")
@@ -84,8 +96,6 @@ public class MessageController {
             @PathVariable @Positive(message = "{message.id.positive}") Long id,
             Principal principal
     ) {
-        MessageNotification notification =  messageService.delete(id, principal);
-        messagingTemplate.convertAndSendToUser(notification.getRecipientId(), "/queue/messages", notification);
-        messagingTemplate.convertAndSendToUser(principal.getName(), "/queue/messages", notification);
+        messageService.delete(id, principal);
     }
 }

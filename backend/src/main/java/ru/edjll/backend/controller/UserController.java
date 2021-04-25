@@ -103,6 +103,16 @@ public class UserController {
         return userService.getInterlocutors(principal, page, size);
     }
 
+    @GetMapping("/interlocutors/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(HttpStatus.OK)
+    public UserFtoForMessage getInterlocutor(
+            @PathVariable String id,
+            Principal principal
+    ) {
+        return userService.getInterlocutor(id, principal);
+    }
+
     @GetMapping("/{id}/feed")
     @ResponseStatus(HttpStatus.OK)
     public Page<PostDto> getFeed(

@@ -1,0 +1,76 @@
+.messenger_message {
+    width: max-content;
+    margin: .5rem;
+    display: flex;
+}
+
+.messenger_message-right {
+    align-self: flex-end;
+}
+
+.messenger_message__wrapper {
+    padding: .5rem;
+    max-width: 350px;
+    background-color: #363a41;
+    border: 1px solid rgb(62, 68, 70);
+    border-radius: .25rem;
+}
+
+.messenger_message__wrapper > p {
+    margin: 0;
+}
+
+.messenger_message__info {
+    padding-bottom: .5rem;
+}
+
+.messenger_message__info__user {
+    font-size: 1.1rem;
+    margin-right: .5rem;
+    color: #337fcc;
+    text-decoration: none;
+}
+
+.messenger_message__info__date {
+    font-size: .9rem;
+    color: #91a4ac;
+}
+
+.messenger_message__text {
+    color: #fcfcfc;
+    font-size: 1rem;
+    margin: 0;
+    font-family: Roboto,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,sans-serif;
+}
+
+.messenger_message__actions {
+    padding: .5rem;
+    display: none;
+    height: max-content;
+    flex-direction: column;
+    justify-content: space-evenly;
+    box-sizing: border-box;
+    align-items: center;
+    background-color: #363a41;
+    border: 1px solid rgb(62, 68, 70);
+    border-right: none;
+    border-radius: .25rem 0 0 .25rem;
+}
+
+.messenger_message__actions > * {
+    cursor: pointer;
+    margin-bottom: .2rem;
+    color: #f7f7f7;
+}
+
+.messenger_message__actions > *:last-child {
+    margin-bottom: 0;
+}
+
+.messenger_message:hover .messenger_message__actions {
+    display: flex;
+}
+
+.messenger_message:hover .messenger_message__wrapper {
+    border-radius: 0 .25rem .25rem .25rem;
+}

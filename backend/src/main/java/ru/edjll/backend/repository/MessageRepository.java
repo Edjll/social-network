@@ -3,11 +3,13 @@ package ru.edjll.backend.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.edjll.backend.dto.message.MessageDto;
 import ru.edjll.backend.entity.Message;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -30,4 +32,14 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "from Message m join m.sender s join m.recipient r " +
             "where m.id = :id ")
     MessageDto getMessageDtoById(@Param("id") Long id);
+
+    @Modifying
+    @Transactional
+    @Query("update Message m set m.viewed = true where m.sender.id = :senderId and m.recipient.id = :recipientId")
+    void updateViewed(@Param("senderId") String userId, @Param("recipientId") String name);
+
+    @Modifying
+    @Transactional
+    @Query("update Message m set m.viewed = true where m.id = :id")
+    void updateViewed(@Param("id") Long id);
 }

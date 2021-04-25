@@ -24,6 +24,11 @@ const Header = () => {
                 <nav className={"header__nav"}>
                     <Link to={"/"} className={"header__nav__link"}>Home</Link>
                     {
+                        AuthService.isAuthenticated()
+                            ? <Link className={"header__nav__link"} to={"/messenger"}>Messenger</Link>
+                            : ''
+                    }
+                    {
                         AuthService.isAuthenticated() && AuthService.hasRole([AuthService.Role.ADMIN])
                             ? <Link className={"header__nav__link"} to={"/admin"}>Admin</Link>
                             : ''

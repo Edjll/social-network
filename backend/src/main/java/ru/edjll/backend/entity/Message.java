@@ -41,4 +41,6 @@ public class Message {
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
+    @Column(name = "viewed")
+    private Boolean viewed;
 }
