@@ -9,17 +9,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.message.MessageUserDto;
 import ru.edjll.backend.dto.post.PostDto;
 import ru.edjll.backend.dto.post.PostType;
-import ru.edjll.backend.dto.user.UserDtoForAdminPage;
-import ru.edjll.backend.dto.user.UserDtoForChangeEnabled;
-import ru.edjll.backend.dto.user.UserDtoWrapperForSave;
-import ru.edjll.backend.dto.user.UserFtoForMessage;
+import ru.edjll.backend.dto.user.*;
 import ru.edjll.backend.entity.User;
+import ru.edjll.backend.exception.ResponseParameterException;
 import ru.edjll.backend.repository.UserRepository;
 
 import java.security.Principal;
@@ -284,5 +284,23 @@ public class UserService {
 
         if (user.isEmpty()) return null;
         return user.get(0);
+    }
+
+    public void update(UserDtoWrapperForUpdate userDtoWrapperForUpdate, Principal principal) {
+        User user = getUserById(principal.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+        if (!user.getEmail().equals(userDtoWrapperForUpdate.getEmail())
+                && userRepository.existsByEmailAndIdNot(userDtoWrapperForUpdate.getEmail(), principal.getName())
+        ) {
+            throw new ResponseParameterException(HttpStatus.BAD_REQUEST, "email", userDtoWrapperForUpdate.getEmail(), "unique");
+        }
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer " + authService.getAdminToken());
+
+        restTemplate.exchange(keycloakUrl + "/users/" + user.getId(), HttpMethod.PUT, new HttpEntity<>(userDtoWrapperForUpdate.toUserDtoForUpdate(), httpHeaders), Object.class);
+
+        userInfoService.update(userDtoWrapperForUpdate.toUserInfoDtoForSave(), user.getId());
     }
 }

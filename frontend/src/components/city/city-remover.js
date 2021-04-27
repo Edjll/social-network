@@ -36,17 +36,19 @@ export class CityRemover extends React.Component {
             });
     }
 
-    handleClose() {
+    componentWillUnmount() {
         document.body.style.overflow = 'auto';
-        this.props.history.goBack();
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
+    handleClose() {
+        this.props.history.push("/admin/cities");
+    }
+
+    handleSubmit() {
         RequestService
             .getAxios()
             .delete(RequestService.ADMIN_URL + `/cities/${this.state.city.id}`)
-            .then(() => this.handleClose());
+            .then(() => this.props.history.push("/admin/cities", { update: true }));
     }
 
     render() {

@@ -4,10 +4,12 @@ import {CardHeader} from "../card/card-header";
 import {CardBody} from "../card/card-body";
 import RequestService from "../../services/RequestService";
 import {GroupCard} from "./group-card";
-import {Link} from "react-router-dom";
+import {Link, Route, Switch} from "react-router-dom";
 import './group-search.css';
 import AuthService from "../../services/AuthService";
 import IntersectionObserverService from "../../services/IntersectionObserverService";
+import {PrivateRoute} from "../security/private-route";
+import {GroupCreator} from "./group-creator";
 
 export class GroupSearch extends React.Component {
 
@@ -46,7 +48,7 @@ export class GroupSearch extends React.Component {
                 <Card>
                     <CardHeader>
                         <h1>Groups</h1>
-                        <Link to={"/group/create"} className={"create_group_button"}>Create group</Link>
+                        <Link to={"/groups/create"} className={"create_group_button"}>Create group</Link>
                     </CardHeader>
                     <CardBody>
                         { this.state.groups.map((group, index) => <GroupCard key={group.id}
@@ -59,6 +61,7 @@ export class GroupSearch extends React.Component {
                         />) }
                     </CardBody>
                 </Card>
+                <PrivateRoute path={"/groups/create"} component={GroupCreator}/>
             </div>
         );
     }

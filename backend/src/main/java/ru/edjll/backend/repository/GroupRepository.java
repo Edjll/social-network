@@ -55,4 +55,6 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     @Query("select new ru.edjll.backend.dto.group.GroupDtoForAdminPage(g.id, g.title, g.description, g.address, g.enabled) from Group g")
     Page<GroupDtoForAdminPage> getAllForAdmin(Pageable pageable);
+
+    Boolean existsByAddressAndIdNot(String address, Long id);
 }

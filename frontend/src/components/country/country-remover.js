@@ -34,9 +34,12 @@ export class CountryRemover extends React.Component {
             });
     }
 
-    handleClose() {
+    componentWillUnmount() {
         document.body.style.overflow = 'auto';
-        this.props.history.goBack();
+    }
+
+    handleClose() {
+        this.props.history.push("/admin/countries");
     }
 
     handleSubmit(e) {
@@ -44,7 +47,7 @@ export class CountryRemover extends React.Component {
         RequestService
             .getAxios()
             .delete(RequestService.ADMIN_URL + `/countries/${this.state.country.id}`)
-            .then(() => this.handleClose());
+            .then(() => this.props.history.push("/admin/countries", { update: true }))
     }
 
     render() {

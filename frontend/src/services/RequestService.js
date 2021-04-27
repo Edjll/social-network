@@ -22,19 +22,27 @@ const configure = () => {
 
 const getAxios = () => axi;
 
-const sockJS = new SockJS(URL + "/ws");
-const stompClient = Stomp.over(sockJS);
+const StompInstance = class {
+    static stompClient = null;
 
-const stompConnect = (onConnected, onError) => {
-    stompClient.connect({ "Authorization": `Bearer ${AuthService.getToken()}` } , onConnected, onError);
-}
+    static connect(onConnected, onError) {
+        const sockJS = new SockJS(URL + "/ws");
+        StompInstance.stompClient = Stomp.over(sockJS);
+        StompInstance.stompClient.connect({ "Authorization": `Bearer ${AuthService.getToken()}` } , onConnected, onError);
+    }
 
-const stompSubscribe = (url, messageReceived) => {
-    stompClient.subscribe(url, messageReceived);
-}
+    static subscribe(url, messageReceived) {
+        StompInstance.stompClient.subscribe(url, messageReceived);
+    }
 
-const stompSend = (url, body) => {
-    stompClient.send(url, {}, JSON.stringify(body));
+    static send(url, body) {
+        StompInstance.stompClient.send(url, {}, JSON.stringify(body));
+    }
+
+    static disconnect() {
+        StompInstance.stompClient.disconnect();
+        StompInstance.stompClient = null;
+    }
 }
 
 const RequestService = {
@@ -42,9 +50,7 @@ const RequestService = {
     ADMIN_URL,
     configure,
     getAxios,
-    stompConnect,
-    stompSubscribe,
-    stompSend
+    StompInstance
 };
 
 export default RequestService;

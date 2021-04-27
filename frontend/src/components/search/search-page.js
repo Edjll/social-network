@@ -84,7 +84,7 @@ export class SearchPage extends React.Component {
         return (
             <div className={"search_page"}>
                 <div className={"left_side"}>
-                    <Form handleSubmit={this.handleSearch.bind(this)}>
+                    <Form handleSubmit={this.handleSearch.bind(this)} className={'search_page__form'}>
                         <CardBody>
                             <FormInput value={this.state.firstName} title={"first name"} handleChange={this.handleChangeFirstName.bind(this)}/>
                             <FormInput value={this.state.lastName} title={"last name"} handleChange={this.handleChangeLastName.bind(this)}/>

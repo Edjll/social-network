@@ -33,6 +33,11 @@ export class GroupUpdater extends React.Component {
 
     componentDidMount() {
         this.loadInfo();
+        document.body.style.overflow = 'hidden';
+    }
+
+    componentWillUnmount() {
+        document.body.style.overflow = 'auto';
     }
 
     handleTitle(value) {
@@ -51,15 +56,20 @@ export class GroupUpdater extends React.Component {
         this.props.history.goBack();
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
+    handleSubmit() {
         if (this.validate() === 0) {
             RequestService.getAxios().put(RequestService.URL + `/groups/${this.state.id}`, {
                 title: this.state.title,
                 description: this.state.description,
                 address: this.state.address
             })
-                .then(() => this.props.history.push(`/group/${this.state.address}`))
+                .then(() => {
+                    if (this.state.address === this.props.match.params.address) {
+                        this.props.history.push(`/group/${this.state.address}`, { update: true });
+                    } else {
+                        this.props.history.push(`/group/${this.state.address}`);
+                    }
+                })
         }
     }
 

@@ -158,39 +158,41 @@ export class Register extends React.Component {
     render() {
         if (AuthService.isAuthenticated()) return (<Redirect to={'/'}/>);
         return (
-            <Form className={"login_form"} handleSubmit={this.handleSubmit.bind(this)}>
-                <CardHeader>
-                    <h1 className={"register__title"}>Registration</h1>
-                </CardHeader>
-                <CardBody>
-                    <FormInput value={this.state.username} title={"username*"} error={this.state.errors.username}
-                           handleChange={this.handleChangeUsername.bind(this)}/>
-                    <FormInput value={this.state.email} title={"email*"} error={this.state.errors.email}
-                           handleChange={this.handleChangeEmail.bind(this)}/>
-                    <FormInput value={this.state.firstName} title={"first name*"} error={this.state.errors.firstName}
-                           handleChange={this.handleChangeFirstName.bind(this)}/>
-                    <FormInput value={this.state.lastName} title={"last name*"} error={this.state.errors.lastName}
-                           handleChange={this.handleChangeLastName.bind(this)}/>
-                    {
-                        this.state.loadQueue === 0
-                            ? <FormSelect title={"country"} options={this.state.countries}
-                                          handleChange={this.handleChangeCountry.bind(this)}/>
-                            : ''
-                    }
-                    {
-                        this.state.country
-                            ? <FormSelect title={"city"} handleChange={this.handleChangeCity.bind(this)}
-                                      options={this.state.cities}/>
-                            : ''
-                    }
-                    <FormInput value={this.state.birthday} title={"birthday"} handleChange={this.handleChangeBirthday.bind(this)} type={"date"}/>
-                    <FormInput value={this.state.password} title={"password*"} error={this.state.errors.password}
-                           handleChange={this.handleChangePassword.bind(this)} type={"password"}/>
-                </CardBody>
-                <CardFooter>
-                    <FormButton>Register</FormButton>
-                </CardFooter>
-            </Form>
+            <div className={"login_form"}>
+                <Form handleSubmit={this.handleSubmit.bind(this)}>
+                    <CardHeader>
+                        <h1 className={"register__title"}>Registration</h1>
+                    </CardHeader>
+                    <CardBody>
+                        <FormInput value={this.state.username} title={"username*"} error={this.state.errors.username}
+                                   handleChange={this.handleChangeUsername.bind(this)}/>
+                        <FormInput value={this.state.email} title={"email*"} error={this.state.errors.email}
+                                   handleChange={this.handleChangeEmail.bind(this)}/>
+                        <FormInput value={this.state.firstName} title={"first name*"} error={this.state.errors.firstName}
+                                   handleChange={this.handleChangeFirstName.bind(this)}/>
+                        <FormInput value={this.state.lastName} title={"last name*"} error={this.state.errors.lastName}
+                                   handleChange={this.handleChangeLastName.bind(this)}/>
+                        {
+                            this.state.loadQueue === 0
+                                ? <FormSelect title={"country"} options={this.state.countries}
+                                              handleChange={this.handleChangeCountry.bind(this)}/>
+                                : ''
+                        }
+                        {
+                            this.state.country
+                                ? <FormSelect title={"city"} handleChange={this.handleChangeCity.bind(this)}
+                                              options={this.state.cities}/>
+                                : ''
+                        }
+                        <FormInput value={this.state.birthday} title={"birthday"} handleChange={this.handleChangeBirthday.bind(this)} type={"date"}/>
+                        <FormInput value={this.state.password} title={"password*"} error={this.state.errors.password}
+                                   handleChange={this.handleChangePassword.bind(this)} type={"password"}/>
+                    </CardBody>
+                    <CardFooter>
+                        <FormButton>Register</FormButton>
+                    </CardFooter>
+                </Form>
+            </div>
         );
     }
 }

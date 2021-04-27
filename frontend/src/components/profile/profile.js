@@ -3,7 +3,6 @@ import './profile.css'
 import React from "react";
 import RequestService from "../../services/RequestService";
 import {Link} from "react-router-dom";
-import {Spinner} from "../spinner/spinner";
 import {Card} from "../card/card";
 import {CardHeader} from "../card/card-header";
 import {CardBody} from "../card/card-body";
@@ -14,13 +13,22 @@ import {UserPostCreator} from "../user/user-post/user-post-creator";
 import IntersectionObserverService from "../../services/IntersectionObserverService";
 import PostType from "../../services/PostType";
 import {Error} from "../error/error";
+import ProfileEditor from "./profile-editor";
+import {PrivateRoute} from "../security/private-route";
 
 export class Profile extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            user: null,
+            user: {
+                id: undefined,
+                firstName: undefined,
+                lastName: undefined,
+                username: undefined,
+                birthday: undefined,
+                city: undefined
+            },
             posts: [],
             page: 0,
             size: 10,
@@ -38,8 +46,7 @@ export class Profile extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.location !== prevProps.location) {
-            this.setState({loadQueue: this.state.loadQueue + 1});
-            this.componentDidMount();
+            this.setState({loadQueue: this.state.loadQueue + 1}, () => this.componentDidMount());
         }
     }
 
@@ -82,8 +89,12 @@ export class Profile extends React.Component {
             })
             .then(response => this.setState({
                 totalPages: response.data.totalPages,
-                posts: [...this.state.posts, ...response.data.content.map(post => { return { ...post, type: PostType.USER } })]
-            }, () => { if (callback) callback() }));
+                posts: [...this.state.posts, ...response.data.content.map(post => {
+                    return {...post, type: PostType.USER}
+                })]
+            }, () => {
+                if (callback) callback()
+            }));
     }
 
     loadFriends() {
@@ -146,7 +157,6 @@ export class Profile extends React.Component {
                 </Error>
             );
         }
-        if (this.state.loadQueue > 0) return (<Spinner/>);
         return (
             <div className="profile">
                 <div className={"left_side"}>
@@ -156,15 +166,16 @@ export class Profile extends React.Component {
                         </CardHeader>
                         <CardBody>
                             {
-                                AuthService.isAuthenticated() && AuthService.getUsername() === this.state.user.username
+                                AuthService.isAuthenticated() && AuthService.getUsername() === this.props.match.params.username
                                     ? <Link to={`/profile/edit`} className="form__button profile__actions__item">Edit
                                         info</Link>
                                     : ''
                             }
                             {
                                 this.state.user
-                                    ?   <Link to={{pathname: `/messenger`, search:`?id=${this.state.user.id}`}} className="form__button profile__actions__item">Send message</Link>
-                                    :   ''
+                                    ? <Link to={{pathname: `/messenger`, search: `?id=${this.state.user.id}`}}
+                                            className="form__button profile__actions__item">Send message</Link>
+                                    : ''
                             }
                         </CardBody>
                     </Card>
@@ -221,28 +232,41 @@ export class Profile extends React.Component {
                 <div className={"right_side"}>
                     <Card className="profile__info">
                         <CardHeader>
-                            <h1>{`${this.state.user.firstName} ${this.state.user.lastName}`}</h1>
+                            {
+                                this.state.user.firstName !== undefined
+                                    ? <h1>{this.state.user.firstName} {this.state.user.lastName}</h1>
+                                    : <h1 className={"card_preloader"}>...</h1>
+                            }
                         </CardHeader>
                         <CardBody>
                             <div className="profile__info__block">
                                 <span>Birthday:</span>
-                                <span>{this.state.user.birthday ? new Date(this.state.user.birthday).toLocaleDateString() : "not specified"}</span>
+                                {
+                                    this.state.user.birthday !== undefined
+                                        ?
+                                        <span>{this.state.user.birthday ? new Date(this.state.user.birthday).toLocaleDateString() : "not specified"}</span>
+                                        : <span className={"card_preloader"}>...</span>
+                                }
                             </div>
                             <div className="profile__info__block">
                                 <span>City:</span>
-                                <span>{this.state.user.city ? this.state.user.city : "not specified"}</span>
+                                {
+                                    this.state.user.city !== undefined
+                                        ? <span>{this.state.user.city ? this.state.user.city : "not specified"}</span>
+                                        : <span className={"card_preloader"}>...</span>
+                                }
                             </div>
                         </CardBody>
                     </Card>
                     {
                         AuthService.isAuthenticated() && AuthService.getUsername() === this.state.user.username
                             ? <UserPostCreator handleSubmit={this.handleCreatePost.bind(this)}
-                                           className={"profile__create-post"}/>
+                                               className={"profile__create-post"}/>
                             : ''
                     }
                     {
                         this.state.posts.map(post => <UserPost key={post.id} data={post}
-                                                           handleDelete={this.handleDeletePost.bind(this)}/>)
+                                                               handleDelete={this.handleDeletePost.bind(this)}/>)
                     }
                 </div>
             </div>

@@ -3,4 +3,12 @@
     margin: 0 auto;
     min-width: 20rem;
     max-width: 30rem;
+    min-height: calc(100vh - 61px - 1rem);
+    display: flex;
+    align-items: center;
+}
+
+.login_form > * {
+    width: 100%;
+    max-width: none;
 }

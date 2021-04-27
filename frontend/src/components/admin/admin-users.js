@@ -12,6 +12,7 @@ import {TableFooter} from "../table/table-footer";
 import {TablePagination} from "../table/table-pagination";
 import {TablePageSize} from "../table/table-page-size";
 import AuthService from "../../services/AuthService";
+import {Link} from "react-router-dom";
 
 export class AdminUsers extends React.Component {
 
@@ -149,27 +150,35 @@ export class AdminUsers extends React.Component {
                             this.state.search
                                 ? <TableRow>
                                     <TableRowItem>
-                                        <FormInput handleBlur={this.handleBlur.bind(this)}
+                                        <FormInput value={this.state.id}
+                                                   handleBlur={this.handleBlur.bind(this)}
                                                    handleChange={this.handleChangeId.bind(this)}
                                                    className={"admin_table__search__input"}
+                                                   handleSubmit={this.handleBlur.bind(this)}
                                         />
                                     </TableRowItem>
                                     <TableRowItem>
-                                        <FormInput handleBlur={this.handleBlur.bind(this)}
+                                        <FormInput value={this.state.username}
+                                                   handleBlur={this.handleBlur.bind(this)}
                                                    handleChange={this.handleChangeUsername.bind(this)}
                                                    className={"admin_table__search__input"}
+                                                   handleSubmit={this.handleBlur.bind(this)}
                                         />
                                     </TableRowItem>
                                     <TableRowItem>
-                                        <FormInput handleBlur={this.handleBlur.bind(this)}
+                                        <FormInput value={this.state.email}
+                                                   handleBlur={this.handleBlur.bind(this)}
                                                    handleChange={this.handleChangeEmail.bind(this)}
                                                    className={"admin_table__search__input"}
+                                                   handleSubmit={this.handleBlur.bind(this)}
                                         />
                                     </TableRowItem>
                                     <TableRowItem>
-                                        <FormInput handleBlur={this.handleBlur.bind(this)}
+                                        <FormInput value={this.state.city}
+                                                   handleBlur={this.handleBlur.bind(this)}
                                                    handleChange={this.handleChangeCity.bind(this)}
                                                    className={"admin_table__search__input"}
+                                                   handleSubmit={this.handleBlur.bind(this)}
                                         />
                                     </TableRowItem>
                                     <TableRowItem/>
@@ -181,7 +190,7 @@ export class AdminUsers extends React.Component {
                                 return (
                                     <TableRow key={user.id}>
                                         <TableRowItem>{user.id}</TableRowItem>
-                                        <TableRowItem>{user.username}</TableRowItem>
+                                        <TableRowItem><Link to={`/user/${user.username}`}>{user.username}</Link></TableRowItem>
                                         <TableRowItem>{user.email}</TableRowItem>
                                         <TableRowItem>{user.city}</TableRowItem>
                                         <TableRowItem className={"admin_table__actions"}>

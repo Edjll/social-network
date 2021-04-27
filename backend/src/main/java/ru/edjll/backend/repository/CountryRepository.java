@@ -10,4 +10,6 @@ import ru.edjll.backend.entity.Country;
 public interface CountryRepository extends JpaRepository<Country, Long> {
 
     Page<Country> findAllByIdGreaterThanEqualAndTitleStartingWithIgnoreCase(Long id, String title, Pageable pageable);
+
+    Boolean existsByTitleAndIdNot(String title, Long id);
 }

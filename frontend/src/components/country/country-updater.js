@@ -37,9 +37,12 @@ export class CountryUpdater extends React.Component {
             });
     }
 
-    handleClose() {
+    componentWillUnmount() {
         document.body.style.overflow = 'auto';
-        this.props.history.goBack();
+    }
+
+    handleClose() {
+        this.props.history.push("/admin/countries");
     }
 
     handleSubmit(e) {
@@ -50,7 +53,7 @@ export class CountryUpdater extends React.Component {
                 .put(RequestService.ADMIN_URL + `/countries/${this.state.id}`, {
                     title: this.state.title
                 })
-                .then(() => this.handleClose())
+                .then(() => this.props.history.push("/admin/countries", { update: true }))
                 .catch(error => this.setState({
                     errors: {
                         title: error.response.data.errors.title

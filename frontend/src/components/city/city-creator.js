@@ -40,13 +40,15 @@ export class CityCreator extends React.Component {
             });
     }
 
-    handleClose() {
+    componentWillUnmount() {
         document.body.style.overflow = 'auto';
-        this.props.history.goBack();
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
+    handleClose() {
+        this.props.history.push("/admin/cities");
+    }
+
+    handleSubmit() {
         if (this.validate() === 0) {
             RequestService
                 .getAxios()
@@ -54,7 +56,7 @@ export class CityCreator extends React.Component {
                     title: this.state.title,
                     countryId: this.state.countryId
                 })
-                .then(() => this.handleClose())
+                .then(() => this.props.history.push("/admin/cities", { update: true }))
                 .catch(error => this.setState({
                     errors: {
                         title: error.response.data.errors.title,

@@ -50,11 +50,11 @@ public class UserInfoService {
         }
     }
 
-    public void update(UserInfoDtoForSave userInfoDtoForSave, Principal principal) {
-        UserInfo userInfo = this.getUserInfoById(principal.getName())
+    public void update(UserInfoDtoForSave userInfoDtoForSave, String id) {
+        UserInfo userInfo = this.getUserInfoById(id)
                 .orElseGet(() -> {
                     UserInfo uf = new UserInfo();
-                    userService.getUserById(principal.getName()).ifPresent(uf::setUser);
+                    userService.getUserById(id).ifPresent(uf::setUser);
                     return uf;
                 });
 
@@ -64,6 +64,8 @@ public class UserInfoService {
             if (userInfoDtoForSave.getCityId() != null) {
                 Optional.ofNullable(cityService.getById(userInfoDtoForSave.getCityId()))
                         .ifPresent(userInfo::setCity);
+            } else {
+                userInfo.setCity(null);
             }
         }
         userInfoRepository.save(userInfo);

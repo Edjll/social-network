@@ -22,8 +22,7 @@ export class PostForm extends React.Component {
         this.setState({text: value, error: null});
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
+    handleSubmit() {
         if (this.validate() === 0) {
             this.props.handleSubmit(this.state.text.replace(/\n\n+/g, '\n'));
             this.setState({text: ''})
@@ -47,7 +46,11 @@ export class PostForm extends React.Component {
             <Form className={"post_form"} handleSubmit={this.handleSubmit.bind(this)}>
                 {this.props.children}
                 <CardBody>
-                    <FormTextarea error={this.state.error} handleChange={this.handleChangeText.bind(this)} value={this.state.text}/>
+                    <FormTextarea error={this.state.error}
+                                  handleChange={this.handleChangeText.bind(this)}
+                                  value={this.state.text}
+                                  handleSubmit={this.handleSubmit.bind(this)}
+                    />
                 </CardBody>
                 <CardFooter>
                     <FormButton>Save</FormButton>

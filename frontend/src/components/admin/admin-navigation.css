@@ -1,5 +1,6 @@
 .admin_navigation {
     display: flex;
+    flex-direction: column;
 }
 
 .admin_navigation__link {

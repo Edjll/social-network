@@ -92,8 +92,8 @@ export default class AuthService {
     }
 
     setToken(token, refreshToken, tokenAge, refreshTokenAge) {
-        if (tokenAge !== undefined) document.cookie = `access_token=${token}; max-age=${tokenAge}`;
-        if (refreshTokenAge !== undefined) document.cookie = `refresh_token=${refreshToken}; max-age=${refreshTokenAge}`;
+        if (tokenAge !== undefined) document.cookie = `access_token=${token}; path=/; max-age=${tokenAge}`;
+        if (refreshTokenAge !== undefined) document.cookie = `refresh_token=${refreshToken}; path=/; max-age=${refreshTokenAge}`;
         if (token !== null) {
             this.#authenticated = true;
             this.#token = token;
@@ -108,6 +108,18 @@ export default class AuthService {
 
     static updateToken(callback) {
         if (AuthService.getRefreshToken() !== null && AuthService.isTokenExpired()) {
+            return AuthService.#instance
+                .loginByRefreshToken(AuthService.getRefreshToken())
+                .then(callback)
+                .catch(() => AuthService.toLoginPage());
+        }
+        return Promise
+            .resolve()
+            .then(callback);
+    }
+
+    static forceUpdateToken(callback) {
+        if (AuthService.getRefreshToken() !== null) {
             return AuthService.#instance
                 .loginByRefreshToken(AuthService.getRefreshToken())
                 .then(callback)

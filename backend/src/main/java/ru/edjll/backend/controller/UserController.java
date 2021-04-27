@@ -10,6 +10,7 @@ import ru.edjll.backend.dto.group.GroupDtoForSearch;
 import ru.edjll.backend.dto.group.GroupDtoForUserPage;
 import ru.edjll.backend.dto.post.PostDto;
 import ru.edjll.backend.dto.user.UserDtoWrapperForSave;
+import ru.edjll.backend.dto.user.UserDtoWrapperForUpdate;
 import ru.edjll.backend.dto.user.UserFtoForMessage;
 import ru.edjll.backend.dto.user.info.UserInfoDetailDto;
 import ru.edjll.backend.dto.user.info.UserInfoDto;
@@ -135,9 +136,9 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(
-            @RequestBody @Valid UserInfoDtoForSave userInfoDtoForSave,
+            @RequestBody @Valid UserDtoWrapperForUpdate userDtoWrapperForUpdate,
             Principal principal
     ) {
-        userInfoService.update(userInfoDtoForSave, principal);
+        userService.update(userDtoWrapperForUpdate, principal);
     }
 }

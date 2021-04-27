@@ -28,6 +28,11 @@
     font-size: 1.1rem;
     user-select: none;
     color: #f7f7f7;
+    transition: color .1s;
+}
+
+.post__header__actions > *:hover {
+    color: #b0b0b0;
 }
 
 .post__text {

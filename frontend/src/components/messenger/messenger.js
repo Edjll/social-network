@@ -5,6 +5,7 @@ import {MessengerInterlocutorCard} from "./messenger-interlocutor-card";
 import './messenger.css';
 import AuthService from "../../services/AuthService";
 import {Link} from "react-router-dom";
+import IntersectionObserverService from "../../services/IntersectionObserverService";
 
 export class Messenger extends React.Component {
 
@@ -13,15 +14,22 @@ export class Messenger extends React.Component {
         this.state = {
             interlocutors: [],
             notification: null,
-            currentInterlocutor: null
+            currentInterlocutor: null,
+            page: 0,
+            size: 15,
+            totalPages: 0
         }
     }
 
     componentDidMount() {
-        this.loadInterlocutors();
-        RequestService.stompConnect(
-            () => RequestService.stompSubscribe(`/users/${AuthService.getId()}/queue/messages`, this.handleNotification.bind(this))
+        this.loadInterlocutors(() => IntersectionObserverService.create('.messenger_interlocutor_card:last-child', this, this.loadMessages));
+        RequestService.StompInstance.connect(
+            () => RequestService.StompInstance.subscribe(`/users/${AuthService.getId()}/queue/messages`, this.handleNotification.bind(this))
         );
+    }
+
+    componentWillUnmount() {
+        RequestService.StompInstance.disconnect();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -42,18 +50,21 @@ export class Messenger extends React.Component {
         }
     }
 
-    loadInterlocutors() {
+    loadInterlocutors(callback) {
         RequestService.getAxios()
             .get(RequestService.URL + `/users/interlocutors`, {
                 params: {
-                    page: 0,
-                    size: 10
+                    page: this.state.page,
+                    size: this.state.size
                 }
             })
             .then(response => {
                 const id = new URLSearchParams(this.props.location.search).get("id");
-                this.setState({
-                    interlocutors: response.data.content},
+                this.setState(
+                    {
+                        totalPages: response.data.totalPages,
+                        interlocutors: response.data.content
+                    },
                     () => {
                         if (new URLSearchParams(this.props.location.search).get("id")) {
                             const currentInterlocutor = this.state.interlocutors.find(inter => inter.id === id);
@@ -74,6 +85,7 @@ export class Messenger extends React.Component {
                                     });
                             }
                         }
+                        if (callback) callback();
                     }
                 );
             })

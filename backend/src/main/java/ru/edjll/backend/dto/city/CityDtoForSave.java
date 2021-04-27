@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 import ru.edjll.backend.entity.City;
 import ru.edjll.backend.entity.Country;
 import ru.edjll.backend.validation.exists.Exists;
+import ru.edjll.backend.validation.unique.Unique;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -17,6 +18,7 @@ import javax.validation.constraints.NotNull;
 public class CityDtoForSave {
 
     @Length(min = 1, max = 20)
+    @Unique(table = "city", column = "title")
     private String title;
 
     @NotNull

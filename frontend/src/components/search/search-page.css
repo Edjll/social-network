@@ -1,3 +1,8 @@
 .search_page {
     display: flex;
 }
+
+.search_page__form {
+    position: sticky;
+    top: .5rem;
+}

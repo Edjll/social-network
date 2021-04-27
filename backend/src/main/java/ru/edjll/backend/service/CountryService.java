@@ -60,6 +60,12 @@ public class CountryService {
         Country country = countryRepository.findById(id)
                 .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
 
+        if (country.getTitle().equals(countryDtoForUpdate.getTitle())
+                && countryRepository.existsByTitleAndIdNot(countryDtoForUpdate.getTitle(), country.getId())
+        ) {
+            throw new ResponseParameterException(HttpStatus.BAD_REQUEST, "title", countryDtoForUpdate.getTitle(), "unique");
+        }
+
         country.setTitle(countryDtoForUpdate.getTitle());
 
         countryRepository.save(country);

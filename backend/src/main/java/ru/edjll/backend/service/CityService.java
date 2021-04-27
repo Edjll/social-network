@@ -66,6 +66,13 @@ public class CityService {
     public void update(Long id, CityDtoForUpdate cityDtoForUpdate) {
         City city = cityRepository.findById(id)
                 .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
+
+        if (!city.getTitle().equals(cityDtoForUpdate.getTitle())
+                && cityRepository.existsByTitleAndIdNot(cityDtoForUpdate.getTitle(), city.getId())
+        ) {
+            throw new ResponseParameterException(HttpStatus.BAD_REQUEST, "title", cityDtoForUpdate.getTitle(), "unique");
+        }
+
         Country country = new Country();
         country.setId(cityDtoForUpdate.getCountryId());
 

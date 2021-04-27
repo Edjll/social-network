@@ -8,6 +8,7 @@ import validation from "../../services/validation.json";
 import {Toast} from "../toast/toast";
 import IntersectionObserverService from "../../services/IntersectionObserverService";
 import {MessengerMessage} from "./messenger-message";
+import {FormTextarea} from "../form/form-textarea";
 
 export class MessengerDialog extends React.Component {
 
@@ -55,6 +56,7 @@ export class MessengerDialog extends React.Component {
                 case 'DELETED':
                     this.deleteMessage(this.props.notification.id);
                     break;
+                default:
             }
         }
     }
@@ -163,8 +165,8 @@ export class MessengerDialog extends React.Component {
             })
     }
 
-    handleChange(e) {
-        this.setState({text: e.target.value, errors: {text: null}})
+    handleChange(value) {
+        this.setState({text: value, errors: {text: null}})
     }
 
     handleEdit(value) {
@@ -187,13 +189,6 @@ export class MessengerDialog extends React.Component {
             tmpText: "",
             errors: {text: null}
         });
-    }
-
-    handleKeyDown(e) {
-        if (e.code === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            this.handleSubmit();
-        }
     }
 
     handleClose() {
@@ -232,9 +227,12 @@ export class MessengerDialog extends React.Component {
                             </div>
                             : ""
                     }
-                    <textarea className={"dialog__form__input"} placeholder={"Enter your message"}
-                              value={this.state.text} onChange={this.handleChange.bind(this)}
-                              onKeyDown={this.handleKeyDown.bind(this)}/>
+                    <FormTextarea className={'dialog__form__input'}
+                                  value={this.state.text}
+                                  handleChange={this.handleChange.bind(this)}
+                                  handleSubmit={this.handleSubmit.bind(this)}
+                                  placeholder={'Enter your message'}
+                    />
                     <button className={"dialog__form__button"}>✉</button>
                 </form>
                 {

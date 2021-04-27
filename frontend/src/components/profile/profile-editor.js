@@ -9,6 +9,7 @@ import {FormInput} from "../form/form-input";
 import {CardFooter} from "../card/card-footer";
 import {FormButton} from "../form/form-button";
 import {FormSelect} from "../form/form-select";
+import './profile-editor.css';
 
 export default class ProfileEditor extends React.Component {
 
@@ -27,7 +28,12 @@ export default class ProfileEditor extends React.Component {
                 title: null
             },
             birthday: null,
-            loadQueue: 2
+            loadQueue: 2,
+            errors: {
+                email: null,
+                firstName: null,
+                lastName: null
+            }
         }
     }
 
@@ -86,15 +92,8 @@ export default class ProfileEditor extends React.Component {
             .get(RequestService.URL + `/users/${AuthService.getId()}/details`)
             .then(response => {
                 this.setState({
-                    city: {
-                        id: response.data.city.id,
-                        title: response.data.city.title
-                    },
-                    country: {
-                        id: response.data.city.country.id,
-                        title: response.data.city.country.title
-                    },
-                    birthday: response.data.birthday
+                    ...response.data,
+                    country: response.data.city ? response.data.city.country : null
                 });
                 if (this.state.country.id !== null) {
                     this.handleChangeCountry({key: this.state.country.id, text: this.state.country.title});
@@ -104,14 +103,45 @@ export default class ProfileEditor extends React.Component {
     }
 
     handleSubmit() {
-        RequestService.getAxios().post(RequestService.URL + `/users/${AuthService.getId()}`, {
-            cityId: this.state.city.id,
-            birthday: this.state.birthday
-        }).then(() => this.props.history.replace(`/user/${AuthService.getUsername()}`));
+        RequestService
+            .getAxios()
+            .put(RequestService.URL + `/users`, {
+                email: this.state.email,
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                cityId: this.state.city.id,
+                birthday: this.state.birthday
+            })
+            .then(() => {
+                AuthService.forceUpdateToken(() => window.location = `/user/${AuthService.getUsername()}`);
+            })
+            .catch(error => this.setState({
+                errors: {
+                    ...this.state.errors,
+                    ...error.response.data.errors,
+                    password: error.response.data.errors ? error.response.data.errors['credentials[0].value'] : null
+                }
+            }));
     }
 
-    handleBirthday(value) {
+    handleChangeBirthday(value) {
         this.setState({birthday: value})
+    }
+
+    handleChangeUsername(value) {
+        this.setState({username: value})
+    }
+
+    handleChangeEmail(value) {
+        this.setState({email: value})
+    }
+
+    handleChangeFirstName(value) {
+        this.setState({firstName: value})
+    }
+
+    handleChangeLastName(value) {
+        this.setState({lastName: value})
     }
 
     handleClose() {
@@ -121,15 +151,27 @@ export default class ProfileEditor extends React.Component {
     render() {
 
         return (
-            <div className={"attention_center"}>
+            <div className={"profile_editor"}>
                 <Form handleSubmit={this.handleSubmit.bind(this)}>
                     <CardHeader>
                         <h1>Editing profile</h1>
                         <FormClose handleClick={this.handleClose.bind(this)}/>
                     </CardHeader>
                     <CardBody>
+                        <FormInput value={this.state.email}
+                                   title={"email"}
+                                   handleChange={this.handleChangeEmail.bind(this)}
+                                   error={this.state.errors.email}/>
+                        <FormInput value={this.state.firstName}
+                                   title={"first name"}
+                                   handleChange={this.handleChangeFirstName.bind(this)}
+                                   error={this.state.errors.firstName}/>
+                        <FormInput value={this.state.lastName}
+                                   title={"last name"}
+                                   handleChange={this.handleChangeLastName.bind(this)}
+                                   error={this.state.errors.lastName}/>
                         <FormInput value={this.state.birthday} type={"date"} title={"birthday"}
-                                   handleChange={this.handleBirthday.bind(this)}/>
+                                   handleChange={this.handleChangeBirthday.bind(this)}/>
                         {
                             this.state.loadQueue === 0
                                 ? <FormSelect

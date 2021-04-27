@@ -43,3 +43,19 @@
 .form__input__error__icon {
     cursor: pointer;
 }
+
+.form__input__close {
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1rem;
+    height: 1rem;
+    margin-right: .5rem;
+    transition: color .1s;
+}
+
+.form__input__close:hover {
+    color: #c1bebe;
+}

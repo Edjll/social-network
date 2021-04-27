@@ -1,5 +1,5 @@
 import RequestService from "../../services/RequestService";
-import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
+import {Link, Route, Switch} from "react-router-dom";
 import {Table} from "../table/table";
 import {TableHead} from "../table/table-head";
 import {TableHeadItem} from "../table/table-head-item";
@@ -35,7 +35,13 @@ export class AdminCities extends React.Component {
     }
 
     componentDidMount() {
-        this.loadCities(this.state.page, this.state.size);
+        this.loadCities();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.location !== prevProps.location && this.props.location.state && this.props.location.state.update) {
+            this.loadCities();
+        }
     }
 
     loadCities() {
@@ -50,13 +56,14 @@ export class AdminCities extends React.Component {
                 title: this.state.title,
                 country: this.state.country,
             }
-        }).then(response => {
+        }).then(response => new Promise((resolve) => {
             this.setState({
                 cities: response.data.content,
-                maxPage: response.data.totalPages,
-                page: response.data.number
-            })
-        });
+                maxPage: response.data.totalPages
+            }, () => {
+                resolve()
+            });
+        }));
     }
 
     handleClick(page) {
@@ -107,89 +114,94 @@ export class AdminCities extends React.Component {
     render() {
 
         return (
-            <BrowserRouter>
-                <div className={"admin_table"}>
-                    <div className={"admin_table__header"}>
-                        <h1 className={"admin_table__header__title"}>Cities</h1>
-                        <div className={"admin_table__header__actions"}>
-                            <div className={"admin_table__header__button-search"}
-                                 onClick={this.handleActiveSearch.bind(this)}>🔍
-                            </div>
-                            <Link to={"/admin/city/create"} className={"admin_table__header__link-create"}>create</Link>
+            <div className={"admin_table"}>
+                <div className={"admin_table__header"}>
+                    <h1 className={"admin_table__header__title"}>Cities</h1>
+                    <div className={"admin_table__header__actions"}>
+                        <div className={"admin_table__header__button-search"}
+                             onClick={this.handleActiveSearch.bind(this)}>🔍
                         </div>
+                        <Link to={"/admin/cities/create"} className={"admin_table__header__link-create"}>create</Link>
                     </div>
-                    <Table>
-                        <TableHead>
-                            <TableHeadItem name={'id'} order={this.state.idDirection}
-                                           handleClick={this.handleChangeDirection.bind(this)}>#</TableHeadItem>
-                            <TableHeadItem name={'country'} order={this.state.countryDirection}
-                                           handleClick={this.handleChangeDirection.bind(this)}>Country</TableHeadItem>
-                            <TableHeadItem name={'title'} order={this.state.titleDirection}
-                                           handleClick={this.handleChangeDirection.bind(this)}>Title</TableHeadItem>
-                            <TableHeadItem>Actions</TableHeadItem>
-                        </TableHead>
-                        <TableBody>
-                            {
-                                this.state.search
-                                    ? <TableRow>
-                                        <TableRowItem>
-                                            <FormInput handleBlur={this.handleBlur.bind(this)} type={'number'}
-                                                       handleChange={this.handleChangeId.bind(this)}
-                                                       className={"admin_table__search__input"}
-                                            />
-                                        </TableRowItem>
-                                        <TableRowItem>
-                                            <FormInput handleBlur={this.handleBlur.bind(this)}
-                                                       handleChange={this.handleChangeCountry.bind(this)}
-                                                       className={"admin_table__search__input"}
-                                            />
-                                        </TableRowItem>
-                                        <TableRowItem>
-                                            <FormInput handleBlur={this.handleBlur.bind(this)}
-                                                       handleChange={this.handleChangeTitle.bind(this)}
-                                                       className={"admin_table__search__input"}
-                                            />
-                                        </TableRowItem>
-                                        <TableRowItem/>
-                                    </TableRow>
-                                    : ''
-                            }
-                            {
-                                this.state.cities.map(city => {
-                                    return (
-                                        <TableRow key={city.id}>
-                                            <TableRowItem>{city.id}</TableRowItem>
-                                            <TableRowItem>{city.country.title}</TableRowItem>
-                                            <TableRowItem>{city.title}</TableRowItem>
-                                            <TableRowItem className={"admin_table__actions"}>
-                                                <Link to={`/admin/city/${city.id}/update`}
-                                                      className={"admin_table__action"}>✎</Link>
-                                                <Link to={`/admin/city/${city.id}/delete`}
-                                                      className={"admin_table__action"}>🗑</Link>
-                                            </TableRowItem>
-                                        </TableRow>
-                                    );
-                                })
-                            }
-                        </TableBody>
-                        <TableFooter>
-                            <TablePagination
-                                page={this.state.page}
-                                maxPage={this.state.maxPage}
-                                maxButtons={5}
-                                handleClick={this.handleClick.bind(this)}
-                            />
-                            <TablePageSize handleChange={this.handleChangePageSize.bind(this)}
-                                           value={this.state.size}/>
-                        </TableFooter>
-                    </Table>
                 </div>
+                <Table>
+                    <TableHead>
+                        <TableHeadItem name={'id'} order={this.state.idDirection}
+                                       handleClick={this.handleChangeDirection.bind(this)}>#</TableHeadItem>
+                        <TableHeadItem name={'country'} order={this.state.countryDirection}
+                                       handleClick={this.handleChangeDirection.bind(this)}>Country</TableHeadItem>
+                        <TableHeadItem name={'title'} order={this.state.titleDirection}
+                                       handleClick={this.handleChangeDirection.bind(this)}>Title</TableHeadItem>
+                        <TableHeadItem>Actions</TableHeadItem>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            this.state.search
+                                ? <TableRow>
+                                    <TableRowItem>
+                                        <FormInput value={this.state.id}
+                                                   handleBlur={this.handleBlur.bind(this)} type={'number'}
+                                                   handleChange={this.handleChangeId.bind(this)}
+                                                   className={"admin_table__search__input"}
+                                                   handleSubmit={this.handleBlur.bind(this)}
+                                        />
+                                    </TableRowItem>
+                                    <TableRowItem>
+                                        <FormInput value={this.state.country}
+                                                   handleBlur={this.handleBlur.bind(this)}
+                                                   handleChange={this.handleChangeCountry.bind(this)}
+                                                   className={"admin_table__search__input"}
+                                                   handleSubmit={this.handleBlur.bind(this)}
+                                        />
+                                    </TableRowItem>
+                                    <TableRowItem>
+                                        <FormInput value={this.state.title}
+                                                   handleBlur={this.handleBlur.bind(this)}
+                                                   handleChange={this.handleChangeTitle.bind(this)}
+                                                   className={"admin_table__search__input"}
+                                                   handleSubmit={this.handleBlur.bind(this)}
+                                        />
+                                    </TableRowItem>
+                                    <TableRowItem/>
+                                </TableRow>
+                                : ''
+                        }
+                        {
+                            this.state.cities.map(city => {
+                                return (
+                                    <TableRow key={city.id}>
+                                        <TableRowItem>{city.id}</TableRowItem>
+                                        <TableRowItem>{city.country.title}</TableRowItem>
+                                        <TableRowItem>{city.title}</TableRowItem>
+                                        <TableRowItem className={"admin_table__actions"}>
+                                            <Link to={`/admin/cities/${city.id}/update`}
+                                                  className={"admin_table__action"}>✎</Link>
+                                            <Link to={`/admin/cities/${city.id}/delete`}
+                                                  className={"admin_table__action"}>🗑</Link>
+                                        </TableRowItem>
+                                    </TableRow>
+                                );
+                            })
+                        }
+                    </TableBody>
+                    <TableFooter>
+                        <TablePagination
+                            page={this.state.page}
+                            maxPage={this.state.maxPage}
+                            maxButtons={5}
+                            handleClick={this.handleClick.bind(this)}
+                        />
+                        <TablePageSize handleChange={this.handleChangePageSize.bind(this)}
+                                       value={this.state.size}/>
+                    </TableFooter>
+                </Table>
                 <Switch>
-                    <Route path={"/admin/city/create"} component={CityCreator}/>
-                    <Route path={"/admin/city/:id/update"} component={CityUpdater}/>
-                    <Route path={"/admin/city/:id/delete"} component={CityRemover}/>
+                    <Route path={"/admin/cities/create"} component={CityCreator}/>
+                    <Route path={"/admin/cities/:id/update"} component={CityUpdater}/>
+                    <Route path={"/admin/cities/:id/delete"} component={CityRemover}/>
                 </Switch>
-            </BrowserRouter>
+            </div>
+
         );
     }
 }

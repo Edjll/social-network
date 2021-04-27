@@ -30,7 +30,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, String> {
     Optional<UserInfoDto> getUserInfoById(@Param("id") String id);
 
     @Query( "select new ru.edjll.backend.dto.user.info.UserInfoDetailDto(" +
-                "user.id, user.firstName, user.lastName, user.username, " +
+                "user.id, user.firstName, user.lastName, user.username, user.email, " +
                 "case when userInfo is null then null else userInfo.birthday end, " +
                 "case when city is null then null else city.id end, " +
                 "case when city is null then null else city.title end, " +

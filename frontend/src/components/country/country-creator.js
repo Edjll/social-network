@@ -23,9 +23,12 @@ export class CountryCreator extends React.Component {
         }
     }
 
-    handleClose() {
+    componentWillUnmount() {
         document.body.style.overflow = 'auto';
-        this.props.history.goBack();
+    }
+
+    handleClose() {
+        this.props.history.push("/admin/countries");
     }
 
     handleSubmit(e) {
@@ -36,7 +39,7 @@ export class CountryCreator extends React.Component {
                 .post(RequestService.ADMIN_URL + "/countries", {
                     title: this.state.title
                 })
-                .then(() => this.handleClose())
+                .then(() => this.props.history.push("/admin/countries", { update: true }))
                 .catch(error => this.setState({
                     errors: {
                         title: error.response.data.errors.title

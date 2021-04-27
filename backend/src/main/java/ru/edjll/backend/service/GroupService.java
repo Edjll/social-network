@@ -48,6 +48,12 @@ public class GroupService {
         Group groupFromDB = groupRepository.findById(id)
                 .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
 
+        if (!groupFromDB.getAddress().equals(groupDtoForUpdate.getAddress())
+                && groupRepository.existsByAddressAndIdNot(groupDtoForUpdate.getAddress(), groupFromDB.getId())
+        ) {
+            throw new ResponseParameterException(HttpStatus.BAD_REQUEST, "address", groupDtoForUpdate.getAddress(), "unique");
+        }
+
         if (!groupFromDB.getCreator().getId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }

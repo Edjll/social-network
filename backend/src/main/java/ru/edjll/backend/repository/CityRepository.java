@@ -14,4 +14,6 @@ public interface CityRepository extends JpaRepository<City, Long> {
     Collection<City> findAllByCountryId(long countryId);
 
     Page<City> findAllByIdGreaterThanEqualAndTitleStartingWithIgnoreCaseAndCountryTitleStartingWithIgnoreCase(Long id, String title, String country, Pageable pageable);
+
+    Boolean existsByTitleAndIdNot(String title, Long id);
 }

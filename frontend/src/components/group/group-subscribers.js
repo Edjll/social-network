@@ -13,7 +13,7 @@ export class GroupSubscribers extends React.Component {
                 countryId: this.state.countryId,
                 cityId: this.state.cityId,
                 page: this.state.page,
-                size: this.state.pageSize
+                size: this.state.size
             }
         })
             .then(response => this.setState({

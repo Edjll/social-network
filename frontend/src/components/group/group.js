@@ -20,45 +20,48 @@ export class Group extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            info: {
-                title: '',
-                description: '',
-                id: null,
-                address: '',
-                creatorId: ''
-            },
-            subscribed: null,
+        this.defaultState = {
             page: 0,
             size: 5,
             totalPages: 0,
-            totalUsers: 0,
             posts: [],
-            users: [],
             error: null
+        }
+        this.state = {
+            ...this.defaultState,
+            info: {
+                title: undefined,
+                description: undefined,
+                id: undefined,
+                address: undefined,
+                creatorId: undefined
+            },
+            subscribed: null,
+            totalUsers: 0,
+            users: []
         };
     }
 
     componentDidMount() {
-        this.loadInfo();
+        this.loadInfo()
+            .then(() => {
+                this.loadPosts(() => IntersectionObserverService.create('.post:last-child', this, this.loadPosts));
+                this.loadUsers();
+            })
+            .catch(error => this.setState({error: error.response.data.message, loadQueue: this.state.loadQueue - 1}));
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.location !== prevProps.location) {
-            this.componentDidMount();
+        if (this.props.match.params.address !== prevProps.match.params.address || (this.props.location.state && this.props.location.state.updated)) {
+            this.setState({...this.state, ...this.defaultState}, () => this.componentDidMount());
+            this.props.history.push(this.props.location.pathname);
         }
     }
 
     loadInfo() {
-        RequestService.getAxios()
+        return RequestService.getAxios()
             .get(RequestService.URL + "/groups/" + this.props.match.params.address)
-            .then(response => this.setState({info: response.data}, () => {
-                this.loadPosts(() => IntersectionObserverService.create('.post:last-child', this, this.loadPosts));
-                this.loadUsers();
-            }))
-            .catch(error => {
-                this.setState({error: error.response.data.message, loadQueue: this.state.loadQueue - 1})
-            })
+            .then(response => new Promise((resolve) => this.setState({info: response.data}, () => resolve())))
     }
 
     loadPosts(callback) {
@@ -202,10 +205,18 @@ export class Group extends React.Component {
                 <div className={"right_side"}>
                     <Card className={"group__info"}>
                         <CardHeader className={"group__info__title"}>
-                            <h1>{this.state.info.title}</h1>
+                            {
+                                this.state.info.title !== undefined
+                                    ?   <h1>{this.state.info.title}</h1>
+                                    :   <h1 className={'card_preloader'}>...</h1>
+                            }
                         </CardHeader>
                         <CardBody className={"group__info__description"}>
-                            <pre>{this.state.info.description}</pre>
+                            {
+                                this.state.info.description !== undefined
+                                    ?   <pre>{this.state.info.description}</pre>
+                                    :   <pre className={'card_preloader'}>...</pre>
+                            }
                         </CardBody>
                     </Card>
                     {
@@ -223,7 +234,8 @@ export class Group extends React.Component {
                     }
                 </div>
                 <Switch>
-                    <Route path={"/group/:address/update"} component={GroupUpdater}/>
+                    <Route path={"/group/:address/update"} component={(props) => <GroupUpdater {...props} handleUpdate={() => this.componentDidMount()
+                    }/>}/>
                     <Route path={"/group/:address/delete"} component={GroupRemover}/>
                 </Switch>
             </div>

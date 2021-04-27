@@ -60,18 +60,20 @@ export class Login extends React.Component {
             return (<Redirect to={{pathname: '/',}}/>);
         }
         return (
-            <Form handleSubmit={this.handleLogin.bind(this)} className={"login_form"}>
-                <CardHeader>
-                    <h1>Login</h1>
-                </CardHeader>
-                <CardBody>
-                    <FormInput error={this.state.errors ? this.state.errors.username : null} value={this.state.username} title={"username"} handleChange={this.handleChangeUsername.bind(this)}/>
-                    <FormInput error={this.state.errors ? this.state.errors.password : null} value={this.state.password} title={"password"} type={"password"} handleChange={this.handleChangePassword.bind(this)}/>
-                </CardBody>
-                <CardFooter>
-                    <FormButton>Login</FormButton>
-                </CardFooter>
-            </Form>
+            <div className={"login_form"}>
+                <Form handleSubmit={this.handleLogin.bind(this)}>
+                    <CardHeader>
+                        <h1>Login</h1>
+                    </CardHeader>
+                    <CardBody>
+                        <FormInput error={this.state.errors ? this.state.errors.username : null} value={this.state.username} title={"username"} handleChange={this.handleChangeUsername.bind(this)}/>
+                        <FormInput error={this.state.errors ? this.state.errors.password : null} value={this.state.password} title={"password"} type={"password"} handleChange={this.handleChangePassword.bind(this)}/>
+                    </CardBody>
+                    <CardFooter>
+                        <FormButton>Login</FormButton>
+                    </CardFooter>
+                </Form>
+            </div>
         );
     }
 }
