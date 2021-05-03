@@ -5,6 +5,11 @@ select count(*) from user_info where city_id = 1773;    -- Saint-Petersburg 100 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Описание: вывод пользователей
+Пользователь: авторизован
+Параметры поиска: нет
+Пагинация: есть
+
 explain analyze
 select
        user_entity.id, user_entity.username, user_entity.first_name,
@@ -58,6 +63,11 @@ Execution Time: 1.002 ms
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Описание: вывод пользователей
+Пользователь: неавторизован
+Параметры поиска: нет
+Пагинация: есть
+
 explain analyze
 select
        user_entity.id, user_entity.username, user_entity.first_name,
@@ -84,6 +94,8 @@ Execution Time: 0.249 ms
 
 -- -- --
 
+План после добавления индекса user_info__user_id__city_id на user_id и city_id в таблице user_info
+
 Limit  (cost=1.14..7.03 rows=12 width=134) (actual time=0.039..0.149 rows=12 loops=1)
   ->  Merge Right Join  (cost=1.14..490544.95 rows=1000004 width=134) (actual time=0.038..0.147 rows=12 loops=1)
         Merge Cond: ((user_info.user_id)::text = (user_entity.id)::text)
@@ -99,6 +111,11 @@ Planning Time: 0.505 ms
 Execution Time: 0.183 ms
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Описание: вывод пользователей
+Пользователь: неавторизован
+Параметры поиска: first_name = 'a'
+Пагинация: есть
 
 explain analyze
 select
@@ -129,6 +146,11 @@ Execution Time: 0.374 ms
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Описание: вывод пользователей
+Пользователь: неавторизован
+Параметры поиска: first_name = 'a', last_name = 'ov'
+Пагинация: есть
+
 explain analyze
 select
        user_entity.id, user_entity.username, user_entity.first_name,
@@ -157,8 +179,12 @@ Limit  (cost=0.71..17.03 rows=12 width=134) (actual time=0.072..0.403 rows=12 lo
 Planning Time: 0.583 ms
 Execution Time: 0.434 ms
 
-
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Описание: вывод пользователей
+Пользователь: неавторизован
+Параметры поиска: first_name = 'a', last_name = 'ov', country_id = 20
+Пагинация: есть
 
 explain analyze
 select
@@ -199,45 +225,10 @@ Execution Time: 46.661 ms
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-explain analyze
-select
-       user_entity.id, user_entity.username, user_entity.first_name,
-       user_entity.last_name, city.title as city, null as status, null as friend_id
-from user_entity
-    left join user_info on user_entity.id = user_info.user_id
-    left join city on user_info.city_id = city.id
-    join country on city.country_id = country.id
-where realm_id = 'social-network'
-  and service_account_client_link is null
-  and user_entity.enabled = true
-  and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'
-  and lower(last_name) like concat('%', lower('ov'), '%')
-  and lower(first_name) like concat('%', lower('a'), '%')
-  and country.id = 20
-  and city.id = 25988
-limit 12 offset 0
-
-Limit  (cost=0.71..105.15 rows=12 width=134) (actual time=0.091..0.584 rows=12 loops=1)
-  ->  Nested Loop  (cost=0.71..172298.34 rows=19798 width=134) (actual time=0.090..0.580 rows=12 loops=1)
-        ->  Nested Loop  (cost=0.42..172037.50 rows=19798 width=69) (actual time=0.069..0.527 rows=12 loops=1)
-              ->  Seq Scan on user_info  (cost=0.00..21846.00 rows=99000 width=45) (actual time=0.010..0.022 rows=30 loops=1)
-                    Filter: (city_id = 25988)
-              ->  Index Scan using constraint_fb on user_entity  (cost=0.42..1.52 rows=1 width=61) (actual time=0.016..0.016 rows=0 loops=30)
-                    Index Cond: ((id)::text = (user_info.user_id)::text)
-"                    Filter: ((service_account_client_link IS NULL) AND enabled AND ((id)::text <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'::text) AND ((realm_id)::text = 'social-network'::text) AND (lower((last_name)::text) ~~ concat('%', 'ov'::text, '%')) AND (lower((first_name)::text) ~~ concat('%', 'a'::text, '%')))"
-                    Rows Removed by Filter: 1
-        ->  Materialize  (cost=0.29..13.36 rows=1 width=13) (actual time=0.002..0.004 rows=1 loops=12)
-              ->  Nested Loop  (cost=0.29..13.36 rows=1 width=13) (actual time=0.017..0.038 rows=1 loops=1)
-                    ->  Index Scan using city_pkey on city  (cost=0.29..8.31 rows=1 width=17) (actual time=0.008..0.008 rows=1 loops=1)
-                          Index Cond: (id = 25988)
-                          Filter: (country_id = 20)
-                    ->  Seq Scan on country  (cost=0.00..5.04 rows=1 width=4) (actual time=0.009..0.029 rows=1 loops=1)
-                          Filter: (id = 20)
-                          Rows Removed by Filter: 242
-Planning Time: 0.582 ms
-Execution Time: 0.620 ms
-
---- Deleted join country ---
+Описание: вывод пользователей
+Пользователь: неавторизован
+Параметры поиска: first_name = 'a', last_name = 'ov', city_id = 25988
+Пагинация: есть
 
 explain analyze
 select
@@ -272,6 +263,11 @@ Execution Time: 0.345 ms
 
 ---------------------------  Authorized user  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Описание: вывод пользователей
+Пользователь: авторизован
+Параметры поиска: нет
+Пагинация: есть
+
 explain analyze
 select
        user_entity.id, user_entity.username, user_entity.first_name,
@@ -293,37 +289,6 @@ where realm_id = 'social-network'
   and user_entity.enabled = true
   and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'
 limit 12 offset 0
-
-Limit  (cost=2240.46..2246.96 rows=12 width=590) (actual time=24.484..24.587 rows=12 loops=1)
-  ->  Merge Left Join  (cost=2240.46..543402.57 rows=1000003 width=590) (actual time=24.482..24.582 rows=12 loops=1)
-        Merge Cond: ((user_entity.id)::text = (user_friend.id)::text)
-        ->  Nested Loop Left Join  (cost=1.14..538661.32 rows=1000003 width=70) (actual time=0.052..0.147 rows=12 loops=1)
-              ->  Merge Left Join  (cost=0.85..229220.74 rows=1000003 width=69) (actual time=0.034..0.087 rows=12 loops=1)
-                    Merge Cond: ((user_entity.id)::text = (user_info.user_id)::text)
-                    ->  Index Scan using constraint_fb on user_entity  (cost=0.42..124404.50 rows=1000003 width=61) (actual time=0.021..0.047 rows=12 loops=1)
-                          Filter: ((service_account_client_link IS NULL) AND enabled AND ((id)::text <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'::text) AND ((realm_id)::text = 'social-network'::text))
-                    ->  Index Scan using user_info_pkey on user_info  (cost=0.42..89816.24 rows=1000000 width=45) (actual time=0.010..0.022 rows=12 loops=1)
-              ->  Index Scan using city_pkey on city  (cost=0.29..0.31 rows=1 width=13) (actual time=0.004..0.004 rows=1 loops=12)
-                    Index Cond: (id = user_info.city_id)
-        ->  Sort  (cost=2239.32..2239.64 rows=128 width=1036) (actual time=24.427..24.428 rows=0 loops=1)
-              Sort Key: user_friend.id
-              Sort Method: quicksort  Memory: 25kB
-              ->  Subquery Scan on user_friend  (cost=2232.28..2234.84 rows=128 width=1036) (actual time=24.402..24.403 rows=0 loops=1)
-                    ->  HashAggregate  (cost=2232.28..2233.56 rows=128 width=1036) (actual time=24.401..24.402 rows=0 loops=1)
-"                          Group Key: user_friend_1.friend_id, user_friend_1.status, user_friend_1.friend_id"
-                          Batches: 1  Memory Usage: 40kB
-                          ->  Append  (cost=0.00..2231.32 rows=128 width=1036) (actual time=24.395..24.396 rows=0 loops=1)
-                                ->  Seq Scan on user_friend user_friend_1  (cost=0.00..1974.90 rows=64 width=1036) (actual time=24.373..24.373 rows=0 loops=1)
-                                      Filter: ((user_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
-                                      Rows Removed by Filter: 127062
-                                ->  Bitmap Heap Scan on user_friend user_friend_2  (cost=36.91..254.50 rows=64 width=1036) (actual time=0.020..0.020 rows=0 loops=1)
-                                      Recheck Cond: ((friend_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
-                                      ->  Bitmap Index Scan on user_friend_pkey  (cost=0.00..36.89 rows=64 width=0) (actual time=0.017..0.017 rows=0 loops=1)
-                                            Index Cond: ((friend_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
-Planning Time: 11.910 ms
-Execution Time: 24.736 ms
-
---- Added user_friend_index__user_id, user_friend_index__friend_id
 
 Limit  (cost=2681.42..2693.66 rows=12 width=590) (actual time=0.181..0.366 rows=12 loops=1)
   ->  Nested Loop Left Join  (cost=2681.42..1022367.69 rows=1000004 width=590) (actual time=0.180..0.362 rows=12 loops=1)
@@ -356,6 +321,11 @@ Planning Time: 7.747 ms
 Execution Time: 0.626 ms
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Описание: вывод пользователей
+Пользователь: авторизован
+Параметры поиска: first_name = 'a'
+Пагинация: есть
 
 explain analyze
 select
@@ -412,6 +382,11 @@ Planning Time: 2.467 ms
 Execution Time: 0.389 ms
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Описание: вывод пользователей
+Пользователь: авторизован
+Параметры поиска: first_name = 'a', last_name = 'ov'
+Пагинация: есть
 
 explain analyze
 select
@@ -470,6 +445,11 @@ Execution Time: 0.324 ms
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Описание: вывод пользователей
+Пользователь: авторизован
+Параметры поиска: first_name = 'a', last_name = 'ov', country_id = 20
+Пагинация: есть
+
 explain analyze
 select
        user_entity.id, user_entity.username, user_entity.first_name,
@@ -494,44 +474,6 @@ where realm_id = 'social-network'
   and lower(first_name) like concat('%', lower('a'), '%')
   and country.id = 20
 limit 12 offset 0
-
-Limit  (cost=2666.93..3058.21 rows=12 width=590) (actual time=48.665..49.114 rows=12 loops=1)
-  ->  Nested Loop Left Join  (cost=2666.93..157382.40 rows=4745 width=590) (actual time=48.664..49.110 rows=12 loops=1)
-        Join Filter: ((user_entity.id)::text = (user_friend.id)::text)
-        ->  Nested Loop  (cost=27.50..64322.14 rows=4745 width=70) (actual time=48.608..49.044 rows=12 loops=1)
-              ->  Nested Loop  (cost=27.50..64257.79 rows=4745 width=74) (actual time=48.564..48.960 rows=12 loops=1)
-                    ->  Merge Join  (cost=27.08..50957.68 rows=23729 width=50) (actual time=48.451..48.482 rows=29 loops=1)
-                          Merge Cond: (user_info.city_id = city.id)
-                          ->  Index Scan using user_info_city_id on user_info  (cost=0.42..47900.83 rows=1000000 width=45) (actual time=0.029..28.272 rows=100029 loops=1)
-                          ->  Index Scan using city_pkey on city  (cost=0.29..1905.36 rows=1303 width=17) (actual time=3.373..3.475 rows=3 loops=1)
-                                Filter: (country_id = 20)
-                                Rows Removed by Filter: 6434
-                    ->  Index Scan using user_entity_id_enabled_index on user_entity  (cost=0.42..0.56 rows=1 width=61) (actual time=0.015..0.015 rows=0 loops=29)
-                          Index Cond: (((id)::text = (user_info.user_id)::text) AND (enabled = true))
-"                          Filter: ((service_account_client_link IS NULL) AND ((id)::text <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'::text) AND ((realm_id)::text = 'social-network'::text) AND (lower((last_name)::text) ~~ concat('%', 'ov'::text, '%')) AND (lower((first_name)::text) ~~ concat('%', 'a'::text, '%')))"
-                          Rows Removed by Filter: 1
-              ->  Materialize  (cost=0.00..5.04 rows=1 width=4) (actual time=0.004..0.006 rows=1 loops=12)
-                    ->  Seq Scan on country  (cost=0.00..5.04 rows=1 width=4) (actual time=0.019..0.048 rows=1 loops=1)
-                          Filter: (id = 20)
-                          Rows Removed by Filter: 242
-        ->  Materialize  (cost=2639.43..2671.18 rows=1270 width=1036) (actual time=0.005..0.005 rows=0 loops=12)
-              ->  Subquery Scan on user_friend  (cost=2639.43..2664.83 rows=1270 width=1036) (actual time=0.047..0.049 rows=0 loops=1)
-                    ->  HashAggregate  (cost=2639.43..2652.13 rows=1270 width=1036) (actual time=0.046..0.048 rows=0 loops=1)
-"                          Group Key: user_friend_1.friend_id, user_friend_1.status, user_friend_1.friend_id"
-                          Batches: 1  Memory Usage: 73kB
-                          ->  Append  (cost=13.34..2629.91 rows=1270 width=1036) (actual time=0.023..0.025 rows=0 loops=1)
-                                ->  Bitmap Heap Scan on user_friend user_friend_1  (cost=13.34..1299.43 rows=635 width=1036) (actual time=0.015..0.015 rows=0 loops=1)
-                                      Recheck Cond: ((user_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
-                                      ->  Bitmap Index Scan on user_friend_index__user_id  (cost=0.00..13.18 rows=635 width=0) (actual time=0.013..0.013 rows=0 loops=1)
-                                            Index Cond: ((user_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
-                                ->  Bitmap Heap Scan on user_friend user_friend_2  (cost=25.34..1311.43 rows=635 width=1036) (actual time=0.007..0.008 rows=0 loops=1)
-                                      Recheck Cond: ((friend_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
-                                      ->  Bitmap Index Scan on user_friend_index__friend_id  (cost=0.00..25.18 rows=635 width=0) (actual time=0.006..0.006 rows=0 loops=1)
-                                            Index Cond: ((friend_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
-Planning Time: 1.558 ms
-Execution Time: 49.495 ms
-
--- -- --
 
 Limit  (cost=2663.08..3054.83 rows=12 width=590) (actual time=37.581..37.944 rows=12 loops=1)
   ->  Nested Loop Left Join  (cost=2663.08..157567.70 rows=4745 width=590) (actual time=37.580..37.940 rows=12 loops=1)
@@ -572,6 +514,11 @@ Execution Time: 38.439 ms
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Описание: вывод пользователей
+Пользователь: авторизован
+Параметры поиска: first_name = 'a', last_name = 'ov', city_id = 25988
+Пагинация: есть
+
 explain analyze
 select
        user_entity.id, user_entity.username, user_entity.first_name,
@@ -597,41 +544,6 @@ where realm_id = 'social-network'
   and lower(first_name) like concat('%', lower('a'), '%')
   and city.id = 25988
 limit 12 offset 0
-
-Limit  (cost=2681.42..2828.70 rows=12 width=590) (actual time=5.639..5.791 rows=12 loops=1)
-  ->  Nested Loop  (cost=2681.42..245658.66 rows=19798 width=590) (actual time=5.638..5.787 rows=12 loops=1)
-        ->  Nested Loop  (cost=2681.13..245402.88 rows=19798 width=589) (actual time=5.608..5.748 rows=12 loops=1)
-              ->  Hash Left Join  (cost=2680.71..81595.33 rows=199981 width=581) (actual time=0.065..2.229 rows=352 loops=1)
-                    Hash Cond: ((user_entity.id)::text = (user_friend.id)::text)
-                    ->  Seq Scan on user_entity  (cost=0.00..46665.15 rows=199981 width=61) (actual time=0.026..2.018 rows=352 loops=1)
-"                          Filter: ((service_account_client_link IS NULL) AND enabled AND ((id)::text <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'::text) AND ((realm_id)::text = 'social-network'::text) AND (lower((last_name)::text) ~~ concat('%', 'ov'::text, '%')) AND (lower((first_name)::text) ~~ concat('%', 'a'::text, '%')))"
-                          Rows Removed by Filter: 527
-                    ->  Hash  (cost=2664.83..2664.83 rows=1270 width=1036) (actual time=0.028..0.031 rows=0 loops=1)
-                          Buckets: 2048  Batches: 1  Memory Usage: 16kB
-                          ->  Subquery Scan on user_friend  (cost=2639.43..2664.83 rows=1270 width=1036) (actual time=0.028..0.030 rows=0 loops=1)
-                                ->  HashAggregate  (cost=2639.43..2652.13 rows=1270 width=1036) (actual time=0.028..0.030 rows=0 loops=1)
-"                                      Group Key: user_friend_1.friend_id, user_friend_1.status, user_friend_1.friend_id"
-                                      Batches: 1  Memory Usage: 73kB
-                                      ->  Append  (cost=13.34..2629.91 rows=1270 width=1036) (actual time=0.019..0.021 rows=0 loops=1)
-                                            ->  Bitmap Heap Scan on user_friend user_friend_1  (cost=13.34..1299.43 rows=635 width=1036) (actual time=0.011..0.012 rows=0 loops=1)
-                                                  Recheck Cond: ((user_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
-                                                  ->  Bitmap Index Scan on user_friend_index__user_id  (cost=0.00..13.18 rows=635 width=0) (actual time=0.010..0.010 rows=0 loops=1)
-                                                        Index Cond: ((user_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
-                                            ->  Bitmap Heap Scan on user_friend user_friend_2  (cost=25.34..1311.43 rows=635 width=1036) (actual time=0.007..0.008 rows=0 loops=1)
-                                                  Recheck Cond: ((friend_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
-                                                  ->  Bitmap Index Scan on user_friend_index__friend_id  (cost=0.00..25.18 rows=635 width=0) (actual time=0.007..0.007 rows=0 loops=1)
-                                                        Index Cond: ((friend_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
-              ->  Index Scan using user_info_pkey on user_info  (cost=0.42..0.82 rows=1 width=45) (actual time=0.009..0.009 rows=0 loops=352)
-                    Index Cond: ((user_id)::text = (user_entity.id)::text)
-                    Filter: (city_id = 25988)
-                    Rows Removed by Filter: 1
-        ->  Materialize  (cost=0.29..8.31 rows=1 width=13) (actual time=0.002..0.003 rows=1 loops=12)
-              ->  Index Scan using city_pkey on city  (cost=0.29..8.31 rows=1 width=13) (actual time=0.016..0.017 rows=1 loops=1)
-                    Index Cond: (id = 25988)
-Planning Time: 0.684 ms
-Execution Time: 5.894 ms
-
---- Added user_info_index__user_id__city_id ---
 
 Limit  (cost=2681.42..2803.41 rows=12 width=590) (actual time=4.852..5.030 rows=12 loops=1)
   ->  Nested Loop  (cost=2681.42..203946.66 rows=19798 width=590) (actual time=4.851..5.027 rows=12 loops=1)

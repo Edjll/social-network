@@ -135,7 +135,7 @@ public class UserInfoService {
 
         int count = jdbcTemplate.queryForObject(countSql, Integer.class);
 
-        String sql = sqlSelect + " " + sqlFrom + " " + sqlWhere + " limit " + size + " offset " + page * size;
+        String sql = sqlSelect + " " + sqlFrom + " " + sqlWhere + " order by user_entity.id limit " + size + " offset " + page * size;
 
         List<UserInfoDtoForSearch> users = jdbcTemplate.query(sql, (rs, rowNumber) -> new UserInfoDtoForSearch(
                 rs.getString("id"),
