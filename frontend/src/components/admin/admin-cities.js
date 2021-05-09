@@ -112,7 +112,6 @@ export class AdminCities extends React.Component {
     }
 
     render() {
-
         return (
             <div className={"admin_table"}>
                 <div className={"admin_table__header"}>
@@ -139,7 +138,8 @@ export class AdminCities extends React.Component {
                             this.state.search
                                 ? <TableRow>
                                     <TableRowItem>
-                                        <FormInput value={this.state.id}
+                                        <FormInput clearable={true}
+                                                   value={this.state.id}
                                                    handleBlur={this.handleBlur.bind(this)} type={'number'}
                                                    handleChange={this.handleChangeId.bind(this)}
                                                    className={"admin_table__search__input"}
@@ -147,7 +147,8 @@ export class AdminCities extends React.Component {
                                         />
                                     </TableRowItem>
                                     <TableRowItem>
-                                        <FormInput value={this.state.country}
+                                        <FormInput clearable={true}
+                                                   value={this.state.country}
                                                    handleBlur={this.handleBlur.bind(this)}
                                                    handleChange={this.handleChangeCountry.bind(this)}
                                                    className={"admin_table__search__input"}
@@ -155,7 +156,8 @@ export class AdminCities extends React.Component {
                                         />
                                     </TableRowItem>
                                     <TableRowItem>
-                                        <FormInput value={this.state.title}
+                                        <FormInput clearable={true}
+                                                   value={this.state.title}
                                                    handleBlur={this.handleBlur.bind(this)}
                                                    handleChange={this.handleChangeTitle.bind(this)}
                                                    className={"admin_table__search__input"}

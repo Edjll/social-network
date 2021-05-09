@@ -10,6 +10,8 @@ import {CardFooter} from "../card/card-footer";
 import {FormButton} from "../form/form-button";
 import {FormSelect} from "../form/form-select";
 import './profile-editor.css';
+import Validator from "../../services/Validator";
+import validation from "../../services/validation.json";
 
 export default class ProfileEditor extends React.Component {
 
@@ -103,45 +105,69 @@ export default class ProfileEditor extends React.Component {
     }
 
     handleSubmit() {
-        RequestService
-            .getAxios()
-            .put(RequestService.URL + `/users`, {
-                email: this.state.email,
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                cityId: this.state.city.id,
-                birthday: this.state.birthday
-            })
-            .then(() => {
-                AuthService.forceUpdateToken(() => window.location = `/user/${AuthService.getUsername()}`);
-            })
-            .catch(error => this.setState({
-                errors: {
-                    ...this.state.errors,
-                    ...error.response.data.errors,
-                    password: error.response.data.errors ? error.response.data.errors['credentials[0].value'] : null
-                }
-            }));
+        if (this.validate() === 0) {
+            RequestService
+                .getAxios()
+                .put(RequestService.URL + `/users`, {
+                    email: this.state.email,
+                    firstName: this.state.firstName,
+                    lastName: this.state.lastName,
+                    cityId: this.state.city.id,
+                    birthday: this.state.birthday
+                })
+                .then(() => {
+                    AuthService.forceUpdateToken(() => window.location = `/user/${AuthService.getUsername()}`);
+                })
+                .catch(error => this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        ...error.response.data.errors,
+                        password: error.response.data.errors ? error.response.data.errors['credentials[0].value'] : null
+                    }
+                }));
+        }
+    }
+
+    validate() {
+        let size = 0;
+        let errors = {...this.state.errors};
+
+        const emailError = Validator.validate('Email', this.state.email, validation.user.email.params);
+        if (emailError) {
+            errors = {...errors, email: emailError};
+            size++;
+        }
+
+        const firstNameError = Validator.validate('First name', this.state.firstName, validation.user.firstName.params);
+        if (firstNameError) {
+            errors = {...errors, firstName: firstNameError};
+            size++;
+        }
+
+        const lastNameError = Validator.validate('Last name', this.state.lastName, validation.user.lastName.params);
+        if (lastNameError) {
+            errors = {...errors, lastName: lastNameError};
+            size++;
+        }
+
+        this.setState({errors: errors});
+        return size;
     }
 
     handleChangeBirthday(value) {
         this.setState({birthday: value})
     }
 
-    handleChangeUsername(value) {
-        this.setState({username: value})
-    }
-
     handleChangeEmail(value) {
-        this.setState({email: value})
+        this.setState({email: value, errors: {...this.state.errors, email: null}})
     }
 
     handleChangeFirstName(value) {
-        this.setState({firstName: value})
+        this.setState({firstName: value, errors: {...this.state.errors, firstName: null}})
     }
 
     handleChangeLastName(value) {
-        this.setState({lastName: value})
+        this.setState({lastName: value, errors: {...this.state.errors, lastName: null}})
     }
 
     handleClose() {
@@ -158,15 +184,18 @@ export default class ProfileEditor extends React.Component {
                         <FormClose handleClick={this.handleClose.bind(this)}/>
                     </CardHeader>
                     <CardBody>
-                        <FormInput value={this.state.email}
+                        <FormInput clearable={true}
+                                   value={this.state.email}
                                    title={"email"}
                                    handleChange={this.handleChangeEmail.bind(this)}
                                    error={this.state.errors.email}/>
-                        <FormInput value={this.state.firstName}
+                        <FormInput clearable={true}
+                                   value={this.state.firstName}
                                    title={"first name"}
                                    handleChange={this.handleChangeFirstName.bind(this)}
                                    error={this.state.errors.firstName}/>
-                        <FormInput value={this.state.lastName}
+                        <FormInput clearable={true}
+                                   value={this.state.lastName}
                                    title={"last name"}
                                    handleChange={this.handleChangeLastName.bind(this)}
                                    error={this.state.errors.lastName}/>

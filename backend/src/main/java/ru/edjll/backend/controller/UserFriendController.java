@@ -6,8 +6,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.user.friend.UserFriendDtoForSave;
 import ru.edjll.backend.dto.user.friend.UserFriendDtoForUpdate;
+import ru.edjll.backend.dto.user.friend.UserFriendStatusDto;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForFriendsPage;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSubscribersPage;
+import ru.edjll.backend.dto.user.info.UserInfoDtoWrapperForUserCart;
 import ru.edjll.backend.service.UserFriendService;
 import ru.edjll.backend.validation.exists.Exists;
 
@@ -16,6 +18,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,30 +33,57 @@ public class UserFriendController {
 
     @GetMapping("/friends")
     @ResponseStatus(HttpStatus.OK)
-    public Page<UserInfoDtoForFriendsPage> getUsers(
+    public List<UserInfoDtoForFriendsPage> getFriends(
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size,
             @PathVariable @Exists(table = "user_entity", column = "id") String userId,
-            @RequestParam Optional<String> firstName,
-            @RequestParam Optional<String> lastName,
-            @RequestParam Optional<Long> countryId,
-            @RequestParam Optional<Long> cityId
+            @RequestParam(defaultValue = "") String firstName,
+            @RequestParam(defaultValue = "") String lastName,
+            @RequestParam(defaultValue = "-1") Long countryId,
+            @RequestParam(defaultValue = "-1") Long cityId
     ) {
         return userFriendService.getFriends(page, size, userId, firstName, lastName, countryId, cityId);
     }
 
+    @GetMapping("/friends/{friendId}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserFriendStatusDto friendshipExists(
+            @PathVariable @Exists(table = "user_entity", column = "id") String userId,
+            @PathVariable @Exists(table = "user_entity", column = "id") String friendId
+    ) {
+        return userFriendService.friendshipExists(userId, friendId);
+    }
+
+    @GetMapping("/friends/cards")
+    @ResponseStatus(HttpStatus.OK)
+    public UserInfoDtoWrapperForUserCart getFriendCards(
+            @RequestParam @NotNull @Positive Integer size,
+            @PathVariable @Exists(table = "user_entity", column = "id") String userId
+    ) {
+        return userFriendService.getFriendCards(size, userId);
+    }
+
     @GetMapping("/subscribers")
     @ResponseStatus(HttpStatus.OK)
-    public Page<UserInfoDtoForSubscribersPage> getSubscribersForUserPage(
+    public List<UserInfoDtoForFriendsPage> getSubscribers(
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size,
             @PathVariable @Exists(table = "user_entity", column = "id") String userId,
-            @RequestParam Optional<String> firstName,
-            @RequestParam Optional<String> lastName,
-            @RequestParam Optional<Long> countryId,
-            @RequestParam Optional<Long> cityId
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam Long countryId,
+            @RequestParam Long cityId
     ) {
         return userFriendService.getSubscribers(page, size, userId, firstName, lastName, countryId, cityId);
+    }
+
+    @GetMapping("/subscribers/cards")
+    @ResponseStatus(HttpStatus.OK)
+    public UserInfoDtoWrapperForUserCart getSubscriberCards(
+            @RequestParam @NotNull @Positive Integer size,
+            @PathVariable @Exists(table = "user_entity", column = "id") String userId
+    ) {
+        return userFriendService.getSubscriberCards(size, userId);
     }
 
     @PostMapping("/friends")

@@ -1,3 +1,8 @@
+.post__header__info {
+    display: flex;
+    align-items: baseline;
+}
+
 .post__header__info > *:not(:last-child) {
     margin-right: .5rem;
 }
@@ -6,11 +11,17 @@
     font-size: 1.1rem;
     color: #337fcc;
     text-decoration: none;
-    transition: opacity .1s;
+    border-radius: .25rem;
+    transition: background-color .1s;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0 .5rem;
 }
 
 .post__header__info__link:hover {
-    opacity: .8;
+    background-color: #3e424b;
 }
 
 .post__header__info__date {
@@ -23,20 +34,25 @@
 }
 
 .post__header__actions > * {
-    margin: 0 .25rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     font-size: 1.1rem;
     user-select: none;
     color: #f7f7f7;
-    transition: color .1s;
+    transition: background-color .1s;
+    border-radius: .25rem;
 }
 
 .post__header__actions > *:hover {
-    color: #b0b0b0;
+    background-color: #3e424b;
 }
 
 .post__text {
-    margin: .5rem 0;
+    margin: 1rem 0;
     font-size: 1.1rem;
     color: #fcfcfc;
 }

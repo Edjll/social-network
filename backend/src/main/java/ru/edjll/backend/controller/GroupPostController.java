@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -33,7 +34,7 @@ public class GroupPostController {
 
     @GetMapping("/{groupId}/posts")
     @ResponseStatus(HttpStatus.OK)
-    public Page<PostDto> get(
+    public List<PostDto> get(
             @PathVariable @Positive @Exists(table = "groups", column = "id") Long groupId,
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size

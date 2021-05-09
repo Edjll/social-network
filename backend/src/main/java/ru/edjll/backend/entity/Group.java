@@ -3,6 +3,8 @@ package ru.edjll.backend.entity;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import ru.edjll.backend.dto.user.InterlocutorDto;
+import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

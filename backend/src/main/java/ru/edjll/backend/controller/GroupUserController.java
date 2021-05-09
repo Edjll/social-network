@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.group.user.GroupUserDtoForGroupPage;
 import ru.edjll.backend.dto.group.user.GroupUserDtoForSubscribe;
 import ru.edjll.backend.dto.group.user.GroupUserDtoForSubscribersPage;
+import ru.edjll.backend.dto.group.user.GroupUserDtoWrapperForGroupPage;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
 import ru.edjll.backend.service.GroupUserService;
 import ru.edjll.backend.validation.exists.Exists;
@@ -18,6 +19,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -32,27 +34,26 @@ public class GroupUserController {
     }
 
     @GetMapping
-    public Page<UserInfoDtoForSearch> getDtoByGroupId(
+    public List<UserInfoDtoForSearch> getDtoByGroupId(
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size,
             @PathVariable @Positive @Exists(table = "groups", column = "id") Long groupId,
-            @RequestParam Optional<String> firstName,
-            @RequestParam Optional<String> lastName,
-            @RequestParam Optional<Long> countryId,
-            @RequestParam Optional<Long> cityId,
+            @RequestParam(defaultValue = "") String firstName,
+            @RequestParam(defaultValue = "") String lastName,
+            @RequestParam(defaultValue = "-1") Long countryId,
+            @RequestParam(defaultValue = "-1") Long cityId,
             Principal principal
     ) {
         return groupUserService.getSubscribers(Optional.ofNullable(principal), page, size, groupId, firstName, lastName, countryId, cityId);
     }
 
-    @GetMapping("/{userId}")
-    public Page<GroupUserDtoForGroupPage> getDtoByGroupId(
+    @GetMapping("/cards")
+    public GroupUserDtoWrapperForGroupPage getDtoByGroupId(
             @PathVariable @Positive @Exists(table = "groups", column = "id") Long groupId,
-            @PathVariable @NotEmpty @Exists(table = "user_entity", column = "id") String userId,
-            @RequestParam @NotNull @PositiveOrZero Integer page,
-            @RequestParam @NotNull @Positive Integer size
+            @RequestParam @NotNull @Positive Integer size,
+            Principal principal
     ) {
-        return groupUserService.getUsersWithUserByUserId(groupId, userId, page, size);
+        return groupUserService.getUsersWithUserByUserId(groupId, Optional.ofNullable(principal), size);
     }
 
     @PostMapping

@@ -150,7 +150,8 @@ export class AdminUsers extends React.Component {
                             this.state.search
                                 ? <TableRow>
                                     <TableRowItem>
-                                        <FormInput value={this.state.id}
+                                        <FormInput clearable={true}
+                                                   value={this.state.id}
                                                    handleBlur={this.handleBlur.bind(this)}
                                                    handleChange={this.handleChangeId.bind(this)}
                                                    className={"admin_table__search__input"}
@@ -158,7 +159,8 @@ export class AdminUsers extends React.Component {
                                         />
                                     </TableRowItem>
                                     <TableRowItem>
-                                        <FormInput value={this.state.username}
+                                        <FormInput clearable={true}
+                                                   value={this.state.username}
                                                    handleBlur={this.handleBlur.bind(this)}
                                                    handleChange={this.handleChangeUsername.bind(this)}
                                                    className={"admin_table__search__input"}
@@ -166,7 +168,8 @@ export class AdminUsers extends React.Component {
                                         />
                                     </TableRowItem>
                                     <TableRowItem>
-                                        <FormInput value={this.state.email}
+                                        <FormInput clearable={true}
+                                                   value={this.state.email}
                                                    handleBlur={this.handleBlur.bind(this)}
                                                    handleChange={this.handleChangeEmail.bind(this)}
                                                    className={"admin_table__search__input"}
@@ -174,7 +177,8 @@ export class AdminUsers extends React.Component {
                                         />
                                     </TableRowItem>
                                     <TableRowItem>
-                                        <FormInput value={this.state.city}
+                                        <FormInput clearable={true}
+                                                   value={this.state.city}
                                                    handleBlur={this.handleBlur.bind(this)}
                                                    handleChange={this.handleChangeCity.bind(this)}
                                                    className={"admin_table__search__input"}

@@ -21,6 +21,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @Validated
@@ -34,7 +35,7 @@ public class MessageController {
 
     @GetMapping("/users/{userId}/messages")
     @ResponseStatus(HttpStatus.OK)
-    public Page<MessageDto> getAllMessageDtoBetweenUsersById(
+    public List<MessageDto> getAllMessageDtoBetweenUsersById(
             @PathVariable @Exists(table = "user_entity", column = "id") String userId,
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size,

@@ -23,7 +23,7 @@ export const GroupPost = (props) => {
             .getAxios()
             .delete(RequestService.URL + `/groups/posts/${context.state.post.id}`)
             .then(() => {
-                if (props.handleDelete) props.handleDelete(context.state.post.id);
+                if (props.handleDelete) props.handleDelete(props.id);
             });
     }
 

@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: .8rem 1rem;
+    padding: .4rem .5rem;
     border-bottom: 1px solid rgb(62, 68, 70);
 }
 
@@ -11,4 +11,12 @@
     font-size: 1.1rem;
     font-weight: 400;
     margin: 0;
+    border-radius: .25rem;
+    transition: background-color .1s;
+    padding: .4rem .5rem;
+    text-decoration: none;
+}
+
+.card__header > a:hover {
+    background-color: #3e424b;
 }

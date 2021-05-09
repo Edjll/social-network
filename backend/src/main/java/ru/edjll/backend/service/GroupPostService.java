@@ -18,6 +18,7 @@ import ru.edjll.backend.repository.GroupPostRepository;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -76,7 +77,7 @@ public class GroupPostService {
         groupPostRepository.deleteById(groupPostFromDB.getId());
     }
 
-    public Page<PostDto> getDtoByGroupId(Long groupId, Integer page, Integer size) {
+    public List<PostDto> getDtoByGroupId(Long groupId, Integer page, Integer size) {
         return groupPostRepository.getDtoByGroupId(groupId, PageRequest.of(page, size, Sort.by("createdDate").descending()));
     }
 }

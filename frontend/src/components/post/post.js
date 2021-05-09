@@ -27,11 +27,11 @@ export class Post extends React.Component {
             <div className={"post__header__info"}>
                 <Link to={`/${this.state.post.type.toLowerCase()}/${this.state.post.address}`}
                       className={"post__header__info__link"}>{this.state.post.name}</Link>
-                <span
-                    className={"post__header__info__date"}>{new Date(this.state.post.createdDate).toLocaleString()}</span>
+                <HiddenInfo text={"📅"}
+                            hidden={new Date(this.state.post.createdDate).toLocaleString()}/>
                 {
                     this.state.post.modifiedDate
-                        ? <HiddenInfo text={"(edit)"}
+                        ? <HiddenInfo text={"✎"}
                                       hidden={new Date(this.state.post.modifiedDate).toLocaleString()}/>
                         : ""
                 }

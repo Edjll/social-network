@@ -33,7 +33,6 @@ export class CityUpdater extends React.Component {
     }
 
     componentDidMount() {
-        console.log(3);
         document.body.style.overflow = 'hidden';
         RequestService.getAxios().get(RequestService.URL + "/countries")
             .then(response => {
@@ -123,7 +122,8 @@ export class CityUpdater extends React.Component {
                     </CardHeader>
                     <CardBody>
                         <FormInput value={this.state.id} title={"id"} disabled={true}/>
-                        <FormInput value={this.state.title} handleChange={this.handleChangeTitle.bind(this)}
+                        <FormInput clearable={true}
+                                   value={this.state.title} handleChange={this.handleChangeTitle.bind(this)}
                                    title={"title"}
                                    error={this.state.errors.title}/>
                         {

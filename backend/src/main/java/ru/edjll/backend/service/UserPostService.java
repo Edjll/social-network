@@ -17,6 +17,7 @@ import ru.edjll.backend.repository.UserPostRepository;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class UserPostService {
@@ -65,7 +66,7 @@ public class UserPostService {
         userPostRepository.deleteById(id);
     }
 
-    public Page<PostDto> getAllPostDtoByUserId(String id, Integer page, Integer size) {
+    public List<PostDto> getAllPostDtoByUserId(String id, Integer page, Integer size) {
         return userPostRepository.getAllPostDtoByUserId(id, PageRequest.of(page, size, Sort.by("createdDate").descending()));
     }
 

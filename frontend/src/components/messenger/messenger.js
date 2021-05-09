@@ -62,8 +62,8 @@ export class Messenger extends React.Component {
                 const id = new URLSearchParams(this.props.location.search).get("id");
                 this.setState(
                     {
-                        totalPages: response.data.totalPages,
-                        interlocutors: response.data.content
+                        lastSize: response.data.length,
+                        interlocutors: response.data
                     },
                     () => {
                         if (new URLSearchParams(this.props.location.search).get("id")) {

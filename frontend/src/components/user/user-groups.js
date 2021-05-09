@@ -4,6 +4,7 @@ import {GroupCard} from "../group/group-card";
 import {Card} from "../card/card";
 import {CardHeader} from "../card/card-header";
 import {CardBody} from "../card/card-body";
+import IntersectionObserverService from "../../services/IntersectionObserverService";
 
 export class UserGroups extends React.Component {
 
@@ -18,10 +19,10 @@ export class UserGroups extends React.Component {
     }
 
     componentDidMount() {
-        this.loadGroups();
+        this.loadGroups(() => IntersectionObserverService.create('.group_card:last-child', this, this.loadGroups));
     }
 
-    loadGroups() {
+    loadGroups(callback) {
         RequestService
             .getAxios()
             .get(RequestService.URL + `/users/${this.state.userId}/groups`, {
@@ -30,7 +31,12 @@ export class UserGroups extends React.Component {
                     size: this.state.size
                 }
             })
-            .then(response => this.setState({groups: response.data.content}))
+            .then(response => this.setState({
+                groups: response.data,
+                lastSize: response.data.length
+            }, () => {
+                if (callback) callback();
+            }))
     }
 
     render() {

@@ -1,5 +1,5 @@
 .messenger_interlocutor_card {
-    padding: 1rem .5rem;
+    padding: 1rem;
     color: white;
     border-bottom: 1px solid rgb(62, 68, 70);
     cursor: pointer;
@@ -23,7 +23,16 @@
 
 .messenger_interlocutor_card-active {
     background-color: #3e424b;
-    border-right: 2px solid rgb(71, 110, 229);
+}
+
+.messenger_interlocutor_card-active::before {
+    content: '';
+    width: .22rem;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    background-color: #337fcc;
+    border-radius: 0 .5rem .5rem 0;
 }
 
 .messenger_interlocutor_card__notification {

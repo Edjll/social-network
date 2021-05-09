@@ -13,8 +13,8 @@ import {UserPostCreator} from "../user/user-post/user-post-creator";
 import IntersectionObserverService from "../../services/IntersectionObserverService";
 import PostType from "../../services/PostType";
 import {Error} from "../error/error";
-import ProfileEditor from "./profile-editor";
-import {PrivateRoute} from "../security/private-route";
+import {UserFriendButton} from "../user/user-friend-button";
+import UserFriendStatus from "../../services/UserFriendStatus";
 
 export class Profile extends React.Component {
 
@@ -40,7 +40,8 @@ export class Profile extends React.Component {
             error: null,
             totalGroups: 0,
             totalFriends: 0,
-            totalSubscribers: 0
+            totalSubscribers: 0,
+            friend: null
         }
     }
 
@@ -88,8 +89,8 @@ export class Profile extends React.Component {
                 }
             })
             .then(response => this.setState({
-                totalPages: response.data.totalPages,
-                posts: [...this.state.posts, ...response.data.content.map(post => {
+                lastSize: response.data.length,
+                posts: [...this.state.posts, ...response.data.map(post => {
                     return {...post, type: PostType.USER}
                 })]
             }, () => {
@@ -99,42 +100,52 @@ export class Profile extends React.Component {
 
     loadFriends() {
         RequestService.getAxios()
-            .get(RequestService.URL + `/users/${this.state.user.id}/friends`, {
+            .get(RequestService.URL + `/users/${this.state.user.id}/friends/cards`, {
                 params: {
                     page: 0,
                     size: 9
                 }
             })
             .then(response => this.setState({
-                friends: response.data.content,
-                totalFriends: response.data.totalElements
+                friends: response.data.users,
+                totalFriends: response.data.count
             }));
+
+        if (AuthService.isAuthenticated()) {
+            RequestService.getAxios()
+                .get(RequestService.URL + `/users/${this.state.user.id}/friends/${AuthService.getId()}`)
+                .then(response => {
+                    if (response.data) {
+                        this.setState({
+                            friend: response.data
+                        })
+                    } else {
+                        this.setState({
+                            friend: {status: null, friendId: null}
+                        })
+                    }
+                });
+        }
     }
 
     loadSubscribers() {
         RequestService.getAxios()
-            .get(RequestService.URL + `/users/${this.state.user.id}/subscribers`, {
-                params: {
-                    page: 0,
-                    size: 9
-                }
+            .get(RequestService.URL + `/users/${this.state.user.id}/subscribers/cards`, {
+                params: {size: 9}
             })
             .then(response => this.setState({
-                subscribers: response.data.content,
-                totalSubscribers: response.data.totalElements
+                subscribers: response.data.users,
+                totalSubscribers: response.data.count
             }));
     }
 
     loadGroups() {
-        RequestService.getAxios().get(RequestService.URL + `/users/${this.state.user.id}/groups`, {
-            params: {
-                page: 0,
-                size: 9
-            }
+        RequestService.getAxios().get(RequestService.URL + `/users/${this.state.user.id}/groups/cards`, {
+            params: {size: 9}
         })
             .then(response => this.setState({
-                groups: response.data.content,
-                totalGroups: response.data.totalElements
+                groups: response.data.groups,
+                totalGroups: response.data.count
             }));
     }
 
@@ -144,6 +155,18 @@ export class Profile extends React.Component {
 
     handleCreatePost(post) {
         this.setState({posts: [{...post, type: PostType.USER}, ...this.state.posts]});
+    }
+
+    handleAddToFriends() {
+        this.setState({friend: {...this.state.friend, status: UserFriendStatus.SUBSCRIBER}});
+    }
+
+    handleRemoveFromFriends() {
+        this.setState({friend: {status: null, friendId: null}});
+    }
+
+    handleAcceptRequest() {
+        this.setState({friend: {...this.state.friend, status: UserFriendStatus.FRIEND}});
     }
 
     render() {
@@ -177,6 +200,17 @@ export class Profile extends React.Component {
                                             className="form__button profile__actions__item">Send message</Link>
                                     : ''
                             }
+                            {
+                                this.state.friend && this.state.user.id
+                                    ? <UserFriendButton
+                                        handleAddToFriends={(response) => this.handleAddToFriends(response)}
+                                        handleRemoveFromFriends={(response) => this.handleRemoveFromFriends(response)}
+                                        handleAcceptRequest={(response) => this.handleAcceptRequest(response)}
+                                        id={this.state.user.id}
+                                        friendId={this.state.friend.friendId}
+                                        status={this.state.friend.status}/>
+                                    : ''
+                            }
                         </CardBody>
                     </Card>
                     {
@@ -189,7 +223,8 @@ export class Profile extends React.Component {
                                 </CardHeader>
                                 <CardBody className={"profile__friends__items"}>
                                     {
-                                        this.state.friends.map(friend => <UserCardMini key={friend.id} info={friend}/>)
+                                        this.state.friends.map(friend => <UserCardMini key={friend.username}
+                                                                                       info={friend}/>)
                                     }
                                 </CardBody>
                             </Card>
@@ -221,7 +256,7 @@ export class Profile extends React.Component {
                                 </CardHeader>
                                 <CardBody className={"profile__friends__items"}>
                                     {
-                                        this.state.subscribers.map(subscriber => <UserCardMini key={subscriber.id}
+                                        this.state.subscribers.map(subscriber => <UserCardMini key={subscriber.username}
                                                                                                info={subscriber}/>)
                                     }
                                 </CardBody>
@@ -265,7 +300,7 @@ export class Profile extends React.Component {
                             : ''
                     }
                     {
-                        this.state.posts.map(post => <UserPost key={post.id} data={post}
+                        this.state.posts.map(post => <UserPost key={post.id} id={post.id} data={post}
                                                                handleDelete={this.handleDeletePost.bind(this)}/>)
                     }
                 </div>

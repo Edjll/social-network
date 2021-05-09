@@ -43,3 +43,10 @@
 .form__textarea__error {
     margin: .3rem;
 }
+
+.form__textarea__error > div:first-of-type {
+    background-color: transparent;
+    height: 1rem;
+    width: 1rem;
+    border: none;
+}

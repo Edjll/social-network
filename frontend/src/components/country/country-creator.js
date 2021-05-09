@@ -57,8 +57,6 @@ export class CountryCreator extends React.Component {
             size++;
         }
 
-        console.log(errors)
-
         this.setState({errors: errors}, () => console.log(this.state.errors));
         return size;
     }
@@ -77,7 +75,8 @@ export class CountryCreator extends React.Component {
                         <FormClose handleClick={this.handleClose.bind(this)}/>
                     </CardHeader>
                     <CardBody>
-                        <FormInput value={this.state.title}
+                        <FormInput clearable={true}
+                                   value={this.state.title}
                                    handleChange={this.handleChangeTitle.bind(this)}
                                    title={"title"}
                                    error={this.state.errors.title}/>

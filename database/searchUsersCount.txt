@@ -1,0 +1,74 @@
+explain analyze
+select count(user_entity.id) as count
+ from user_entity
+ where realm_id = 'social-network'
+   and service_account_client_link is null
+   and user_entity.enabled = true
+   and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'
+   and case when 'Ivan' = '' then true else lower('Ivan') = lower(user_entity.first_name) end;
+
+Finalize Aggregate  (cost=26003.81..26003.82 rows=1 width=8) (actual time=1812.771..1819.591 rows=1 loops=1)
+  ->  Gather  (cost=26003.60..26003.81 rows=2 width=8) (actual time=1812.706..1819.585 rows=3 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        ->  Partial Aggregate  (cost=25003.60..25003.61 rows=1 width=8) (actual time=1730.119..1730.120 rows=1 loops=3)
+              ->  Parallel Seq Scan on user_entity  (cost=0.00..24998.39 rows=2083 width=37) (actual time=1.246..1719.185 rows=66667 loops=3)
+                    Filter: ((service_account_client_link IS NULL) AND enabled AND ((id)::text <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'::text) AND ((realm_id)::text = 'social-network'::text) AND ('ivan'::text = lower((first_name)::text)))
+                    Rows Removed by Filter: 266669
+Planning Time: 0.244 ms
+Execution Time: 1819.674 ms
+
+---------------------------------------------------------------------------------
+
+create index user_entity__index__________test
+    on user_entity (lower(first_name));
+
+explain analyze
+select count(user_entity.id) as count,    '5b1fb508-ddad-4676-96ee-c359479f282c'
+ from user_entity
+ where realm_id = 'social-network'
+   and service_account_client_link is null
+   and user_entity.enabled = true
+   and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'
+   and case when 'Ivan' = '' then true else lower('Ivan') = lower(user_entity.first_name) end;
+
+drop index user_entity__index__________test;
+
+Aggregate  (cost=10900.93..10900.94 rows=1 width=40) (actual time=12934.586..12934.587 rows=1 loops=1)
+  ->  Bitmap Heap Scan on user_entity  (cost=59.17..10888.43 rows=5000 width=37) (actual time=67.768..12910.170 rows=200001 loops=1)
+        Recheck Cond: ('ivan'::text = lower((first_name)::text))
+        Filter: ((service_account_client_link IS NULL) AND enabled AND ((id)::text <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'::text) AND ((realm_id)::text = 'social-network'::text))
+        Heap Blocks: exact=16665
+        ->  Bitmap Index Scan on user_entity__index__________test  (cost=0.00..57.92 rows=5000 width=0) (actual time=64.175..64.175 rows=200001 loops=1)
+              Index Cond: (lower((first_name)::text) = 'ivan'::text)
+Planning Time: 24.254 ms
+Execution Time: 12934.783 ms
+
+---------------------------------------------------------------------------------
+
+create index user_entity__index__________test
+    on user_entity (lower(first_name))
+    where user_entity.service_account_client_link is null
+              and enabled
+              and realm_id = 'social-network'
+              and id <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7';
+
+explain analyze
+select count(user_entity.id) as count,    '5b1fb508-ddad-4676-96ee-c359479f282c'
+from user_entity
+where realm_id = 'social-network'
+  and service_account_client_link is null
+  and user_entity.enabled = true
+  and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'
+  and case when 'Ivan' = '' then true else lower('Ivan') = lower(user_entity.first_name) end;
+
+drop index user_entity__index__________test;
+
+Aggregate  (cost=10900.93..10900.94 rows=1 width=40) (actual time=6001.948..6001.949 rows=1 loops=1)
+  ->  Bitmap Heap Scan on user_entity  (cost=59.17..10888.43 rows=5000 width=37) (actual time=80.112..5977.959 rows=200001 loops=1)
+        Recheck Cond: (('ivan'::text = lower((first_name)::text)) AND (service_account_client_link IS NULL) AND enabled AND ((realm_id)::text = 'social-network'::text) AND ((id)::text <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'::text))
+        Heap Blocks: exact=16665
+        ->  Bitmap Index Scan on user_entity__index__________test  (cost=0.00..57.92 rows=5000 width=0) (actual time=76.967..76.968 rows=200001 loops=1)
+              Index Cond: (lower((first_name)::text) = 'ivan'::text)
+Planning Time: 4.292 ms
+Execution Time: 6002.152 ms

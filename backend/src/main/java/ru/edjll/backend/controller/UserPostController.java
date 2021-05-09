@@ -18,6 +18,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -32,7 +33,7 @@ public class UserPostController {
 
     @GetMapping("/{userId}/posts")
     @ResponseStatus(HttpStatus.OK)
-    public Page<PostDto> getAllPostDtoByUserId(
+    public List<PostDto> getAllPostDtoByUserId(
             @PathVariable @Exists(table = "user_entity", column = "id", message = "{post.userId.exists}") String userId,
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size

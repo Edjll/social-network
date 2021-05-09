@@ -36,7 +36,7 @@ export class MessengerDialog extends React.Component {
     componentDidMount() {
         if (this.props.info) {
             this.setState({interlocutor: this.props.info}, () => this.loadMessages(() => {
-                IntersectionObserverService.create('.message:last-child', this, this.loadMessages);
+                IntersectionObserverService.create('.messenger_message:last-child', this, this.loadMessages);
             }));
         }
     }
@@ -71,8 +71,8 @@ export class MessengerDialog extends React.Component {
             })
             .then(response => {
                 this.setState({
-                    messages: [...this.state.messages, ...response.data.content],
-                    totalPages: response.data.totalPages
+                    messages: [...this.state.messages, ...response.data],
+                    lastSize: response.data.length
                 }, () => {
                     if (callback) callback();
                 });
@@ -212,6 +212,7 @@ export class MessengerDialog extends React.Component {
                                                                              handleEdit={this.handleEdit.bind(this)}
                                                                              handleDelete={this.handleDelete.bind(this)}/>)
                     }
+                    <div className={'dialog__messages__space'}/>
                 </div>
                 <form className={"dialog__form"} onSubmit={(e) => {
                     e.preventDefault();

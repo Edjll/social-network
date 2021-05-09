@@ -4,6 +4,8 @@ import * as React from "react";
 import RequestService from "../../../services/RequestService";
 import AuthService from "../../../services/AuthService";
 import {FormButton} from "../../form/form-button";
+import {UserFriendButton} from "../user-friend-button";
+import UserFriendStatus from "../../../services/UserFriendStatus";
 
 export class UserCard extends React.Component {
 
@@ -15,60 +17,19 @@ export class UserCard extends React.Component {
         }
     }
 
-    handleAddToFriends() {
-        RequestService
-            .getAxios()
-            .post(RequestService.URL + `/users/${this.props.info.id}/friends`)
-            .then(response => {
-                this.setState({status: 1});
-                if (this.props.handleAddToFriends) this.props.handleAddToFriends(response);
-            })
+    handleAddToFriends(response) {
+        this.setState({status: UserFriendStatus.SUBSCRIBER});
+        if (this.props.handleAddToFriends) this.props.handleAddToFriends(response);
     }
 
-    handleRemoveFromFriends() {
-        RequestService
-            .getAxios()
-            .delete(RequestService.URL + `/users/${this.props.info.id}/friends`)
-            .then(response => {
-                this.setState({status: null, friendId: null});
-                if (this.props.handleRemoveFromFriends) this.props.handleRemoveFromFriends(response);
-            })
+    handleRemoveFromFriends(response) {
+        this.setState({status: null, friendId: null});
+        if (this.props.handleRemoveFromFriends) this.props.handleRemoveFromFriends(response);
     }
 
-    handleAcceptRequest() {
-        RequestService
-            .getAxios()
-            .put(RequestService.URL + `/users/${this.props.info.id}/friends`)
-            .then(response => {
-                this.setState({status: 0});
-                if (this.props.handleAcceptRequest) this.props.handleAcceptRequest(response);
-            })
-    }
-
-    button() {
-        let friendButton = '';
-
-        if (AuthService.isAuthenticated() && AuthService.getId() !== this.props.info.id) {
-            switch (this.state.status) {
-                case 0:
-                    friendButton = <FormButton handleClick={() => this.handleRemoveFromFriends()}>Remove from friends</FormButton>
-                    break;
-                case 1:
-                    if (this.state.friendId === this.props.info.id) {
-                        friendButton =
-                            <FormButton handleClick={() => this.handleAcceptRequest()}>Accept request</FormButton>
-                    } else {
-                        friendButton =
-                            <FormButton handleClick={() => this.handleRemoveFromFriends()}>Cancel request</FormButton>
-                    }
-                    break;
-                default:
-                    friendButton =
-                        <FormButton handleClick={() => this.handleAddToFriends()}>Add to friends</FormButton>
-            }
-        }
-
-        return friendButton;
+    handleAcceptRequest(response) {
+        this.setState({status: UserFriendStatus.FRIEND});
+        if (this.props.handleAcceptRequest) this.props.handleAcceptRequest(response);
     }
 
     render() {
@@ -88,7 +49,12 @@ export class UserCard extends React.Component {
                     {
                         this.props.children
                             ? this.props.children
-                            : this.button()
+                            : <UserFriendButton handleAddToFriends={(response) => this.handleAddToFriends(response)}
+                                                handleRemoveFromFriends ={(response) => this.handleRemoveFromFriends(response)}
+                                                handleAcceptRequest={(response) => this.handleAcceptRequest(response)}
+                                                id={this.props.info.id}
+                                                friendId={this.state.friendId}
+                                                status={this.state.status}/>
                     }
                 </div>
             </div>

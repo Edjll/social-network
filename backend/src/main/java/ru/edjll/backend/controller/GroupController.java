@@ -16,6 +16,7 @@ import ru.edjll.backend.validation.exists.Exists;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,7 +31,7 @@ public class GroupController {
     }
 
     @GetMapping
-    public Page<GroupDtoForSearch> getAll(
+    public List<GroupDtoForSearch> getAll(
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size,
             Principal principal

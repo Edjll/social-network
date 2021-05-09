@@ -12,14 +12,13 @@ export function PrivateRoute({component: Component, roles, ...rest}) {
                        if (AuthService.isAuthenticated()) {
                            return AuthService.hasRole(roles)
                                ? <Component {...props}/>
-                               : <Redirect to={{pathname: '/',}}/>
+                               : <Error>
+                                   <div>
+                                       <span className={'error__text'}>You don't have the right roles</span>
+                                   </div>
+                               </Error>
                        } else {
-                           return <Error>
-                               <div>
-                                   <Link to={'/login'} className={'error__link'}>Login</Link>
-                                   <span className={'error__text'}> to see this content</span>
-                               </div>
-                           </Error>
+                           return <Redirect to={{pathname: '/login',}}/>
                        }
                    }
                }

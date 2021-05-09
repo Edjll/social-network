@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserFtoForMessage {
+public class InterlocutorDto {
 
     private String id;
     private String username;
@@ -15,4 +15,12 @@ public class UserFtoForMessage {
     private String lastName;
     private Integer position;
     private Integer newMessages;
+
+    public InterlocutorDto(String id, String username, String firstName, String lastName, Integer newMessages) {
+        this.id = id;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.newMessages = newMessages;
+    }
 }

@@ -20,7 +20,7 @@ export const UserPost = (props) => {
             .getAxios()
             .delete(RequestService.URL + `/users/posts/${context.state.post.id}`)
             .then(() => {
-                if (props.handleDelete) props.handleDelete(context.state.post.id);
+                if (props.handleDelete) props.handleDelete(props.id);
             });
     }
 

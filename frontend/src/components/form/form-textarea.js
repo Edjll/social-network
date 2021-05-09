@@ -32,7 +32,7 @@ export const FormTextarea = (props) => {
                 />
                 {
                     props.error
-                        ?   <HiddenInfo className={'form__textarea__error'} text={'❌'} hidden={props.error}/>
+                        ?   <HiddenInfo className={'form__textarea__error'} text={'⛔'} hidden={props.error}/>
                         :   ''
                 }
             </div>

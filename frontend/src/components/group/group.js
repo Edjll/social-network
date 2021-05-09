@@ -74,45 +74,36 @@ export class Group extends React.Component {
                 }
             })
             .then(response => this.setState({
-                posts: [...this.state.posts, ...response.data.content.map(post => { return {...post, type: PostType.GROUP}})],
-                totalPages: response.data.totalPages
+                posts: [...this.state.posts, ...response.data.map(post => { return {...post, type: PostType.GROUP}})],
+                lastSize: response.data.length
             }, () => {
                 if (callback) callback();
             }));
     }
 
     loadUsers() {
-        let url = '';
-
-        if (AuthService.isAuthenticated()) {
-            url = RequestService.URL + `/groups/${this.state.info.id}/users/${AuthService.getId()}`;
-        } else {
-            url = RequestService.URL + `/groups/${this.state.info.id}/users`;
-        }
-
         RequestService
             .getAxios()
-            .get(url, {
+            .get(RequestService.URL + `/groups/${this.state.info.id}/users/cards`, {
                 params: {
-                    page: 0,
                     size: 9
                 }
             })
             .then(response => {
                 if (AuthService.isAuthenticated()) {
-                    const user = response.data.content.find(u => u.username === AuthService.getUsername());
+                    const user = response.data.users.find(u => u.username === AuthService.getUsername());
                     if (user !== undefined) {
                         this.setState({
-                            users: [user, ...response.data.content.filter(u => u.username !== AuthService.getUsername())],
-                            totalUsers: response.data.totalElements,
+                            users: [user, ...response.data.users.filter(u => u.username !== AuthService.getUsername())],
+                            totalUsers: response.data.count,
                             subscribed: true
                         });
                         return;
                     }
                 }
                 this.setState({
-                    users: response.data.content,
-                    totalUsers: response.data.totalElements,
+                    users: response.data.users,
+                    totalUsers: response.data.count,
                     subscribed: false
                 })
             });
@@ -228,6 +219,7 @@ export class Group extends React.Component {
                     {
                         this.state.posts.map(post =>
                             <GroupPost key={post.id}
+                                       id={post.id}
                                        data={post}
                                        handleDelete={this.handleDeletePost.bind(this)}
                             />)

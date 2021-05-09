@@ -4,6 +4,8 @@ import AuthService from "../../services/AuthService";
 import {Post} from "../post/post";
 import './home.css';
 import IntersectionObserverService from "../../services/IntersectionObserverService";
+import {GroupPost} from "../group/group-post/group-post";
+import {UserPost} from "../user/user-post/user-post";
 
 export class Home extends React.Component {
 
@@ -31,18 +33,26 @@ export class Home extends React.Component {
                 }
             })
             .then(response => this.setState({
-                totalPages: response.data.totalPages,
-                posts: [...this.state.posts, ...response.data.content]
+                lastSize: response.data.length,
+                posts: [...this.state.posts, ...response.data]
             }, () => {
                 if (callback) callback()
             }))
+    }
+
+    handleDelete(key) {
+        this.setState({posts: this.state.posts.filter(post => (post.id + post.type) !== key)});
     }
 
     render() {
         return (
             <div className={"home"}>
                 {
-                    this.state.posts.map(post => <Post key={post.id} data={post}/>)
+                    this.state.posts.map(post => {
+                        return post.type === 'GROUP'
+                            ? <GroupPost key={post.id + post.type} id={post.id + post.type} data={post} handleDelete={this.handleDelete.bind(this)}/>
+                            : <UserPost key={post.id + post.type} data={post} handleDelete={this.handleDelete.bind(this)}/>
+                    })
                 }
             </div>
         );

@@ -1,20 +1,17 @@
 package ru.edjll.backend.controller;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.group.GroupDtoForSearch;
-import ru.edjll.backend.dto.group.GroupDtoForUserPage;
 import ru.edjll.backend.dto.post.PostDto;
+import ru.edjll.backend.dto.user.InterlocutorDto;
 import ru.edjll.backend.dto.user.UserDtoWrapperForSave;
 import ru.edjll.backend.dto.user.UserDtoWrapperForUpdate;
-import ru.edjll.backend.dto.user.UserFtoForMessage;
+import ru.edjll.backend.dto.user.UserGroupsDto;
 import ru.edjll.backend.dto.user.info.UserInfoDetailDto;
 import ru.edjll.backend.dto.user.info.UserInfoDto;
-import ru.edjll.backend.dto.user.info.UserInfoDtoForSave;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
 import ru.edjll.backend.service.GroupService;
 import ru.edjll.backend.service.UserInfoService;
@@ -27,6 +24,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -46,16 +44,16 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<UserInfoDtoForSearch> get(
+    public List<UserInfoDtoForSearch> get(
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size,
-            @RequestParam Optional<String> firstName,
-            @RequestParam Optional<String> lastName,
-            @RequestParam Optional<Long> countryId,
-            @RequestParam Optional<Long> cityId,
+            @RequestParam(defaultValue = "") String firstName,
+            @RequestParam(defaultValue = "") String lastName,
+            @RequestParam(defaultValue = "-1") Long countryId,
+            @RequestParam(defaultValue = "-1") Long cityId,
             Principal principal
     ) {
-        return userInfoService.searchUserInfo(page, size, firstName, lastName, countryId, cityId, Optional.ofNullable(principal));
+        return userService.searchUserInfo(page, size, firstName, lastName, countryId, cityId, Optional.ofNullable(principal));
     }
 
     @GetMapping("/{id}")
@@ -84,7 +82,7 @@ public class UserController {
 
     @GetMapping("/{id}/groups")
     @ResponseStatus(HttpStatus.OK)
-    public Page<GroupDtoForSearch> getGroups(
+    public List<GroupDtoForSearch> getGroups(
             @PathVariable @Exists(table = "user_entity", column = "id") String id,
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size,
@@ -93,10 +91,19 @@ public class UserController {
         return groupService.getDtoByUserId(id, Optional.ofNullable(principal), page, size);
     }
 
+    @GetMapping("/{id}/groups/cards")
+    @ResponseStatus(HttpStatus.OK)
+    public UserGroupsDto getUserGroups(
+            @PathVariable @Exists(table = "user_entity", column = "id") String id,
+            @RequestParam @NotNull @Positive Integer size
+    ) {
+        return groupService.getCardDtoByUserId(id, size);
+    }
+
     @GetMapping("/interlocutors")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
-    public Page<UserFtoForMessage> getInterlocutors(
+    public List<InterlocutorDto> getInterlocutors(
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size,
             Principal principal
@@ -107,7 +114,7 @@ public class UserController {
     @GetMapping("/interlocutors/{id}")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
-    public UserFtoForMessage getInterlocutor(
+    public InterlocutorDto getInterlocutor(
             @PathVariable String id,
             Principal principal
     ) {
@@ -116,7 +123,7 @@ public class UserController {
 
     @GetMapping("/{id}/feed")
     @ResponseStatus(HttpStatus.OK)
-    public Page<PostDto> getFeed(
+    public List<PostDto> getFeed(
             @PathVariable @Exists(table = "user_entity", column = "id") String id,
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size

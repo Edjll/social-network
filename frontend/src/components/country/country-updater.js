@@ -91,7 +91,8 @@ export class CountryUpdater extends React.Component {
                         <FormInput value={this.state.id}
                                    title={"id"}
                                    disabled={true}/>
-                        <FormInput value={this.state.title}
+                        <FormInput clearable={true}
+                                   value={this.state.title}
                                    handleChange={this.handleChangeTitle.bind(this)}
                                    title={"title"}
                                    error={this.state.errors.title}/>

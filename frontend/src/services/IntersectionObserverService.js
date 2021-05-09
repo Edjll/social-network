@@ -1,13 +1,15 @@
 const create = (className, context, load) => {
-    if (context.state.totalPages > 1) {
+    if (context.state.lastSize > 0) {
         context.observer = new IntersectionObserver(
             entries => entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     context.observer.unobserve(entry.target);
-                    if (context.state.page + 1 < context.state.totalPages) {
+                    if (context.state.lastSize === context.state.size) {
                         context.setState({page: context.state.page + 1}, () =>
                             load.bind(context)(() => {
-                                context.observer.observe(document.querySelector(`${className}`));
+                                if (document.querySelector(`${className}`)) {
+                                    context.observer.observe(document.querySelector(`${className}`));
+                                }
                             })
                         );
                     }
@@ -17,7 +19,9 @@ const create = (className, context, load) => {
                 threshold: 0.9
             }
         );
-        context.observer.observe(document.querySelector(`${className}`));
+        if (document.querySelector(`${className}`)) {
+            context.observer.observe(document.querySelector(`${className}`));
+        }
     }
 }
 

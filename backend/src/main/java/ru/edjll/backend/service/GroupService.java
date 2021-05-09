@@ -8,12 +8,14 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.group.*;
+import ru.edjll.backend.dto.user.UserGroupsDto;
 import ru.edjll.backend.entity.Group;
 import ru.edjll.backend.entity.User;
 import ru.edjll.backend.exception.ResponseParameterException;
 import ru.edjll.backend.repository.GroupRepository;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -81,20 +83,23 @@ public class GroupService {
         return groupRepository.findById(id);
     }
 
-    public Optional<String> findCreatorIdByGroupId(Long id) {
-        return groupRepository.findCreatorIdByGroupId(id);
-    }
-
-    public Page<GroupDtoForSearch> getDtoByUserId(String id, Optional<Principal> principal, Integer page, Integer size) {
+    public List<GroupDtoForSearch> getDtoByUserId(String id, Optional<Principal> principal, Integer page, Integer size) {
         return principal
                 .map(pr -> groupRepository.getDtoByUserId(id, pr.getName(), PageRequest.of(page, size)))
                 .orElseGet(() -> groupRepository.getDtoByUserId(id, PageRequest.of(page, size)));
     }
 
-    public Page<GroupDtoForSearch> getAll(Integer page, Integer size, Optional<Principal> principal) {
+    public List<GroupDtoForSearch> getAll(Integer page, Integer size, Optional<Principal> principal) {
         return principal
                 .map(user -> groupRepository.getAll(user.getName(), PageRequest.of(page, size)))
                 .orElseGet(() -> groupRepository.getAll(PageRequest.of(page, size)));
+    }
+
+    public UserGroupsDto getCardDtoByUserId(String userId, Integer size) {
+        List<GroupDtoForSearch> groups = groupRepository.getDtoByUserId(userId, PageRequest.of(0, size));
+        int count = groupUserService.countGroupsByUserId(userId);
+
+        return new UserGroupsDto(groups, count);
     }
 
     public Page<GroupDtoForAdminPage> getAllForAdmin(Integer page, Integer size) {

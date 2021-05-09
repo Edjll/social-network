@@ -9,6 +9,7 @@ import {CardHeader} from "../card/card-header";
 import {FormSelect} from "../form/form-select";
 import {FormButton} from "../form/form-button";
 import IntersectionObserverService from "../../services/IntersectionObserverService";
+import {LoadingAnimation} from "../loading-animation/loading-animation";
 
 export class SearchPage extends React.Component {
 
@@ -19,13 +20,14 @@ export class SearchPage extends React.Component {
             countries: [],
             cities: [],
             page: 0,
-            size: 12,
+            size: 20,
             totalPages: 0,
             id: props.id,
             firstName: null,
             lastName: null,
             countryId: null,
-            cityId: null
+            cityId: null,
+            loadingUsers: false
         }
 
         this.loadUsers = props.loadUsers.bind(this);
@@ -77,10 +79,17 @@ export class SearchPage extends React.Component {
     }
 
     handleSearch() {
-        this.setState({users: [], page: 0}, this.loadUsers);
+        this.setState({users: [], page: 0}, this.loadUsers(() => IntersectionObserverService.create('.user_card:last-child', this, this.loadUsers)));
     }
 
     render() {
+        let contentInfo = '';
+        if (this.state.loadingUsers) {
+            contentInfo = <CardBody><LoadingAnimation/></CardBody>;
+        } else if (this.state.users.length === 0) {
+            contentInfo = <CardBody><p>Not found</p></CardBody>;
+        }
+
         return (
             <div className={"search_page"}>
                 <div className={"left_side"}>
@@ -119,15 +128,10 @@ export class SearchPage extends React.Component {
                         <CardHeader>
                             {this.props.children}
                         </CardHeader>
-                        {
-                            this.state.users.length > 0
-                                ? <CardBody>
-                                    {
-                                        this.state.users.map(user => this.props.card(user.id, user))
-                                    }
-                                </CardBody>
-                                : <CardBody><p>Not found</p></CardBody>
-                        }
+                        <CardBody>
+                            { this.state.users.map(user => this.props.card(user.id, user)) }
+                            { contentInfo }
+                        </CardBody>
                     </Card>
                 </div>
             </div>

@@ -27,7 +27,7 @@ export class CityRemover extends React.Component {
 
     componentDidMount() {
         document.body.style.overflow = 'hidden';
-        RequestService.getAxios().get(RequestService.URL + "/city/" + this.props.match.params.id)
+        RequestService.getAxios().get(RequestService.URL + "/cities/" + this.props.match.params.id)
             .then(response => {
                 this.setState({
                     city: response.data,

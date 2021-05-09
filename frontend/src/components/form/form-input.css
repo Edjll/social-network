@@ -40,8 +40,11 @@
     margin-right: .3rem;
 }
 
-.form__input__error__icon {
-    cursor: pointer;
+.form__input__error > div:first-of-type {
+    background-color: transparent;
+    height: 1rem;
+    width: 1rem;
+    border: none;
 }
 
 .form__input__close {

@@ -33,15 +33,15 @@ public class AdminUserController {
     public Page<UserDtoForAdminPage> getPage(
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size,
-            @RequestParam(required = false) Optional<String> idDirection,
-            @RequestParam(required = false) Optional<String> usernameDirection,
-            @RequestParam(required = false) Optional<String> emailDirection,
-            @RequestParam(required = false) Optional<String> cityDirection,
-            @RequestParam(required = false) Optional<String> enabledDirection,
-            @RequestParam(required = false) Optional<String> id,
-            @RequestParam(required = false) Optional<String> username,
-            @RequestParam(required = false) Optional<String> email,
-            @RequestParam(required = false) Optional<String> city
+            @RequestParam(defaultValue = "") String idDirection,
+            @RequestParam(defaultValue = "") String usernameDirection,
+            @RequestParam(defaultValue = "") String emailDirection,
+            @RequestParam(defaultValue = "") String cityDirection,
+            @RequestParam(defaultValue = "") String enabledDirection,
+            @RequestParam(defaultValue = "") String id,
+            @RequestParam(defaultValue = "") String username,
+            @RequestParam(defaultValue = "") String email,
+            @RequestParam(defaultValue = "") String city
     ) {
         return userService.getAll(page, size, idDirection, usernameDirection, emailDirection, cityDirection, enabledDirection, id, username, email, city);
     }

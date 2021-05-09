@@ -11,6 +11,7 @@ import ru.edjll.backend.entity.Message;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
@@ -23,7 +24,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "where m.sender.id in (:senderId, :recipientId) " +
             "and m.recipient.id in (:senderId, :recipientId) " +
             "order by m.createdDate desc ")
-    Page<MessageDto> getAllMessageDtoBetweenUsersById(@Param("senderId") String senderId, @Param("recipientId") String recipientId, Pageable pageable);
+    List<MessageDto> getAllMessageDtoBetweenUsersById(@Param("senderId") String senderId, @Param("recipientId") String recipientId, Pageable pageable);
 
     @Query("select new ru.edjll.backend.dto.message.MessageDto(" +
                 "m.id, m.text, m.createdDate, m.modifiedDate, " +

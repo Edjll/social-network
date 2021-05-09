@@ -1,6 +1,7 @@
 .hidden_info {
-    display: inline-block;
-    margin-left: .3rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
     height: max-content;
 }
@@ -10,17 +11,27 @@
     color: #91a4ac;
     user-select: none;
     cursor: default;
+    border-radius: .25rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #363a41;
+    border: 1px solid rgb(62, 68, 70);
+    margin: 0 .2rem;
 }
 
 .hidden_info__hidden {
     display: none;
     position: absolute;
-    top: -170%;
-    right: 0;
+    justify-content: center;
+    top: -2.5rem;
     width: max-content;
     background-color: #1f2022;
     padding: .4rem .5rem;
     border-radius: .25rem;
+    z-index: 2;
 }
 
 .hidden_info__hidden__text {
@@ -34,9 +45,8 @@
     border-top-color: #1f2022;
     position: absolute;
     bottom: -1rem;
-    right: .8rem;
 }
 
 .hidden_info:hover .hidden_info__hidden {
-    display: block;
+    display: flex;
 }

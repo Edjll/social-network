@@ -15,6 +15,7 @@ import ru.edjll.backend.repository.MessageRepository;
 
 import java.security.Principal;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class MessageService {
@@ -89,7 +90,7 @@ public class MessageService {
         messagingTemplate.convertAndSendToUser(principal.getName(), MESSAGE_QUEUE_URL, notification);
     }
 
-    public Page<MessageDto> getAllMessageDtoBetweenUsersById(String senderId, Integer page, Integer size, Principal principal) {
+    public List<MessageDto> getAllMessageDtoBetweenUsersById(String senderId, Integer page, Integer size, Principal principal) {
         return messageRepository.getAllMessageDtoBetweenUsersById(senderId, principal.getName(), PageRequest.of(page, size));
     }
 

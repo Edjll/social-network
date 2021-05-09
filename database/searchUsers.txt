@@ -1,0 +1,199 @@
+explain analyze
+select
+    user_entity.id, user_entity.username, user_entity.first_name,
+    user_entity.last_name, city.title as city, user_friend.status, user_friend.friend_id
+from user_entity
+ left join user_info on user_entity.id = user_info.user_id
+ left join city on user_info.city_id = city.id
+ left join (
+     select friend_id as id, status, friend_id
+     from user_friend
+     where user_friend.user_id = '5b1fb508-ddad-4676-96ee-c359479f282c'
+     union
+     select user_id as id, status, friend_id
+     from user_friend
+     where user_friend.friend_id = '5b1fb508-ddad-4676-96ee-c359479f282c') as user_friend
+ on user_entity.id = user_friend.id
+where realm_id = 'social-network'
+and service_account_client_link is null
+and user_entity.enabled = true
+and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'
+and case when 'Ivan' = '' then true else lower('Ivan') = lower(user_entity.first_name) end
+limit 10 offset 10000;
+
+Limit  (cost=37197.48..37197.49 rows=1 width=590) (actual time=3553.834..3557.163 rows=10 loops=1)
+  ->  Hash Right Join  (cost=37167.26..37197.48 rows=5000 width=590) (actual time=3549.545..3556.465 rows=10010 loops=1)
+        Hash Cond: ((user_friend.friend_id)::text = (user_entity.id)::text)
+        ->  HashAggregate  (cost=2639.43..2652.13 rows=1270 width=1036) (actual time=0.058..0.095 rows=9 loops=1)
+"              Group Key: user_friend.friend_id, user_friend.status, user_friend.friend_id"
+              Batches: 1  Memory Usage: 73kB
+              ->  Append  (cost=13.34..2629.91 rows=1270 width=1036) (actual time=0.036..0.043 rows=9 loops=1)
+                    ->  Bitmap Heap Scan on user_friend  (cost=13.34..1299.43 rows=635 width=1036) (actual time=0.016..0.017 rows=0 loops=1)
+                          Recheck Cond: ((user_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                          ->  Bitmap Index Scan on user_friend_index__user_id  (cost=0.00..13.18 rows=635 width=0) (actual time=0.013..0.013 rows=0 loops=1)
+                                Index Cond: ((user_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                    ->  Bitmap Heap Scan on user_friend user_friend_1  (cost=25.34..1311.43 rows=635 width=1036) (actual time=0.019..0.022 rows=9 loops=1)
+                          Recheck Cond: ((friend_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                          Heap Blocks: exact=1
+                          ->  Bitmap Index Scan on user_friend_index__friend_id  (cost=0.00..25.18 rows=635 width=0) (actual time=0.011..0.011 rows=13 loops=1)
+                                Index Cond: ((friend_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+        ->  Hash  (cost=34465.33..34465.33 rows=5000 width=70) (actual time=3541.594..3544.913 rows=200001 loops=1)
+              Buckets: 65536 (originally 8192)  Batches: 8 (originally 1)  Memory Usage: 3585kB
+              ->  Gather  (cost=1000.72..34465.33 rows=5000 width=70) (actual time=2.655..2408.978 rows=200001 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    ->  Nested Loop Left Join  (cost=0.71..32965.33 rows=2083 width=70) (actual time=2.697..2854.520 rows=66667 loops=3)
+                          ->  Nested Loop Left Join  (cost=0.42..32320.76 rows=2083 width=69) (actual time=2.634..2504.412 rows=66667 loops=3)
+                                ->  Parallel Seq Scan on user_entity  (cost=0.00..24998.39 rows=2083 width=61) (actual time=1.879..1849.953 rows=66667 loops=3)
+                                      Filter: ((service_account_client_link IS NULL) AND enabled AND ((id)::text <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'::text) AND ((realm_id)::text = 'social-network'::text) AND ('ivan'::text = lower((first_name)::text)))
+                                      Rows Removed by Filter: 266669
+                                ->  Index Only Scan using user_info__user_id__city_id on user_info  (cost=0.42..3.52 rows=1 width=45) (actual time=0.009..0.009 rows=1 loops=200001)
+                                      Index Cond: (user_id = (user_entity.id)::text)
+                                      Heap Fetches: 18
+                          ->  Index Scan using city_pkey on city  (cost=0.29..0.31 rows=1 width=13) (actual time=0.004..0.004 rows=1 loops=200001)
+                                Index Cond: (id = user_info.city_id)
+Planning Time: 1.327 ms
+Execution Time: 3602.521 ms
+
+--------------------------------------------------------------------------------------------------------------
+
+create index user_entity__index__________test
+    on user_entity (lower(first_name));
+
+explain analyze
+select
+    user_entity.id, user_entity.username, user_entity.first_name,
+    user_entity.last_name, city.title as city, user_friend.status, user_friend.friend_id
+from user_entity
+ left join user_info on user_entity.id = user_info.user_id
+ left join city on user_info.city_id = city.id
+ left join (
+     select friend_id as id, status, friend_id
+     from user_friend
+     where user_friend.user_id = '5b1fb508-ddad-4676-96ee-c359479f282c'
+     union
+     select user_id as id, status, friend_id
+     from user_friend
+     where user_friend.friend_id = '5b1fb508-ddad-4676-96ee-c359479f282c') as user_friend
+ on user_entity.id = user_friend.id
+where realm_id = 'social-network'
+and service_account_client_link is null
+and user_entity.enabled = true
+and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'
+and case when 'Ivan' = '' then true else lower('Ivan') = lower(user_entity.first_name) end
+limit 10 offset 10000;
+
+drop index user_entity__index__________test;
+
+Limit  (cost=23086.29..23086.36 rows=1 width=590) (actual time=12244.911..12245.866 rows=10 loops=1)
+  ->  Merge Right Join  (cost=22719.00..23086.29 rows=5000 width=590) (actual time=12210.567..12245.399 rows=10010 loops=1)
+        Merge Cond: (city.id = user_info.city_id)
+        ->  Index Scan using city_pkey on city  (cost=0.29..1768.08 rows=54911 width=13) (actual time=0.372..1.857 rows=801 loops=1)
+        ->  Sort  (cost=22691.82..22704.32 rows=5000 width=589) (actual time=12208.625..12240.702 rows=10010 loops=1)
+              Sort Key: user_info.city_id
+              Sort Method: external sort  Disk: 16888kB
+              ->  Hash Right Join  (cost=22354.40..22384.62 rows=5000 width=589) (actual time=9001.666..10165.819 rows=200001 loops=1)
+                    Hash Cond: ((user_friend.friend_id)::text = (user_entity.id)::text)
+                    ->  HashAggregate  (cost=2639.43..2652.13 rows=1270 width=1036) (actual time=2.582..2.612 rows=9 loops=1)
+"                          Group Key: user_friend.friend_id, user_friend.status, user_friend.friend_id"
+                          Batches: 1  Memory Usage: 73kB
+                          ->  Append  (cost=13.34..2629.91 rows=1270 width=1036) (actual time=2.559..2.566 rows=9 loops=1)
+                                ->  Bitmap Heap Scan on user_friend  (cost=13.34..1299.43 rows=635 width=1036) (actual time=1.131..1.132 rows=0 loops=1)
+                                      Recheck Cond: ((user_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                                      ->  Bitmap Index Scan on user_friend_index__user_id  (cost=0.00..13.18 rows=635 width=0) (actual time=1.129..1.129 rows=0 loops=1)
+                                            Index Cond: ((user_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                                ->  Bitmap Heap Scan on user_friend user_friend_1  (cost=25.34..1311.43 rows=635 width=1036) (actual time=1.426..1.429 rows=9 loops=1)
+                                      Recheck Cond: ((friend_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                                      Heap Blocks: exact=1
+                                      ->  Bitmap Index Scan on user_friend_index__friend_id  (cost=0.00..25.18 rows=635 width=0) (actual time=1.074..1.075 rows=13 loops=1)
+                                            Index Cond: ((friend_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                    ->  Hash  (cost=19652.47..19652.47 rows=5000 width=69) (actual time=8991.135..8992.080 rows=200001 loops=1)
+                          Buckets: 65536 (originally 8192)  Batches: 8 (originally 1)  Memory Usage: 3585kB
+                          ->  Gather  (cost=1059.60..19652.47 rows=5000 width=69) (actual time=122.547..7885.861 rows=200001 loops=1)
+                                Workers Planned: 2
+                                Workers Launched: 2
+                                ->  Nested Loop Left Join  (cost=59.60..18152.47 rows=2083 width=69) (actual time=46.456..8433.753 rows=66667 loops=3)
+                                      ->  Parallel Bitmap Heap Scan on user_entity  (cost=59.17..10830.10 rows=2083 width=61) (actual time=45.703..7792.249 rows=66667 loops=3)
+                                            Recheck Cond: ('ivan'::text = lower((first_name)::text))
+                                            Filter: ((service_account_client_link IS NULL) AND enabled AND ((id)::text <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'::text) AND ((realm_id)::text = 'social-network'::text))
+                                            Heap Blocks: exact=4147
+                                            ->  Bitmap Index Scan on user_entity__index__________test  (cost=0.00..57.92 rows=5000 width=0) (actual time=117.970..117.971 rows=200001 loops=1)
+                                                  Index Cond: (lower((first_name)::text) = 'ivan'::text)
+                                      ->  Index Only Scan using user_info__user_id__city_id on user_info  (cost=0.42..3.52 rows=1 width=45) (actual time=0.008..0.008 rows=1 loops=200001)
+                                            Index Cond: (user_id = (user_entity.id)::text)
+                                            Heap Fetches: 18
+Planning Time: 7.927 ms
+Execution Time: 12251.575 ms
+
+----------------------------------------------------------------------------------------------------------
+
+create index user_entity__index__________test
+    on user_entity (lower(first_name))
+    where user_entity.service_account_client_link is null
+        and enabled
+        and realm_id = 'social-network'
+        and id <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7';
+
+explain analyze
+select
+    user_entity.id, user_entity.username, user_entity.first_name,
+    user_entity.last_name, city.title as city, user_friend.status, user_friend.friend_id
+from user_entity
+         left join user_info on user_entity.id = user_info.user_id
+         left join city on user_info.city_id = city.id
+         left join (
+    select friend_id as id, status, friend_id
+    from user_friend
+    where user_friend.user_id = '5b1fb508-ddad-4676-96ee-c359479f282c'
+    union
+    select user_id as id, status, friend_id
+    from user_friend
+    where user_friend.friend_id = '5b1fb508-ddad-4676-96ee-c359479f282c') as user_friend
+                   on user_entity.id = user_friend.id
+where realm_id = 'social-network'
+  and service_account_client_link is null
+  and user_entity.enabled = true
+  and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'
+  and case when 'Ivan' = '' then true else lower('Ivan') = lower(user_entity.first_name) end
+limit 10 offset 10000;
+
+drop index user_entity__index__________test;
+
+Limit  (cost=23086.29..23086.36 rows=1 width=590) (actual time=12810.650..12811.648 rows=10 loops=1)
+  ->  Merge Right Join  (cost=22719.00..23086.29 rows=5000 width=590) (actual time=12774.828..12811.192 rows=10010 loops=1)
+        Merge Cond: (city.id = user_info.city_id)
+        ->  Index Scan using city_pkey on city  (cost=0.29..1768.08 rows=54911 width=13) (actual time=0.591..3.012 rows=801 loops=1)
+        ->  Sort  (cost=22691.82..22704.32 rows=5000 width=589) (actual time=12771.695..12805.260 rows=10010 loops=1)
+              Sort Key: user_info.city_id
+              Sort Method: external sort  Disk: 16888kB
+              ->  Hash Right Join  (cost=22354.40..22384.62 rows=5000 width=589) (actual time=9578.744..10742.383 rows=200001 loops=1)
+                    Hash Cond: ((user_friend.friend_id)::text = (user_entity.id)::text)
+                    ->  HashAggregate  (cost=2639.43..2652.13 rows=1270 width=1036) (actual time=2.219..2.247 rows=9 loops=1)
+"                          Group Key: user_friend.friend_id, user_friend.status, user_friend.friend_id"
+                          Batches: 1  Memory Usage: 73kB
+                          ->  Append  (cost=13.34..2629.91 rows=1270 width=1036) (actual time=2.197..2.203 rows=9 loops=1)
+                                ->  Bitmap Heap Scan on user_friend  (cost=13.34..1299.43 rows=635 width=1036) (actual time=1.094..1.095 rows=0 loops=1)
+                                      Recheck Cond: ((user_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                                      ->  Bitmap Index Scan on user_friend_index__user_id  (cost=0.00..13.18 rows=635 width=0) (actual time=1.092..1.092 rows=0 loops=1)
+                                            Index Cond: ((user_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                                ->  Bitmap Heap Scan on user_friend user_friend_1  (cost=25.34..1311.43 rows=635 width=1036) (actual time=1.101..1.104 rows=9 loops=1)
+                                      Recheck Cond: ((friend_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                                      Heap Blocks: exact=1
+                                      ->  Bitmap Index Scan on user_friend_index__friend_id  (cost=0.00..25.18 rows=635 width=0) (actual time=0.834..0.835 rows=13 loops=1)
+                                            Index Cond: ((friend_id)::text = '5b1fb508-ddad-4676-96ee-c359479f282c'::text)
+                    ->  Hash  (cost=19652.47..19652.47 rows=5000 width=69) (actual time=9570.409..9571.397 rows=200001 loops=1)
+                          Buckets: 65536 (originally 8192)  Batches: 8 (originally 1)  Memory Usage: 3585kB
+                          ->  Gather  (cost=1059.60..19652.47 rows=5000 width=69) (actual time=114.764..8390.699 rows=200001 loops=1)
+                                Workers Planned: 2
+                                Workers Launched: 2
+                                ->  Nested Loop Left Join  (cost=59.60..18152.47 rows=2083 width=69) (actual time=40.255..8971.986 rows=66667 loops=3)
+                                      ->  Parallel Bitmap Heap Scan on user_entity  (cost=59.17..10830.10 rows=2083 width=61) (actual time=39.084..8262.355 rows=66667 loops=3)
+                                            Recheck Cond: (('ivan'::text = lower((first_name)::text)) AND (service_account_client_link IS NULL) AND enabled AND ((realm_id)::text = 'social-network'::text) AND ((id)::text <> 'b65bfe43-77dd-44f1-8199-a9dfa3946da7'::text))
+                                            Heap Blocks: exact=4196
+                                            ->  Bitmap Index Scan on user_entity__index__________test  (cost=0.00..57.92 rows=5000 width=0) (actual time=108.928..108.928 rows=200001 loops=1)
+                                                  Index Cond: (lower((first_name)::text) = 'ivan'::text)
+                                      ->  Index Only Scan using user_info__user_id__city_id on user_info  (cost=0.42..3.52 rows=1 width=45) (actual time=0.009..0.009 rows=1 loops=200001)
+                                            Index Cond: (user_id = (user_entity.id)::text)
+                                            Heap Fetches: 18
+Planning Time: 10.099 ms
+Execution Time: 12817.437 ms

@@ -4,7 +4,7 @@ import {CardHeader} from "../card/card-header";
 import {CardBody} from "../card/card-body";
 import RequestService from "../../services/RequestService";
 import {GroupCard} from "./group-card";
-import {Link, Route, Switch} from "react-router-dom";
+import {Link} from "react-router-dom";
 import './group-search.css';
 import AuthService from "../../services/AuthService";
 import IntersectionObserverService from "../../services/IntersectionObserverService";
@@ -35,8 +35,8 @@ export class GroupSearch extends React.Component {
             }
         })
             .then(response => this.setState({
-                groups: [...this.state.groups, ...response.data.content],
-                totalPages: response.data.totalPages
+                groups: [...this.state.groups, ...response.data],
+                lastSize: response.data.length
             }, () => {
                 if (callback) callback();
             }))
@@ -51,14 +51,14 @@ export class GroupSearch extends React.Component {
                         <Link to={"/groups/create"} className={"create_group_button"}>Create group</Link>
                     </CardHeader>
                     <CardBody>
-                        { this.state.groups.map((group, index) => <GroupCard key={group.id}
-                                                                             id={group.id}
-                                                                             address={group.address}
-                                                                             title={group.title}
-                                                                             description={group.description}
-                                                                             subscribed={group.subscribed}
-                                                                             userId={AuthService.getId()}
-                        />) }
+                        {this.state.groups.map((group, index) => <GroupCard key={group.id}
+                                                                            id={group.id}
+                                                                            address={group.address}
+                                                                            title={group.title}
+                                                                            description={group.description}
+                                                                            subscribed={group.subscribed}
+                                                                            userId={AuthService.getId()}
+                        />)}
                     </CardBody>
                 </Card>
                 <PrivateRoute path={"/groups/create"} component={GroupCreator}/>

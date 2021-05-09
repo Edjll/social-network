@@ -36,7 +36,7 @@ export const FormInput = (props) => {
                     onKeyDown={handleKeyDown.bind(this)}
                 />
                 {
-                    props.value
+                    props.clearable && props.value
                         ?   <div className={'form__input__close'} onClick={clear.bind(this)}>✕</div>
                         :   ''
                 }
