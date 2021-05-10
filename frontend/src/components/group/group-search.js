@@ -10,6 +10,7 @@ import AuthService from "../../services/AuthService";
 import IntersectionObserverService from "../../services/IntersectionObserverService";
 import {PrivateRoute} from "../security/private-route";
 import {GroupCreator} from "./group-creator";
+import {HiddenInfo} from "../hidden-info/hidden-info";
 
 export class GroupSearch extends React.Component {
 
@@ -48,16 +49,18 @@ export class GroupSearch extends React.Component {
                 <Card>
                     <CardHeader>
                         <h1>Groups</h1>
-                        <Link to={"/groups/create"} className={"create_group_button"}>Create group</Link>
+                        <HiddenInfo text={"✎"}
+                                    hidden={"Create group"}
+                                    link={"/groups/create"}/>
                     </CardHeader>
                     <CardBody>
-                        {this.state.groups.map((group, index) => <GroupCard key={group.id}
-                                                                            id={group.id}
-                                                                            address={group.address}
-                                                                            title={group.title}
-                                                                            description={group.description}
-                                                                            subscribed={group.subscribed}
-                                                                            userId={AuthService.getId()}
+                        {this.state.groups.map(group => <GroupCard key={group.id}
+                                                                    id={group.id}
+                                                                    address={group.address}
+                                                                    title={group.title}
+                                                                    description={group.description}
+                                                                    subscribed={group.subscribed}
+                                                                    userId={AuthService.getId()}
                         />)}
                     </CardBody>
                 </Card>

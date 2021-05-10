@@ -50,3 +50,33 @@
 .table__pagination__item-disable {
     background-color: #282a2f;
 }
+
+.table__pagination__loading {
+    display: flex;
+}
+
+.table__pagination__loading__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: .5rem;
+    width: 2rem;
+    height: 2rem;
+    color: white;
+    font-size: 1.1rem;
+    border-radius: .25rem;
+    border: 1px solid rgb(62, 68, 70);
+    background-color: #363a41;
+    box-sizing: border-box;
+    animation: table__pagination__loading-rotate infinite 2s;
+    margin: 0 .25rem;
+}
+
+@keyframes table__pagination__loading-rotate {
+    0%, 100% {
+        transform: rotate(0) scale(0.5);
+    }
+    50% {
+        transform: rotate(360deg) scale(0.9);
+    }
+}

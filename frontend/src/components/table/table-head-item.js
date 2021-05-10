@@ -7,7 +7,7 @@ export const TableHeadItem = (props) => {
             {props.children}
             {
                 props.handleClick
-                    ?   <div onClick={() => props.handleClick(props.name)}>
+                    ?   <div onClick={() => props.handleClick(props.name,props.onlySort)}>
                             <span
                                 className={`table__head__item__up-arrow ${props.order === 'asc' ? 'table__head__item__up-arrow-active' : ''}`}
                                 >🠕</span>

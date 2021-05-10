@@ -63,12 +63,18 @@ public class UserService {
         restTemplate.exchange(keycloakUrl + "/users/" + id, HttpMethod.PUT, new HttpEntity<>(userDtoForChangeEnabled, httpHeaders), Object.class);
     }
 
-    public Page<UserDtoForAdminPage> getAll(
+    public List<UserDtoForAdminPage> getAllForAdmin(
             Integer page, Integer size,
             String idDirection, String usernameDirection, String emailDirection, String cityDirection, String enabledDirection,
             String id, String username, String email, String city
     ) {
-        return userRepository.getUsersForAdmin(id, username, email, city, idDirection, usernameDirection, emailDirection, cityDirection, enabledDirection, PageRequest.of(page, size));
+        return userRepository.getAllForAdmin(id, username, email, city, idDirection, usernameDirection, emailDirection, cityDirection, enabledDirection, PageRequest.of(page, size));
+    }
+
+    public Integer getCountForAdmin(
+            String id, String username, String email, String city
+    ) {
+        return userRepository.getCountForAdmin(id, username, email, city);
     }
 
     public List<PostDto> getFeed(String id, Integer page, Integer size) {

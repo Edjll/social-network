@@ -47,7 +47,7 @@
     border: none;
 }
 
-.form__input__close {
+.form__input__clear {
     color: white;
     cursor: pointer;
     display: flex;
@@ -59,6 +59,25 @@
     transition: color .1s;
 }
 
-.form__input__close:hover {
+.form__input__clear:hover {
     color: #c1bebe;
+}
+
+.form__input__button {
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+    margin-left: .3rem;
+    background-color: #363a41;
+    border-radius: .25rem;
+    transition: background-color .1s;
+    user-select: none;
+}
+
+.form__input__button:hover {
+    background-color: #3e424b;
 }

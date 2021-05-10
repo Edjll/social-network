@@ -19,13 +19,18 @@ export const FormInput = (props) => {
     }
 
     return (
-        <label className={`form__input ${props.className ? props.className : ''}`}>
+        <div className={`form__input ${props.className ? props.className : ''}`}>
             {
                 props.title
                     ?   <span className={"form__input__title"}>{props.title}</span>
                     :   ''
             }
             <div className={'form__input__wrapper'}>
+                {
+                    props.handleButton
+                        ?   <div className={'form__input__button'} onClick={props.handleButton}>{props.button ? props.button : ''}</div>
+                        :   ''
+                }
                 <input
                     className={"form__input__value"}
                     type={props.type ? props.type : 'text'}
@@ -37,7 +42,7 @@ export const FormInput = (props) => {
                 />
                 {
                     props.clearable && props.value
-                        ?   <div className={'form__input__close'} onClick={clear.bind(this)}>✕</div>
+                        ?   <div className={'form__input__clear'} onClick={clear.bind(this)}>✕</div>
                         :   ''
                 }
                 {
@@ -46,6 +51,6 @@ export const FormInput = (props) => {
                         :   ''
                 }
             </div>
-        </label>
+        </div>
     );
 }

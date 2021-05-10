@@ -15,6 +15,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,7 +31,7 @@ public class AdminUserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<UserDtoForAdminPage> getPage(
+    public List<UserDtoForAdminPage> getAllForAdmin(
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size,
             @RequestParam(defaultValue = "") String idDirection,
@@ -43,7 +44,18 @@ public class AdminUserController {
             @RequestParam(defaultValue = "") String email,
             @RequestParam(defaultValue = "") String city
     ) {
-        return userService.getAll(page, size, idDirection, usernameDirection, emailDirection, cityDirection, enabledDirection, id, username, email, city);
+        return userService.getAllForAdmin(page, size, idDirection, usernameDirection, emailDirection, cityDirection, enabledDirection, id, username, email, city);
+    }
+
+    @GetMapping("/count")
+    @ResponseStatus(HttpStatus.OK)
+    public Integer getCountForAdmin(
+            @RequestParam(defaultValue = "") String id,
+            @RequestParam(defaultValue = "") String username,
+            @RequestParam(defaultValue = "") String email,
+            @RequestParam(defaultValue = "") String city
+    ) {
+        return userService.getCountForAdmin(id, username, email, city);
     }
 
     @PutMapping("/{id}")

@@ -42,7 +42,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     );
 
     @Query(nativeQuery = true)
-    Page<UserDtoForAdminPage> getUsersForAdmin(
+    List<UserDtoForAdminPage> getAllForAdmin(
             @Param("id") String id,
             @Param("username") String username,
             @Param("email") String email,
@@ -53,6 +53,14 @@ public interface UserRepository extends JpaRepository<User, String> {
             @Param("city_direction") String cityDirection,
             @Param("enabled_direction") String enabledDirection,
             Pageable pageable
+    );
+
+    @Query(nativeQuery = true)
+    Integer getCountForAdmin(
+            @Param("id") String id,
+            @Param("username") String username,
+            @Param("email") String email,
+            @Param("city") String city
     );
 
     @Query(nativeQuery = true)

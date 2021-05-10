@@ -12,9 +12,13 @@
     margin: .5rem;
     color: white;
     text-decoration: none;
-    transition: color .1s;
+    min-height: 5rem;
+    display: flex;
+    align-items: center;
+    transition: background-color .1s;
+    font-size: 1.1rem;
 }
 
 .admin_navigation__link:hover {
-    color: #7b8b91;
+    background-color: #3e424b;
 }

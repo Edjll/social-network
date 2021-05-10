@@ -55,8 +55,24 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
             "from Group g left join g.users gu on gu.id.user.id = :user_id where g.enabled = true")
     List<GroupDtoForSearch> getAll(@Param("user_id") String userId, Pageable pageable);
 
-    @Query("select new ru.edjll.backend.dto.group.GroupDtoForAdminPage(g.id, g.title, g.description, g.address, g.enabled) from Group g")
-    Page<GroupDtoForAdminPage> getAllForAdmin(Pageable pageable);
+    @Query(nativeQuery = true)
+    List<GroupDtoForAdminPage> getAllForAdmin(
+            @Param("id") Long id,
+            @Param("title") String title,
+            @Param("address") String address,
+            @Param("id_direction") String idDirection,
+            @Param("title_direction") String titleDirection,
+            @Param("address_direction") String addressDirection,
+            @Param("enabled_direction") String enabledDirection,
+            Pageable pageable
+    );
+
+    @Query(nativeQuery = true)
+    Integer getCountForAdmin(
+            @Param("id") Long id,
+            @Param("title") String title,
+            @Param("address") String address
+    );
 
     Boolean existsByAddressAndIdNot(String address, Long id);
 }

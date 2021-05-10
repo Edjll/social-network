@@ -64,7 +64,7 @@ export class FormSelect extends React.Component {
                     />
                     {
                         this.state.search !== ""
-                            ?   <div className={"form__select__search__clear"} onClick={this.handleClear.bind(this)}>×</div>
+                            ?   <div className={"form__select__search__clear"} onClick={this.handleClear.bind(this)}>✕</div>
                             : ''
                     }
                     {

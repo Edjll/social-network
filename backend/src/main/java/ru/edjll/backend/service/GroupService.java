@@ -102,14 +102,18 @@ public class GroupService {
         return new UserGroupsDto(groups, count);
     }
 
-    public Page<GroupDtoForAdminPage> getAllForAdmin(Integer page, Integer size) {
-        return groupRepository.getAllForAdmin(PageRequest.of(page, size));
-    }
-
     public void update(Long id, GroupDtoForAdminUpdate groupDtoForAdminUpdate) {
         Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
         group.setEnabled(groupDtoForAdminUpdate.getEnabled());
         groupRepository.save(group);
+    }
+
+    public List<GroupDtoForAdminPage> getAllForAdmin(Integer page, Integer size, String idDirection, String titleDirection, String addressDirection, String enabledDirection, Long id, String title, String address) {
+        return groupRepository.getAllForAdmin(id, title, address, idDirection, titleDirection, addressDirection, enabledDirection, PageRequest.of(page, size));
+    }
+
+    public Integer getCountForAdmin(Long id, String title, String address) {
+        return groupRepository.getCountForAdmin(id, title, address);
     }
 }

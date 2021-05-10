@@ -14,6 +14,8 @@ import {CityCreator} from "../city/city-creator";
 import {CityUpdater} from "../city/city-updater";
 import {CityRemover} from "../city/city-remover";
 import {FormInput} from "../form/form-input";
+import {HiddenInfo} from "../hidden-info/hidden-info";
+import {LoadingAnimation} from "../loading-animation/loading-animation";
 
 export class AdminCities extends React.Component {
 
@@ -23,19 +25,22 @@ export class AdminCities extends React.Component {
             cities: [],
             page: 0,
             maxPage: 0,
-            size: 10,
+            size: 8,
             idDirection: null,
             titleDirection: null,
             countryDirection: null,
             id: null,
             title: null,
             country: null,
-            search: false
+            search: false,
+            loadingCities: false,
+            reload: false
         }
     }
 
     componentDidMount() {
         this.loadCities();
+        document.querySelector('.admin_table__content').style.minHeight = document.querySelector('.admin_table__search').clientHeight + 1 + 'px';
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -45,25 +50,29 @@ export class AdminCities extends React.Component {
     }
 
     loadCities() {
-        RequestService.getAxios().get(RequestService.ADMIN_URL + '/cities', {
-            params: {
-                page: this.state.page,
-                size: this.state.size,
-                idDirection: this.state.idDirection,
-                titleDirection: this.state.titleDirection,
-                countryDirection: this.state.countryDirection,
-                id: this.state.id,
-                title: this.state.title,
-                country: this.state.country,
-            }
-        }).then(response => new Promise((resolve) => {
-            this.setState({
-                cities: response.data.content,
-                maxPage: response.data.totalPages
-            }, () => {
-                resolve()
-            });
-        }));
+        this.setState({loadingCities: true}, () => {
+            RequestService.getAxios().get(RequestService.ADMIN_URL + '/cities', {
+                params: {
+                    page: this.state.page,
+                    size: this.state.size,
+                    idDirection: this.state.idDirection,
+                    titleDirection: this.state.titleDirection,
+                    countryDirection: this.state.countryDirection,
+                    id: this.state.id,
+                    title: this.state.title,
+                    country: this.state.country,
+                }
+            }).then(response => new Promise((resolve) => {
+                this.setState({
+                    cities: response.data.content,
+                    maxPage: response.data.totalPages,
+                    loadingCities: false,
+                    reload: false
+                }, () => {
+                    resolve()
+                });
+            }));
+        });
     }
 
     handleClick(page) {
@@ -83,7 +92,7 @@ export class AdminCities extends React.Component {
                 break
             case 'desc':
                 direction[field] = null;
-                break
+                break;
             default:
                 direction[field] = 'asc';
                 break
@@ -92,23 +101,33 @@ export class AdminCities extends React.Component {
     }
 
     handleChangeId(value) {
-        this.setState({id: value});
+        if (this.state.id !== value)
+            this.setState({id: value, reload: true, page: 0});
     }
 
     handleChangeTitle(value) {
-        this.setState({title: value});
+        if (this.state.title !== value)
+            this.setState({title: value, reload: true, page: 0});
     }
 
     handleChangeCountry(value) {
-        this.setState({country: value});
+        if (this.state.country !== value)
+            this.setState({country: value, reload: true, page: 0});
     }
 
     handleBlur() {
-        this.loadCities();
+        if (this.state.reload)
+            this.loadCities();
     }
 
     handleActiveSearch() {
-        this.setState({search: !this.state.search})
+        this.setState({search: !this.state.search}, () => {
+            if (this.state.search) {
+                document.querySelector('.admin_table__content').style.marginTop = document.querySelector('.admin_table__search').clientHeight + 1 + 'px';
+            } else {
+                document.querySelector('.admin_table__content').style.marginTop = '0';
+            }
+        })
     }
 
     render() {
@@ -133,58 +152,71 @@ export class AdminCities extends React.Component {
                                        handleClick={this.handleChangeDirection.bind(this)}>Title</TableHeadItem>
                         <TableHeadItem>Actions</TableHeadItem>
                     </TableHead>
-                    <TableBody>
-                        {
-                            this.state.search
-                                ? <TableRow>
-                                    <TableRowItem>
-                                        <FormInput clearable={true}
-                                                   value={this.state.id}
-                                                   handleBlur={this.handleBlur.bind(this)} type={'number'}
-                                                   handleChange={this.handleChangeId.bind(this)}
-                                                   className={"admin_table__search__input"}
-                                                   handleSubmit={this.handleBlur.bind(this)}
-                                        />
-                                    </TableRowItem>
-                                    <TableRowItem>
-                                        <FormInput clearable={true}
-                                                   value={this.state.country}
-                                                   handleBlur={this.handleBlur.bind(this)}
-                                                   handleChange={this.handleChangeCountry.bind(this)}
-                                                   className={"admin_table__search__input"}
-                                                   handleSubmit={this.handleBlur.bind(this)}
-                                        />
-                                    </TableRowItem>
-                                    <TableRowItem>
-                                        <FormInput clearable={true}
-                                                   value={this.state.title}
-                                                   handleBlur={this.handleBlur.bind(this)}
-                                                   handleChange={this.handleChangeTitle.bind(this)}
-                                                   className={"admin_table__search__input"}
-                                                   handleSubmit={this.handleBlur.bind(this)}
-                                        />
-                                    </TableRowItem>
-                                    <TableRowItem/>
-                                </TableRow>
-                                : ''
-                        }
-                        {
-                            this.state.cities.map(city => {
-                                return (
-                                    <TableRow key={city.id}>
-                                        <TableRowItem>{city.id}</TableRowItem>
-                                        <TableRowItem>{city.country.title}</TableRowItem>
-                                        <TableRowItem>{city.title}</TableRowItem>
-                                        <TableRowItem className={"admin_table__actions"}>
-                                            <Link to={`/admin/cities/${city.id}/update`}
-                                                  className={"admin_table__action"}>✎</Link>
-                                            <Link to={`/admin/cities/${city.id}/delete`}
-                                                  className={"admin_table__action"}>🗑</Link>
-                                        </TableRowItem>
-                                    </TableRow>
-                                );
-                            })
-                        }
+                    <TableBody className={'admin_table__body'}>
+                        <TableRow className={'admin_table__search'}>
+                            <TableRowItem>
+                                <FormInput clearable={true}
+                                           value={this.state.id}
+                                           handleChange={this.handleChangeId.bind(this)}
+                                           className={"admin_table__search__input"}
+                                           handleSubmit={this.handleBlur.bind(this)}
+                                           handleButton={this.handleBlur.bind(this)}
+                                           button={'🔍'}
+                                />
+                            </TableRowItem>
+                            <TableRowItem>
+                                <FormInput clearable={true}
+                                           value={this.state.country}
+                                           handleChange={this.handleChangeCountry.bind(this)}
+                                           className={"admin_table__search__input"}
+                                           handleSubmit={this.handleBlur.bind(this)}
+                                           handleButton={this.handleBlur.bind(this)}
+                                           button={'🔍'}
+                                />
+                            </TableRowItem>
+                            <TableRowItem>
+                                <FormInput clearable={true}
+                                           value={this.state.title}
+                                           handleChange={this.handleChangeTitle.bind(this)}
+                                           className={"admin_table__search__input"}
+                                           handleSubmit={this.handleBlur.bind(this)}
+                                           handleButton={this.handleBlur.bind(this)}
+                                           button={'🔍'}
+                                />
+                            </TableRowItem>
+                            <TableRowItem/>
+                        </TableRow>
+                        <div className={'admin_table__content'}>
+                            {
+                                this.state.loadingCities
+                                    ?   <LoadingAnimation className={"admin_table__content__loading"}/>
+                                    :   ''
+                            }
+                            {
+                                this.state.cities.map(city => {
+                                    return (
+                                        <TableRow key={city.id}>
+                                            <TableRowItem>{city.id}</TableRowItem>
+                                            <TableRowItem>{city.country.title}</TableRowItem>
+                                            <TableRowItem>{city.title}</TableRowItem>
+                                            <TableRowItem className={"admin_table__actions"}>
+                                                <HiddenInfo text={"✎"}
+                                                            hidden={"Change city"}
+                                                            link={`/admin/cities/${city.id}/update`}/>
+                                                <HiddenInfo text={"🗑"}
+                                                            hidden={"Remove city"}
+                                                            link={`/admin/cities/${city.id}/delete`}/>
+                                            </TableRowItem>
+                                        </TableRow>
+                                    );
+                                })
+                            }
+                            {
+                                this.state.cities.length === 0 && !this.state.loadingCities
+                                    ?   <div className={'admin_table__content__empty'}>Not found</div>
+                                    :   ''
+                            }
+                        </div>
                     </TableBody>
                     <TableFooter>
                         <TablePagination

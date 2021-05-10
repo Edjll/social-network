@@ -1,3 +1,5 @@
+import './table-body.css';
+
 export const TableBody = (props) => {
 
     return (

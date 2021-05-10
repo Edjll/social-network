@@ -87,8 +87,8 @@ export class GroupCreator extends React.Component {
                         <FormClose handleClick={this.handleClose.bind(this)}/>
                     </CardHeader>
                     <CardBody>
-                        <FormInput error={this.state.errors ? this.state.errors.title : null} value={this.state.title} title={"Title"} handleChange={this.handleTitle.bind(this)}/>
-                        <FormInput error={this.state.errors ? this.state.errors.address : null} value={this.state.address} title={"Address"} handleChange={this.handleAddress.bind(this)}/>
+                        <FormInput clearable={true} error={this.state.errors ? this.state.errors.title : null} value={this.state.title} title={"Title"} handleChange={this.handleTitle.bind(this)}/>
+                        <FormInput clearable={true} error={this.state.errors ? this.state.errors.address : null} value={this.state.address} title={"Address"} handleChange={this.handleAddress.bind(this)}/>
                         <FormTextarea error={this.state.errors ? this.state.errors.description : null} value={this.state.description} title={"Description"} handleChange={this.handleDescription.bind(this)}/>
                     </CardBody>
                     <CardFooter>

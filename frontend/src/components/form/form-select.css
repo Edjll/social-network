@@ -34,26 +34,27 @@
 }
 
 .form__select__search__clear {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
+    color: white;
     cursor: pointer;
-    transition: transform .2s;
-    font-size: 1.5rem;
-    color: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1rem;
+    height: 1rem;
+    margin-right: .5rem;
+    transition: color .1s;
 }
 
 .form__select__search__clear:hover {
-    transform: rotate(90deg);
+    color: #c1bebe;
 }
 
 .form__select__options {
     display: flex;
     flex-direction: column;
-    border-radius: .25rem;
+    border-radius: .5rem;
     position: absolute;
-    top: 110%;
+    top: 100%;
     width: 100%;
     max-height: 250px;
     overflow-y: scroll;
@@ -61,6 +62,7 @@
     border: 1px solid rgb(62, 68, 70);
     z-index: 1;
     color: #f7f7f7;
+    overflow-x: hidden;
 }
 
 .form__select__options__value {

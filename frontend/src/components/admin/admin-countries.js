@@ -14,6 +14,8 @@ import {CountryCreator} from "../country/country-creator";
 import {CountryUpdater} from "../country/country-updater";
 import {CountryRemover} from "../country/country-remover";
 import {FormInput} from "../form/form-input";
+import {HiddenInfo} from "../hidden-info/hidden-info";
+import {LoadingAnimation} from "../loading-animation/loading-animation";
 
 export class AdminCountries extends React.Component {
 
@@ -23,17 +25,20 @@ export class AdminCountries extends React.Component {
             countries: [],
             page: 0,
             maxPage: 0,
-            size: 10,
+            size: 8,
             idDirection: null,
             titleDirection: null,
             id: null,
             title: null,
-            search: false
+            search: false,
+            loadingCountries: false,
+            reload: false
         }
     }
 
     componentDidMount() {
         this.loadCountries(this.state.page, this.state.size);
+        document.querySelector('.admin_table__content').style.minHeight = document.querySelector('.admin_table__search').clientHeight + 1 + 'px';
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -43,21 +48,24 @@ export class AdminCountries extends React.Component {
     }
 
     loadCountries() {
-        RequestService.getAxios().get(RequestService.ADMIN_URL + '/countries', {
-            params: {
-                page: this.state.page,
-                size: this.state.size,
-                idDirection: this.state.idDirection,
-                titleDirection: this.state.titleDirection,
-                id: this.state.id,
-                title: this.state.title
-            }
-        }).then(response => {
-            this.setState({
-                countries: response.data.content,
-                maxPage: response.data.totalPages,
-                page: response.data.number
-            })
+        this.setState({loadingCountries: true}, () => {
+            RequestService.getAxios().get(RequestService.ADMIN_URL + '/countries', {
+                params: {
+                    page: this.state.page,
+                    size: this.state.size,
+                    idDirection: this.state.idDirection,
+                    titleDirection: this.state.titleDirection,
+                    id: this.state.id,
+                    title: this.state.title
+                }
+            }).then(response => {
+                this.setState({
+                    countries: response.data.content,
+                    maxPage: response.data.totalPages,
+                    loadingCountries: false,
+                    reload: false
+                })
+            });
         });
     }
 
@@ -78,7 +86,7 @@ export class AdminCountries extends React.Component {
                 break
             case 'desc':
                 direction[field] = null;
-                break
+                break;
             default:
                 direction[field] = 'asc';
                 break
@@ -87,19 +95,28 @@ export class AdminCountries extends React.Component {
     }
 
     handleChangeId(value) {
-        this.setState({id: value});
+        if (this.state.id !== value)
+            this.setState({id: value, reload: true, page: 0});
     }
 
     handleChangeTitle(value) {
-        this.setState({title: value});
+        if (this.state.title !== value)
+            this.setState({title: value, reload: true, page: 0});
     }
 
     handleBlur() {
-        this.loadCountries();
+        if (this.state.reload)
+            this.loadCountries();
     }
 
     handleActiveSearch() {
-        this.setState({search: !this.state.search})
+        this.setState({search: !this.state.search}, () => {
+            if (this.state.search) {
+                document.querySelector('.admin_table__content').style.marginTop = document.querySelector('.admin_table__search').clientHeight + 1 + 'px';
+            } else {
+                document.querySelector('.admin_table__content').style.marginTop = '0';
+            }
+        })
     }
 
     render() {
@@ -124,48 +141,61 @@ export class AdminCountries extends React.Component {
                                        handleClick={this.handleChangeDirection.bind(this)}>Title</TableHeadItem>
                         <TableHeadItem>Actions</TableHeadItem>
                     </TableHead>
-                    <TableBody>
-                        {
-                            this.state.search
-                                ? <TableRow>
-                                    <TableRowItem>
-                                        <FormInput clearable={true}
-                                                   value={this.state.id}
-                                                   handleBlur={this.handleBlur.bind(this)} type={'number'}
-                                                   handleChange={this.handleChangeId.bind(this)}
-                                                   className={"admin_table__search__input"}
-                                                   handleSubmit={this.handleBlur.bind(this)}
-                                        />
-                                    </TableRowItem>
-                                    <TableRowItem>
-                                        <FormInput clearable={true}
-                                                   value={this.state.title}
-                                                   handleBlur={this.handleBlur.bind(this)}
-                                                   handleChange={this.handleChangeTitle.bind(this)}
-                                                   className={"admin_table__search__input"}
-                                                   handleSubmit={this.handleBlur.bind(this)}
-                                        />
-                                    </TableRowItem>
-                                    <TableRowItem/>
-                                </TableRow>
-                                : ''
-                        }
-                        {
-                            this.state.countries.map(country => {
-                                return (
-                                    <TableRow key={country.id}>
-                                        <TableRowItem>{country.id}</TableRowItem>
-                                        <TableRowItem>{country.title}</TableRowItem>
-                                        <TableRowItem className={"admin_table__actions"}>
-                                            <Link to={`/admin/countries/${country.id}/update`}
-                                                  className={"admin_table__action"}>✎</Link>
-                                            <Link to={`/admin/countries/${country.id}/delete`}
-                                                  className={"admin_table__action"}>🗑</Link>
-                                        </TableRowItem>
-                                    </TableRow>
-                                );
-                            })
-                        }
+                    <TableBody className={'admin_table__body'}>
+                        <TableRow className={'admin_table__search'}>
+                            <TableRowItem>
+                                <FormInput clearable={true}
+                                           value={this.state.id}
+                                           type={'number'}
+                                           handleChange={this.handleChangeId.bind(this)}
+                                           className={"admin_table__search__input"}
+                                           handleSubmit={this.handleBlur.bind(this)}
+                                           handleButton={this.handleBlur.bind(this)}
+                                           button={'🔍'}
+                                />
+                            </TableRowItem>
+                            <TableRowItem>
+                                <FormInput clearable={true}
+                                           value={this.state.title}
+                                           handleChange={this.handleChangeTitle.bind(this)}
+                                           className={"admin_table__search__input"}
+                                           handleSubmit={this.handleBlur.bind(this)}
+                                           handleButton={this.handleBlur.bind(this)}
+                                           button={'🔍'}
+                                />
+                            </TableRowItem>
+                            <TableRowItem/>
+                        </TableRow>
+                        <div className={'admin_table__content'}>
+                            {
+                                this.state.loadingCountries
+                                    ?   <LoadingAnimation className={"admin_table__content__loading"}/>
+                                    :   ''
+                            }
+                            {
+                                this.state.countries.map(country => {
+                                    return (
+                                        <TableRow key={country.id}>
+                                            <TableRowItem>{country.id}</TableRowItem>
+                                            <TableRowItem>{country.title}</TableRowItem>
+                                            <TableRowItem className={"admin_table__actions"}>
+                                                <HiddenInfo text={"✎"}
+                                                            hidden={"Change country"}
+                                                            link={`/admin/countries/${country.id}/update`}/>
+                                                <HiddenInfo text={"🗑"}
+                                                            hidden={"Remove country"}
+                                                            link={`/admin/countries/${country.id}/delete`}/>
+                                            </TableRowItem>
+                                        </TableRow>
+                                    );
+                                })
+                            }
+                            {
+                                this.state.countries.length === 0 && !this.state.loadingCountries
+                                    ?   <div className={'admin_table__content__empty'}>Not found</div>
+                                    :   ''
+                            }
+                        </div>
                     </TableBody>
                     <TableFooter>
                         <TablePagination

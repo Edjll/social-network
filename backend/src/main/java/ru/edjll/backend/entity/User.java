@@ -137,7 +137,7 @@ import java.util.Set;
 )
 // getUsersForAdmin
 @NamedNativeQuery(
-        name = "User.getUsersForAdmin",
+        name = "User.getAllForAdmin",
         query = "select user_entity.id, user_entity.username, user_entity.email, city.title as city, user_entity.enabled " +
                 "from user_entity " +
                 "    left join user_info on user_entity.id = user_info.user_id " +
@@ -164,8 +164,8 @@ import java.util.Set;
         resultSetMapping = "userDtoForAdminPageResultMapping"
 )
 @NamedNativeQuery(
-        name = "User.getUsersForAdmin.count",
-        query = "select count(user_entity.id) as count, :id_direction, :username_direction, :email_direction, :city_direction, :enabled_direction " +
+        name = "User.getCountForAdmin",
+        query = "select count(user_entity.id) as count " +
                 "from user_entity " +
                 "    left join user_info on user_entity.id = user_info.user_id " +
                 "    left join city on user_info.city_id = city.id " +

@@ -1,9 +1,6 @@
 import './user-card.css';
 import {Link} from "react-router-dom";
 import * as React from "react";
-import RequestService from "../../../services/RequestService";
-import AuthService from "../../../services/AuthService";
-import {FormButton} from "../../form/form-button";
 import {UserFriendButton} from "../user-friend-button";
 import UserFriendStatus from "../../../services/UserFriendStatus";
 
@@ -50,7 +47,7 @@ export class UserCard extends React.Component {
                         this.props.children
                             ? this.props.children
                             : <UserFriendButton handleAddToFriends={(response) => this.handleAddToFriends(response)}
-                                                handleRemoveFromFriends ={(response) => this.handleRemoveFromFriends(response)}
+                                                handleRemoveFromFriends={(response) => this.handleRemoveFromFriends(response)}
                                                 handleAcceptRequest={(response) => this.handleAcceptRequest(response)}
                                                 id={this.props.info.id}
                                                 friendId={this.state.friendId}

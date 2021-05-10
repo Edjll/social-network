@@ -1,8 +1,15 @@
 .form__close {
     cursor: pointer;
-    transition: transform .2s;
+    transition: background-color .1s;
+    border-radius: .25rem;
+    padding: 0 !important;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .form__close:hover {
-    transform: rotate(90deg);
+    background-color: #3e424b;
 }

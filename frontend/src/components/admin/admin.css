@@ -29,7 +29,8 @@
     margin-right: .5rem;
 }
 
-.admin_table__header__link-create, .admin_table__header__button-search {
+.admin_table__header__link-create,
+.admin_table__header__button-search {
     padding: .5rem 1.5rem;
     background-color: #2b2e34;
     border-radius: .25rem;
@@ -40,6 +41,12 @@
     cursor: pointer;
     text-decoration: none;
     user-select: none;
+    transition: background-color .1s;
+}
+
+.admin_table__header__link-create:hover,
+.admin_table__header__button-search:hover {
+    background-color: #3e424b;
 }
 
 .admin_table__actions {
@@ -62,6 +69,10 @@
     margin-right: 0;
 }
 
+.admin_table__search > .table__body__row__item {
+    padding: .5rem 1rem;
+}
+
 .admin_table__search__input {
     width: 100%;
     margin: 0;
@@ -71,4 +82,46 @@
 .admin_table__search__input > input {
     width: 100%;
     font-size: 1rem;
+}
+
+.admin_table__content {
+    position: relative;
+    width: 100%;
+    min-height: 4rem;
+    transition: margin-top .2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #2b2e34;
+}
+
+.admin_table__content > .table__body__row:last-of-type {
+    border-bottom: none;
+}
+
+.admin_table__content__loading {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #1f2024db;
+    align-items: center;
+    z-index: 2;
+}
+
+.admin_table__body {
+    position: relative;
+}
+
+.admin_table__search {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.admin_table__content__empty {
+    color: #a2aaad;
+    font-size: 1.1rem;
 }
