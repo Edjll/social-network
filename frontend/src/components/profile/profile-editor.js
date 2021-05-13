@@ -184,21 +184,30 @@ export default class ProfileEditor extends React.Component {
                         <FormClose handleClick={this.handleClose.bind(this)}/>
                     </CardHeader>
                     <CardBody>
-                        <FormInput clearable={true}
-                                   value={this.state.email}
-                                   title={"email"}
-                                   handleChange={this.handleChangeEmail.bind(this)}
-                                   error={this.state.errors.email}/>
-                        <FormInput clearable={true}
-                                   value={this.state.firstName}
-                                   title={"first name"}
-                                   handleChange={this.handleChangeFirstName.bind(this)}
-                                   error={this.state.errors.firstName}/>
-                        <FormInput clearable={true}
-                                   value={this.state.lastName}
-                                   title={"last name"}
-                                   handleChange={this.handleChangeLastName.bind(this)}
-                                   error={this.state.errors.lastName}/>
+                        <FormInput
+                            clearable={true}
+                            value={this.state.email}
+                            title={"email"}
+                            handleChange={this.handleChangeEmail.bind(this)}
+                            error={this.state.errors.email}
+                            pattern={"[a-zA-Z@_.0-9]"}
+                        />
+                        <FormInput
+                            clearable={true}
+                            value={this.state.firstName}
+                            title={"first name"}
+                            handleChange={this.handleChangeFirstName.bind(this)}
+                            error={this.state.errors.firstName}
+                            pattern={"[a-zA-Zа-яА-Я]"}
+                        />
+                        <FormInput
+                            clearable={true}
+                            value={this.state.lastName}
+                            title={"last name"}
+                            handleChange={this.handleChangeLastName.bind(this)}
+                            error={this.state.errors.lastName}
+                            pattern={"[a-zA-Zа-яА-Я]"}
+                        />
                         <FormInput value={this.state.birthday} type={"date"} title={"birthday"}
                                    handleChange={this.handleChangeBirthday.bind(this)}/>
                         {

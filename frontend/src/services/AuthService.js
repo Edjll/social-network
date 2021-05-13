@@ -107,7 +107,7 @@ export default class AuthService {
             this.#token = token;
             this.#parsedToken = JSON.parse(decodeURIComponent(escape(atob(token.split('.')[1]))));
         }
-        if (refreshToken !== undefined) this.#refreshToken = refreshToken;
+        if (refreshToken !== null) this.#refreshToken = refreshToken;
     }
 
     static isTokenExpired() {

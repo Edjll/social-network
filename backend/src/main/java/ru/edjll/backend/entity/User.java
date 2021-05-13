@@ -142,7 +142,6 @@ import java.time.LocalDateTime;
                 "    left join city on user_info.city_id = city.id " +
                 "where realm_id = 'social-network' " +
                 "  and service_account_client_link is null " +
-                "  and user_entity.enabled = true " +
                 "  and user_entity.id != 'b65bfe43-77dd-44f1-8199-a9dfa3946da7' " +
                 "  and case when :id = '' then true else :id = user_entity.username end " +
                 "  and case when :username = '' then true else lower(:username) = lower(user_entity.username) end " +

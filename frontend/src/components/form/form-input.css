@@ -35,9 +35,7 @@
 
 .form__input__value[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
-    background-color: #b4b4b4;
     filter: invert(1);
-    border-radius: .25rem;
 }
 
 .form__input__value:disabled {

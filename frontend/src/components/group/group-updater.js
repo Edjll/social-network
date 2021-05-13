@@ -113,7 +113,7 @@ export class GroupUpdater extends React.Component {
                             title={"Title"}
                             handleChange={this.handleTitle.bind(this)}
                             value={this.state.title}
-                            pattern={'[a-zA-Zа-яА-Я0-9_- ]'}
+                            pattern={'[a-zA-Zа-яА-Я0-9_\\- ]'}
                         />
                         <FormInput
                             clearable={true}
