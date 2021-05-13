@@ -25,11 +25,11 @@ public class UserDtoWrapperForUpdate {
     private String email;
 
     @Length(min = 1, max = 15)
-    @Pattern(regexp = "^\\w+$")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+$")
     private String firstName;
 
     @Length(min = 1, max = 15)
-    @Pattern(regexp = "^\\w+$")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+$")
     private String lastName;
 
     @Exists(table = "city", column = "id")

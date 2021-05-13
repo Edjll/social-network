@@ -5,7 +5,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.city.CityDtoForSave;
 import ru.edjll.backend.dto.city.CityDtoForUpdate;
 import ru.edjll.backend.entity.City;

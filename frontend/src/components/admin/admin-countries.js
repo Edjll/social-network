@@ -32,7 +32,8 @@ export class AdminCountries extends React.Component {
             title: null,
             search: false,
             loadingCountries: false,
-            reload: false
+            reload: false,
+            changedPageSize: false
         }
     }
 
@@ -48,7 +49,7 @@ export class AdminCountries extends React.Component {
     }
 
     loadCountries() {
-        this.setState({loadingCountries: true}, () => {
+        this.setState({loadingCountries: true, changedPageSize: false}, () => {
             RequestService.getAxios().get(RequestService.ADMIN_URL + '/countries', {
                 params: {
                     page: this.state.page,
@@ -74,7 +75,7 @@ export class AdminCountries extends React.Component {
     }
 
     handleChangePageSize(value) {
-        this.setState({size: value}, () => this.loadCountries());
+        this.setState({size: value, changedPageSize: true, refreshCount: true});
     }
 
     handleChangeDirection(directionName) {
@@ -152,6 +153,7 @@ export class AdminCountries extends React.Component {
                                            handleSubmit={this.handleBlur.bind(this)}
                                            handleButton={this.handleBlur.bind(this)}
                                            button={'🔍'}
+                                           pattern={'[0-9]'}
                                 />
                             </TableRowItem>
                             <TableRowItem>
@@ -162,6 +164,7 @@ export class AdminCountries extends React.Component {
                                            handleSubmit={this.handleBlur.bind(this)}
                                            handleButton={this.handleBlur.bind(this)}
                                            button={'🔍'}
+                                           pattern={'[a-zA-Z ]'}
                                 />
                             </TableRowItem>
                             <TableRowItem/>
@@ -204,8 +207,12 @@ export class AdminCountries extends React.Component {
                             maxButtons={5}
                             handleClick={this.handleClick.bind(this)}
                         />
-                        <TablePageSize handleChange={this.handleChangePageSize.bind(this)}
-                                       value={this.state.size}/>
+                        <TablePageSize
+                            handleChange={this.handleChangePageSize.bind(this)}
+                            value={this.state.size}
+                            handleButton={this.loadCountries.bind(this)}
+                            changed={this.state.changedPageSize}
+                        />
                     </TableFooter>
                 </Table>
                 <Switch>

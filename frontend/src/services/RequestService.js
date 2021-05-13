@@ -1,7 +1,7 @@
 import axios from "axios";
 import AuthService from "./AuthService";
 import SockJS from 'sockjs-client';
-import { Stomp } from '@stomp/stompjs';
+import {Stomp} from '@stomp/stompjs';
 
 const axi = axios.create();
 const URL = 'http://localhost:8085';

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.edjll.backend.dto.group.user.GroupUserDtoForGroupPage;
-import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

@@ -40,6 +40,15 @@ export class Post extends React.Component {
                 AuthService.isAuthenticated()
                     ? <div className={"post__header__actions"}>
                         {
+                            this.state.post.creatorId === AuthService.getId() && this.state.editable
+                                ? <button
+                                    className={"post_form__save"}
+                                >
+                                    💾
+                                </button>
+                                : ''
+                        }
+                        {
                             this.state.post.creatorId === AuthService.getId()
                                 ? <div className={"post__header__actions__edit"}
                                        onClick={this.handleClickEdit.bind(this)}>

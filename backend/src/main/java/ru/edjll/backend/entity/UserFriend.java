@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForFriendsPage;
-import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
+import ru.edjll.backend.dto.user.info.UserInfoDtoForSubscribersPage;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForUserCart;
 
 import javax.persistence.*;
@@ -43,6 +43,20 @@ import java.time.LocalDateTime;
                 columns = {
                         @ColumnResult(name="username",      type = String.class),
                         @ColumnResult(name="first_name",    type = String.class)
+                }
+        )
+)
+
+@SqlResultSetMapping(
+        name = "userInfoDtoForSubscribersPageResultMapping",
+        classes = @ConstructorResult(
+                targetClass = UserInfoDtoForSubscribersPage.class,
+                columns = {
+                        @ColumnResult(name="id",            type = String.class),
+                        @ColumnResult(name="username",      type = String.class),
+                        @ColumnResult(name="first_name",    type = String.class),
+                        @ColumnResult(name="last_name",     type = String.class),
+                        @ColumnResult(name="city",          type = String.class)
                 }
         )
 )
@@ -107,7 +121,7 @@ import java.time.LocalDateTime;
                 "  and case when :last_name = '' then true else lower(:last_name) = lower(user_entity.last_name) end " +
                 "  and case when :city_id = -1 then true else :city_id = city.id end " +
                 "  and case when :city_id <> -1 or :country_id = -1 then true else :country_id = city.country_id end",
-        resultSetMapping = "userInfoDtoForFriendsPageResultMapping"
+        resultSetMapping = "userInfoDtoForSubscribersPageResultMapping"
 )
 
 @NamedNativeQuery(

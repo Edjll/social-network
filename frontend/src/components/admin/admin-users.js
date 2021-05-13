@@ -37,7 +37,8 @@ export class AdminUsers extends React.Component {
             refreshCount: true,
             loadingUserCount: false,
             loadingUsers: false,
-            reload: false
+            reload: false,
+            changedPageSize: false
         }
     }
 
@@ -50,7 +51,7 @@ export class AdminUsers extends React.Component {
         if (this.state.refreshCount) {
             this.loadUsersCount();
         }
-        this.setState({loadingUsers: true}, () => {
+        this.setState({loadingUsers: true, changedPageSize: false}, () => {
             RequestService.getAxios().get(RequestService.URL + '/admin/users', {
                 params: {
                     page: this.state.page,
@@ -99,7 +100,7 @@ export class AdminUsers extends React.Component {
     }
 
     handleChangePageSize(value) {
-        this.setState({size: value}, () => this.loadUsers());
+        this.setState({size: value, changedPageSize: true, refreshCount: true});
     }
 
     handleChangeDirection(directionName) {
@@ -196,6 +197,7 @@ export class AdminUsers extends React.Component {
                                            handleSubmit={this.handleBlur.bind(this)}
                                            handleButton={this.handleBlur.bind(this)}
                                            button={'🔍'}
+                                           pattern={'[a-zA-Z0-9-]'}
                                 />
                             </TableRowItem>
                             <TableRowItem>
@@ -206,6 +208,7 @@ export class AdminUsers extends React.Component {
                                            handleSubmit={this.handleBlur.bind(this)}
                                            handleButton={this.handleBlur.bind(this)}
                                            button={'🔍'}
+                                           pattern={"[a-zA-Z0-9_@-]"}
                                 />
                             </TableRowItem>
                             <TableRowItem>
@@ -216,6 +219,7 @@ export class AdminUsers extends React.Component {
                                            handleSubmit={this.handleBlur.bind(this)}
                                            handleButton={this.handleBlur.bind(this)}
                                            button={'🔍'}
+                                           pattern={"[a-zA-Z@_.0-9]"}
                                 />
                             </TableRowItem>
                             <TableRowItem>
@@ -226,6 +230,7 @@ export class AdminUsers extends React.Component {
                                            handleSubmit={this.handleBlur.bind(this)}
                                            handleButton={this.handleBlur.bind(this)}
                                            button={'🔍'}
+                                           pattern={"[a-zA-Z ]"}
                                 />
                             </TableRowItem>
                             <TableRowItem/>
@@ -271,8 +276,12 @@ export class AdminUsers extends React.Component {
                             handleClick={this.handleClick.bind(this)}
                             loading={this.state.loadingUserCount}
                         />
-                        <TablePageSize handleChange={this.handleChangePageSize.bind(this)}
-                                       value={this.state.size}/>
+                        <TablePageSize
+                            handleChange={this.handleChangePageSize.bind(this)}
+                            value={this.state.size}
+                            handleButton={this.loadUsers.bind(this)}
+                            changed={this.state.changedPageSize}
+                        />
                     </TableFooter>
                 </Table>
             </div>

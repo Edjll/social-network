@@ -39,14 +39,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 1rem;
-    height: 1rem;
-    margin-right: .5rem;
-    transition: color .1s;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+    margin-right: .3rem;
+    transition: background-color .1s;
+    border-radius: .25rem;
 }
 
 .form__select__search__clear:hover {
-    color: #c1bebe;
+    background-color: #3e424b;
 }
 
 .form__select__options {
@@ -84,4 +85,11 @@
 
 .form__select__error {
     margin-right: .3rem;
+}
+
+.form__select__error > div:first-of-type {
+    background-color: transparent;
+    height: 1rem;
+    width: 1rem;
+    border: none;
 }

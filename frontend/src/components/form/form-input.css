@@ -30,6 +30,14 @@
     color: white;
     font-size: 1rem;
     width: 100%;
+    cursor: text;
+}
+
+.form__input__value[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    background-color: #b4b4b4;
+    filter: invert(1);
+    border-radius: .25rem;
 }
 
 .form__input__value:disabled {
@@ -53,14 +61,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 1rem;
-    height: 1rem;
-    margin-right: .5rem;
-    transition: color .1s;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+    margin-right: .3rem;
+    transition: background-color .1s;
+    border-radius: .25rem;
 }
 
 .form__input__clear:hover {
-    color: #c1bebe;
+    background-color: #3e424b;
 }
 
 .form__input__button {
@@ -76,8 +85,18 @@
     border-radius: .25rem;
     transition: background-color .1s;
     user-select: none;
+    animation: form__input__button-scale .3s;
 }
 
 .form__input__button:hover {
     background-color: #3e424b;
+}
+
+@keyframes form__input__button-scale {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
 }

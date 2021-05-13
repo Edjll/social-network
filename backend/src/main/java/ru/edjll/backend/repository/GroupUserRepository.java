@@ -1,6 +1,5 @@
 package ru.edjll.backend.repository;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,7 +11,6 @@ import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
 import ru.edjll.backend.entity.GroupUser;
 import ru.edjll.backend.entity.GroupUserKey;
 
-import javax.persistence.SqlResultSetMapping;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -59,7 +57,9 @@ public interface GroupUserRepository extends JpaRepository<GroupUser, GroupUserK
             Pageable pageable
     );
 
-    Integer countByIdGroupId(Long groupId);
+    @Query("select count(gu.id.user.id) from GroupUser gu join gu.id.group where gu.id.group.id = :group_id and gu.id.group.enabled = true")
+    Integer countByIdGroupId(@Param("group_id") Long groupId);
 
-    Integer countByIdUserId(String userId);
+    @Query("select count(gu.id.group.id) from GroupUser gu join gu.id.group where gu.id.user.id = :user_id and gu.id.group.enabled = true")
+    Integer countByIdUserId(@Param("user_id") String userId);
 }

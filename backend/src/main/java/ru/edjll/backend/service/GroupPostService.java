@@ -1,13 +1,10 @@
 package ru.edjll.backend.service;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import ru.edjll.backend.dto.group.post.GroupPostDtoForGroupPage;
 import ru.edjll.backend.dto.group.post.GroupPostDtoForSave;
 import ru.edjll.backend.dto.group.post.GroupPostDtoForUpdate;
 import ru.edjll.backend.dto.post.PostDto;

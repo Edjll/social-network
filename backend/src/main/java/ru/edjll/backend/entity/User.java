@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.edjll.backend.dto.post.PostDto;
-import ru.edjll.backend.dto.post.PostType;
 import ru.edjll.backend.dto.user.InterlocutorDto;
 import ru.edjll.backend.dto.user.UserDtoForAdminPage;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -215,6 +213,7 @@ import java.util.Set;
                 "        where user_friend.friend_id = :id) as users " +
                 "        on post.user_id = users.id " +
                 "    join user_entity on user_entity.id = post.user_id " +
+                "where user_entity.enabled = true " +
                 "union all " +
                 "select group_post.id, group_post.text, group_post.created_date, group_post.modified_date, " +
                 "       groups.creator_id as creator_id, groups.title as name, " +
@@ -223,6 +222,7 @@ import java.util.Set;
                 "    join groups on group_post.group_id = groups.id " +
                 "    join group_user on group_user.user_id = :id " +
                 "        and groups.id = group_user.group_id " +
+                "where groups.enabled = true " +
                 "order by created_date desc ",
         resultSetMapping = "postDtoResultMapping"
 )

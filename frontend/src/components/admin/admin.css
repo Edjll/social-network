@@ -69,6 +69,10 @@
     margin-right: 0;
 }
 
+ .admin_table__search {
+    background-color: #2b2e34 !important;
+ }
+
 .admin_table__search > .table__body__row__item {
     padding: .5rem 1rem;
 }

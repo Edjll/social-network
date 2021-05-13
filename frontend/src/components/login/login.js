@@ -10,6 +10,7 @@ import './login.css';
 import {Redirect} from "react-router-dom";
 import Validator from "../../services/Validator";
 import validation from "../../services/validation.json";
+import {FormInfo} from "../form/form-info";
 
 export class Login extends React.Component {
 
@@ -18,21 +19,26 @@ export class Login extends React.Component {
         this.state = {
             username: '',
             password: '',
-            errors: null
+            errors: null,
+            info: null
         }
     }
 
     handleChangeUsername(username) {
-        this.setState({username: username});
+        this.setState({username: username, errors: {...this.state.errors, username: null}});
     }
 
     handleChangePassword(password) {
-        this.setState({password: password});
+        this.setState({password: password, errors: {...this.state.errors, password: null}});
     }
 
     handleLogin() {
         if (this.validate() === 0) {
-            AuthService.login(this.state.username, this.state.password);
+            AuthService
+                .login(this.state.username, this.state.password)
+                .catch(() => {
+                    this.setState({info: "invalid username or password"});
+                });
         }
     }
 
@@ -66,8 +72,28 @@ export class Login extends React.Component {
                         <h1>Login</h1>
                     </CardHeader>
                     <CardBody>
-                        <FormInput error={this.state.errors ? this.state.errors.username : null} value={this.state.username} title={"username"} handleChange={this.handleChangeUsername.bind(this)}/>
-                        <FormInput error={this.state.errors ? this.state.errors.password : null} value={this.state.password} title={"password"} type={"password"} handleChange={this.handleChangePassword.bind(this)}/>
+                        {
+                            this.state.info
+                                ?   <FormInfo>{this.state.info}</FormInfo>
+                                :   ''
+                        }
+                        <FormInput
+                            error={this.state.errors ? this.state.errors.username : null}
+                            value={this.state.username}
+                            title={"username"}
+                            handleChange={this.handleChangeUsername.bind(this)}
+                            pattern={"[a-zA-Z0-9_@-]"}
+                            clearable={true}
+                        />
+                        <FormInput
+                            error={this.state.errors ? this.state.errors.password : null}
+                            value={this.state.password}
+                            title={"password"}
+                            type={"password"}
+                            handleChange={this.handleChangePassword.bind(this)}
+                            pattern={"[a-zA-Zа-яА-Я@_0-9]"}
+                            clearable={true}
+                        />
                     </CardBody>
                     <CardFooter>
                         <FormButton>Login</FormButton>

@@ -10,7 +10,6 @@ import ru.edjll.backend.validation.unique.Unique;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -32,11 +31,11 @@ public class UserDtoWrapperForSave {
     private String email;
 
     @Length(min = 1, max = 15)
-    @Pattern(regexp = "^\\w+$")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+$")
     private String firstName;
 
     @Length(min = 1, max = 15)
-    @Pattern(regexp = "^\\w+$")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+$")
     private String lastName;
 
     @Size(min = 1, message = "{user.credentials.size}")

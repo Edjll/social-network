@@ -1,7 +1,6 @@
 package ru.edjll.backend.service;
 
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;

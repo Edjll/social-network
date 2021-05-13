@@ -36,7 +36,8 @@ export class AdminGroups extends React.Component {
             title: null,
             address: null,
             description: null,
-            search: false
+            search: false,
+            changedPageSize: false
         }
     }
 
@@ -49,7 +50,7 @@ export class AdminGroups extends React.Component {
         if (this.state.refreshCount) {
             this.loadGroupsCount();
         }
-        this.setState({loadingGroups: true}, () => {
+        this.setState({loadingGroups: true, changedPageSize: false}, () => {
             RequestService.getAxios().get(RequestService.URL + '/admin/groups', {
                 params: {
                     page: this.state.page,
@@ -115,7 +116,7 @@ export class AdminGroups extends React.Component {
     }
 
     handleChangePageSize(value) {
-        this.setState({size: value}, () => this.loadGroups());
+        this.setState({size: value, changedPageSize: true, refreshCount: true});
     }
 
     handleChangeId(value) {
@@ -188,8 +189,8 @@ export class AdminGroups extends React.Component {
                                            className={"admin_table__search__input"}
                                            handleSubmit={this.handleBlur.bind(this)}
                                            handleButton={this.handleBlur.bind(this)}
-                                           type={'number'}
                                            button={'🔍'}
+                                           pattern={'[0-9]'}
                                 />
                             </TableRowItem>
                             <TableRowItem>
@@ -200,6 +201,7 @@ export class AdminGroups extends React.Component {
                                            handleSubmit={this.handleBlur.bind(this)}
                                            handleButton={this.handleBlur.bind(this)}
                                            button={'🔍'}
+                                           pattern={'[a-zA-Zа-яА-Я0-9_- ]'}
                                 />
                             </TableRowItem>
                             <TableRowItem/>
@@ -211,6 +213,7 @@ export class AdminGroups extends React.Component {
                                            handleSubmit={this.handleBlur.bind(this)}
                                            handleButton={this.handleBlur.bind(this)}
                                            button={'🔍'}
+                                           pattern={'[a-zA-Z0-9_]'}
                                 />
                             </TableRowItem>
                             <TableRowItem/>
@@ -266,8 +269,12 @@ export class AdminGroups extends React.Component {
                             handleClick={this.handleClick.bind(this)}
                             loading={this.state.loadingGroupsCount}
                         />
-                        <TablePageSize handleChange={this.handleChangePageSize.bind(this)}
-                                       value={this.state.size}/>
+                        <TablePageSize
+                            handleChange={this.handleChangePageSize.bind(this)}
+                            value={this.state.size}
+                            handleButton={this.loadGroups.bind(this)}
+                            changed={this.state.changedPageSize}
+                        />
                     </TableFooter>
                 </Table>
             </div>

@@ -1,26 +1,19 @@
 package ru.edjll.backend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.edjll.backend.dto.message.*;
+import ru.edjll.backend.dto.message.MessageDto;
+import ru.edjll.backend.dto.message.MessageDtoForSave;
+import ru.edjll.backend.dto.message.MessageDtoForUpdate;
 import ru.edjll.backend.service.MessageService;
 import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
-import java.util.Collection;
 import java.util.List;
 
 @RestController

@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import ru.edjll.backend.entity.UserPost;
 
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Data

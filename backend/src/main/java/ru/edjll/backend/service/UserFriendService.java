@@ -1,16 +1,9 @@
 package ru.edjll.backend.service;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import ru.edjll.backend.dto.user.friend.UserFriendDtoForSave;
-import ru.edjll.backend.dto.user.friend.UserFriendDtoForUpdate;
 import ru.edjll.backend.dto.user.friend.UserFriendStatusDto;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForFriendsPage;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSubscribersPage;
@@ -25,10 +18,7 @@ import ru.edjll.backend.repository.UserFriendRepository;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class UserFriendService {
@@ -95,7 +85,7 @@ public class UserFriendService {
         return userFriendRepository.friendshipExists(userId, friendId);
     }
 
-    public List<UserInfoDtoForFriendsPage> getSubscribers(Integer page, Integer size, String userId, String firstName, String lastName, Long countryId, Long cityId) {
+    public List<UserInfoDtoForSubscribersPage> getSubscribers(Integer page, Integer size, String userId, String firstName, String lastName, Long countryId, Long cityId) {
         return userFriendRepository.getAllSubscribersDto(userId, firstName, lastName, cityId, countryId, PageRequest.of(page, size));
     }
 

@@ -75,11 +75,14 @@ export class CountryCreator extends React.Component {
                         <FormClose handleClick={this.handleClose.bind(this)}/>
                     </CardHeader>
                     <CardBody>
-                        <FormInput clearable={true}
-                                   value={this.state.title}
-                                   handleChange={this.handleChangeTitle.bind(this)}
-                                   title={"title"}
-                                   error={this.state.errors.title}/>
+                        <FormInput
+                            clearable={true}
+                            value={this.state.title}
+                            handleChange={this.handleChangeTitle.bind(this)}
+                            title={"title"}
+                            error={this.state.errors.title}
+                            pattern={"[a-zA-Z ]"}
+                        />
                     </CardBody>
                     <CardFooter>
                         <FormButton>Save</FormButton>

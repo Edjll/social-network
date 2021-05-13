@@ -122,10 +122,14 @@ export class CityUpdater extends React.Component {
                     </CardHeader>
                     <CardBody>
                         <FormInput value={this.state.id} title={"id"} disabled={true}/>
-                        <FormInput clearable={true}
-                                   value={this.state.title} handleChange={this.handleChangeTitle.bind(this)}
-                                   title={"title"}
-                                   error={this.state.errors.title}/>
+                        <FormInput
+                            clearable={true}
+                            value={this.state.title}
+                            handleChange={this.handleChangeTitle.bind(this)}
+                            title={"title"}
+                            error={this.state.errors.title}
+                            pattern={"[a-zA-Z ]"}
+                        />
                         {
                             this.state.countries.length > 0 && this.state.country.id
                                 ? <FormSelect

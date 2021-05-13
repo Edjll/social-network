@@ -95,8 +95,20 @@ export class SearchPage extends React.Component {
                 <div className={"left_side"}>
                     <Form handleSubmit={this.handleSearch.bind(this)} className={'search_page__form'}>
                         <CardBody>
-                            <FormInput value={this.state.firstName} title={"first name"} handleChange={this.handleChangeFirstName.bind(this)}/>
-                            <FormInput value={this.state.lastName} title={"last name"} handleChange={this.handleChangeLastName.bind(this)}/>
+                            <FormInput
+                                value={this.state.firstName}
+                                title={"first name"}
+                                handleChange={this.handleChangeFirstName.bind(this)}
+                                pattern={"[a-zA-Zа-яА-Я]"}
+                                clearable={true}
+                            />
+                            <FormInput
+                                value={this.state.lastName}
+                                title={"last name"}
+                                handleChange={this.handleChangeLastName.bind(this)}
+                                pattern={"[a-zA-Zа-яА-Я]"}
+                                clearable={true}
+                            />
                             {
                                 this.state.countries.length > 0
                                     ? <FormSelect

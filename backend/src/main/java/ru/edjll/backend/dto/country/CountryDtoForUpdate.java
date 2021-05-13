@@ -5,11 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import ru.edjll.backend.entity.Country;
-import ru.edjll.backend.validation.exists.Exists;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.Pattern;
 
 @Data
 @NoArgsConstructor
@@ -17,6 +15,7 @@ import javax.validation.constraints.Positive;
 public class CountryDtoForUpdate {
 
     @Length(min = 1, max = 20)
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+\\s{0,1}[a-zA-Zа-яА-Я]+$")
     private String title;
 
     public CountryDtoForUpdate(@NotNull Country country) {

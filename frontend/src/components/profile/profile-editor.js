@@ -12,7 +12,6 @@ import {FormSelect} from "../form/form-select";
 import './profile-editor.css';
 import Validator from "../../services/Validator";
 import validation from "../../services/validation.json";
-import {HiddenInfo} from "../hidden-info/hidden-info";
 
 export default class ProfileEditor extends React.Component {
 

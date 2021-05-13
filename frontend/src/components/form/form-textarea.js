@@ -16,7 +16,7 @@ export const FormTextarea = (props) => {
     }
     
     return (
-        <label className={`form__textarea ` + props.className}>
+        <label className={`form__textarea ${props.className ? props.className : ''}`}>
             {
                 props.title
                     ?   <span className={"form__textarea__title"}>{props.title}</span>

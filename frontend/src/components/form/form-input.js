@@ -5,7 +5,11 @@ import {HiddenInfo} from "../hidden-info/hidden-info";
 export const FormInput = (props) => {
 
     const handleChange = (e) => {
-        if (props.handleChange) props.handleChange(e.target.value);
+        let value = e.target.value;
+        if (value.slice(0, -1) === props.default && e.nativeEvent.data !== '') value = e.nativeEvent.data;
+        else if (value === '' && props.default) value = props.default;
+        if (e.nativeEvent.data !== null && props.pattern && !new RegExp(props.pattern).test(e.nativeEvent.data)) return;
+        if (props.handleChange) props.handleChange(value);
     }
 
     const handleKeyDown = (e) => {
@@ -15,7 +19,7 @@ export const FormInput = (props) => {
     }
 
     const clear = () => {
-        if (props.handleChange) props.handleChange('');
+        if (props.handleChange) props.handleChange(props.default ? props.default : '');
     }
 
     return (

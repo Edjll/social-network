@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.edjll.backend.dto.user.friend.UserFriendStatusDto;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForFriendsPage;
+import ru.edjll.backend.dto.user.info.UserInfoDtoForSubscribersPage;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForUserCart;
 import ru.edjll.backend.entity.UserFriend;
 import ru.edjll.backend.entity.UserFriendKey;
@@ -15,7 +16,6 @@ import ru.edjll.backend.entity.UserFriendStatus;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface UserFriendRepository extends JpaRepository<UserFriend, UserFriendKey> {
@@ -37,7 +37,7 @@ public interface UserFriendRepository extends JpaRepository<UserFriend, UserFrie
     );
 
     @Query(nativeQuery = true)
-    List<UserInfoDtoForFriendsPage> getAllSubscribersDto(
+    List<UserInfoDtoForSubscribersPage> getAllSubscribersDto(
             @Param("user_id") String userId,
             @Param("first_name") String firstName,
             @Param("last_name") String lastName,

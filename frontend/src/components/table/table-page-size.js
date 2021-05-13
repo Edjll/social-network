@@ -1,35 +1,30 @@
 import './table-page-size.css';
 import * as React from "react";
+import {FormInput} from "../form/form-input";
 
-export class TablePageSize extends React.Component {
+export const TablePageSize = (props) => {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: this.props.value
-        }
-    }
-
-    handleDownKey(e) {
-        if (e.code === 'Enter') {
-            e.preventDefault();
-            this.handleBlur();
-        }
-    }
-
-    handleChange(e) {
-        this.setState({value: e.target.value});
-    }
-
-    handleBlur() {
-        this.props.handleChange(this.state.value);
-    }
-
-    render() {
+    if (props.changed)
         return (
-            <input className={`table__page-size ${this.props.className ? this.props.className : ''}`}
-                   value={this.state.value} onChange={this.handleChange.bind(this)}
-                   type={'number'} onBlur={this.handleBlur.bind(this)} onKeyDown={this.handleDownKey.bind(this)}/>
+            <FormInput
+                className={`table__page-size ${props.className ? props.className : ''}`}
+                value={props.value}
+                handleChange={props.handleChange}
+                handleSubmit={props.handleButton}
+                handleButton={props.handleButton}
+                button={'↻'}
+                default={'0'}
+                pattern={'\\d'}
+            />
         );
-    }
+    else
+        return (
+            <FormInput
+                className={`table__page-size ${props.className ? props.className : ''}`}
+                value={props.value}
+                handleChange={props.handleChange}
+                default={'0'}
+                pattern={'\\d'}
+            />
+        );
 }

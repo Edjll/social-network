@@ -1,6 +1,5 @@
 package ru.edjll.backend.dto.post;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

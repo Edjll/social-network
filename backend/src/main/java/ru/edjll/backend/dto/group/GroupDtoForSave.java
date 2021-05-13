@@ -7,7 +7,6 @@ import org.hibernate.validator.constraints.Length;
 import ru.edjll.backend.entity.Group;
 import ru.edjll.backend.validation.unique.Unique;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
@@ -23,7 +22,7 @@ public class GroupDtoForSave {
     private String description;
 
     @Length(min = 3, max = 15)
-    @Pattern(regexp = "^\\w+$")
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$")
     @Unique(table = "groups", column = "address")
     private String address;
 

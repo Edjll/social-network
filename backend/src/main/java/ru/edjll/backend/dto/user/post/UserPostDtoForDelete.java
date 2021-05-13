@@ -3,8 +3,8 @@ package ru.edjll.backend.dto.user.post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.edjll.backend.entity.UserPost;
 import ru.edjll.backend.entity.User;
+import ru.edjll.backend.entity.UserPost;
 import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.constraints.NotEmpty;

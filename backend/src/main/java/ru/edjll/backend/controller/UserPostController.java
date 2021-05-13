@@ -1,8 +1,8 @@
 package ru.edjll.backend.controller;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.dto.post.PostDto;
@@ -12,12 +12,10 @@ import ru.edjll.backend.service.UserPostService;
 import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -67,7 +65,7 @@ public class UserPostController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
             @PathVariable @Positive Long id,
-            Principal principal
+            JwtAuthenticationToken principal
     ) {
         userPostService.delete(id, principal);
     }

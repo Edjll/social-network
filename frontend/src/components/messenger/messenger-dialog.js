@@ -5,7 +5,6 @@ import AuthService from "../../services/AuthService";
 import {Link} from "react-router-dom";
 import Validator from "../../services/Validator";
 import validation from "../../services/validation.json";
-import {Toast} from "../toast/toast";
 import IntersectionObserverService from "../../services/IntersectionObserverService";
 import {MessengerMessage} from "./messenger-message";
 import {FormTextarea} from "../form/form-textarea";
@@ -22,9 +21,6 @@ export class MessengerDialog extends React.Component {
             editing: false,
             createdDate: null,
             tmpText: "",
-            errors: {
-                text: null
-            },
             page: 0,
             size: 10,
             totalPages: 0
@@ -146,7 +142,6 @@ export class MessengerDialog extends React.Component {
         let errors = {...this.state.errors};
         const textError = Validator.validate('Text', this.state.text.replace(/\n\n/g, '\n'), validation.message.text.params);
         if (textError) {
-            errors = {...errors, text: textError};
             size++;
         }
 
@@ -166,7 +161,7 @@ export class MessengerDialog extends React.Component {
     }
 
     handleChange(value) {
-        this.setState({text: value, errors: {text: null}})
+        this.setState({text: value})
     }
 
     handleEdit(value) {
@@ -236,13 +231,6 @@ export class MessengerDialog extends React.Component {
                     />
                     <button className={"dialog__form__button"}>✉</button>
                 </form>
-                {
-                    this.state.errors.text
-                        ?
-                        <Toast header={"Error"} body={this.state.errors.text} handleClose={this.handleClose.bind(this)}
-                               time={2}/>
-                        : ''
-                }
             </div>
         );
     }

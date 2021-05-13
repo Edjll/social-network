@@ -4,7 +4,6 @@ import {CardHeader} from "../card/card-header";
 import {CardBody} from "../card/card-body";
 import RequestService from "../../services/RequestService";
 import {GroupCard} from "./group-card";
-import {Link} from "react-router-dom";
 import './group-search.css';
 import AuthService from "../../services/AuthService";
 import IntersectionObserverService from "../../services/IntersectionObserverService";

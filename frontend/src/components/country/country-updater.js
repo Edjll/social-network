@@ -88,14 +88,19 @@ export class CountryUpdater extends React.Component {
                         <FormClose handleClick={this.handleClose.bind(this)}/>
                     </CardHeader>
                     <CardBody>
-                        <FormInput value={this.state.id}
-                                   title={"id"}
-                                   disabled={true}/>
-                        <FormInput clearable={true}
-                                   value={this.state.title}
-                                   handleChange={this.handleChangeTitle.bind(this)}
-                                   title={"title"}
-                                   error={this.state.errors.title}/>
+                        <FormInput
+                            value={this.state.id}
+                            title={"id"}
+                            disabled={true}
+                        />
+                        <FormInput
+                            clearable={true}
+                            value={this.state.title}
+                            handleChange={this.handleChangeTitle.bind(this)}
+                            title={"title"}
+                            error={this.state.errors.title}
+                            pattern={"[a-zA-Z ]"}
+                        />
                     </CardBody>
                     <CardFooter>
                         <FormButton>Update</FormButton>

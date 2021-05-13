@@ -8,7 +8,6 @@ import ru.edjll.backend.entity.UserFriendStatus;
 import ru.edjll.backend.validation.exists.Exists;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data

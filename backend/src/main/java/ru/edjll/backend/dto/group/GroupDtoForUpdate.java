@@ -14,13 +14,14 @@ import javax.validation.constraints.Pattern;
 public class GroupDtoForUpdate {
 
     @Length(min = 5, max = 40)
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я0-9_\\- ]+$")
     private String title;
 
     @Length(min = 10, max = 150)
     private String description;
 
     @Length(min = 3, max = 15)
-    @Pattern(regexp = "^\\w+$")
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$")
     private String address;
 
     public Group toGroup() {

@@ -5,12 +5,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.edjll.backend.entity.Country;
 import ru.edjll.backend.service.CountryService;
-import ru.edjll.backend.validation.exists.Exists;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.Collection;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/countries")

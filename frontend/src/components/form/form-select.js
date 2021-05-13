@@ -69,7 +69,7 @@ export class FormSelect extends React.Component {
                     }
                     {
                         this.props.error
-                            ? <HiddenInfo className={'form__select__error'} text={'❌'} hidden={this.props.error}/>
+                            ? <HiddenInfo className={'form__select__error'} text={'⛔'} hidden={this.props.error}/>
                             : ''
                     }
                 </div>

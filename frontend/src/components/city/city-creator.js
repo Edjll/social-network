@@ -107,7 +107,10 @@ export class CityCreator extends React.Component {
                         <FormInput value={this.state.title}
                                    handleChange={this.handleChangeTitle.bind(this)}
                                    title={"title"}
-                                   error={this.state.errors.title}/>
+                                   error={this.state.errors.title}
+                                   pattern={'[a-zA-Z ]'}
+                                   clearable={true}
+                        />
                         {
                             this.state.countries.length > 0
                                 ?   <FormSelect options={this.state.countries} title={"country"}

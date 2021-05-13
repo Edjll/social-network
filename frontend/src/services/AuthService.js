@@ -38,7 +38,8 @@ export default class AuthService {
         if (refreshToken !== null) {
             AuthService.#instance
                 .loginByRefreshToken(refreshToken)
-                .then(callback);
+                .then(callback)
+                .catch(() => AuthService.#instance.clearToken());
         } else {
             callback();
         }
@@ -52,9 +53,16 @@ export default class AuthService {
         params.append("username", username);
         params.append("password", password);
 
-        AuthService.#instance
+        return AuthService.#instance
             .loginRequest(params)
-            .then(() => window.location = document.referrer);
+            .then(() => {
+                window.location = document.referrer;
+                return Promise.resolve();
+            })
+            .catch(() => {
+                AuthService.#instance.clearToken();
+                return Promise.reject();
+            })
     }
 
     static toLoginPage() {
@@ -97,9 +105,9 @@ export default class AuthService {
         if (token !== null) {
             this.#authenticated = true;
             this.#token = token;
-            this.#parsedToken = JSON.parse(atob(token.split('.')[1]));
+            this.#parsedToken = JSON.parse(decodeURIComponent(escape(atob(token.split('.')[1]))));
         }
-        this.#refreshToken = refreshToken;
+        if (refreshToken !== undefined) this.#refreshToken = refreshToken;
     }
 
     static isTokenExpired() {
@@ -157,10 +165,7 @@ export default class AuthService {
                     response.data['expires_in'],
                     response.data['refresh_expires_in']
                 );
-            })
-            .catch(() => {
-                this.clearToken();
-            })
+            });
     }
 
     validate(token) {

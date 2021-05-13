@@ -9,8 +9,8 @@ import ru.edjll.backend.entity.Country;
 import ru.edjll.backend.validation.exists.Exists;
 import ru.edjll.backend.validation.unique.Unique;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +19,7 @@ public class CityDtoForSave {
 
     @Length(min = 1, max = 20)
     @Unique(table = "city", column = "title")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+\\s{0,1}[a-zA-Zа-яА-Я]+$")
     private String title;
 
     @NotNull

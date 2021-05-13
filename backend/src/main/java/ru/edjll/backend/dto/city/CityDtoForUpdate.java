@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.web.bind.annotation.PathVariable;
 import ru.edjll.backend.entity.City;
 import ru.edjll.backend.entity.Country;
 import ru.edjll.backend.validation.exists.Exists;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +17,7 @@ import javax.validation.constraints.NotNull;
 public class CityDtoForUpdate {
 
     @Length(min = 1, max = 20)
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я]+\\s{0,1}[a-zA-Zа-яА-Я]+$")
     private String title;
 
     @NotNull

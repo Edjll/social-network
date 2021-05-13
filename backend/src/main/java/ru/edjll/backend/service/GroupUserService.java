@@ -1,14 +1,9 @@
 package ru.edjll.backend.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.edjll.backend.dto.group.user.GroupUserDtoForGroupPage;
-import ru.edjll.backend.dto.group.user.GroupUserDtoForSubscribe;
-import ru.edjll.backend.dto.group.user.GroupUserDtoForSubscribersPage;
 import ru.edjll.backend.dto.group.user.GroupUserDtoWrapperForGroupPage;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
 import ru.edjll.backend.entity.Group;
@@ -19,7 +14,8 @@ import ru.edjll.backend.repository.GroupUserRepository;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GroupUserService {

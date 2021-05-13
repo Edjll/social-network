@@ -1,7 +1,6 @@
 import * as React from "react";
 import RequestService from "../../services/RequestService";
 import AuthService from "../../services/AuthService";
-import {Post} from "../post/post";
 import './home.css';
 import IntersectionObserverService from "../../services/IntersectionObserverService";
 import {GroupPost} from "../group/group-post/group-post";
@@ -51,7 +50,7 @@ export class Home extends React.Component {
                     this.state.posts.map(post => {
                         return post.type === 'GROUP'
                             ? <GroupPost key={post.id + post.type} id={post.id + post.type} data={post} handleDelete={this.handleDelete.bind(this)}/>
-                            : <UserPost key={post.id + post.type} data={post} handleDelete={this.handleDelete.bind(this)}/>
+                            : <UserPost key={post.id + post.type} id={post.id + post.type} data={post} handleDelete={this.handleDelete.bind(this)}/>
                     })
                 }
             </div>

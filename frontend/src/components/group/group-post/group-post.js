@@ -10,8 +10,7 @@ export const GroupPost = (props) => {
         RequestService
             .getAxios()
             .put(RequestService.URL + `/groups/posts/${context.state.post.id}`, {
-                text: text,
-                createdDate: context.state.post.createdDate
+                text: text
             }).then(response => {
             context.setState({post: {...response.data, type: PostType.GROUP}});
         });

@@ -19,6 +19,7 @@ export const UserPostCreator = (props) => {
         <PostForm handleSubmit={handleSubmit}>
             <CardHeader>
                 <h1>Creating post</h1>
+                <div><button className={"post_form__save"}>💾</button></div>
             </CardHeader>
         </PostForm>
     );

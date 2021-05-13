@@ -1,11 +1,8 @@
 package ru.edjll.backend.controller;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.edjll.backend.dto.user.friend.UserFriendDtoForSave;
-import ru.edjll.backend.dto.user.friend.UserFriendDtoForUpdate;
 import ru.edjll.backend.dto.user.friend.UserFriendStatusDto;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForFriendsPage;
 import ru.edjll.backend.dto.user.info.UserInfoDtoForSubscribersPage;
@@ -13,13 +10,11 @@ import ru.edjll.backend.dto.user.info.UserInfoDtoWrapperForUserCart;
 import ru.edjll.backend.service.UserFriendService;
 import ru.edjll.backend.validation.exists.Exists;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users/{userId}")
@@ -65,14 +60,14 @@ public class UserFriendController {
 
     @GetMapping("/subscribers")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserInfoDtoForFriendsPage> getSubscribers(
+    public List<UserInfoDtoForSubscribersPage> getSubscribers(
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size,
             @PathVariable @Exists(table = "user_entity", column = "id") String userId,
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam Long countryId,
-            @RequestParam Long cityId
+            @RequestParam(defaultValue = "") String firstName,
+            @RequestParam(defaultValue = "") String lastName,
+            @RequestParam(defaultValue = "-1") Long countryId,
+            @RequestParam(defaultValue = "-1") Long cityId
     ) {
         return userFriendService.getSubscribers(page, size, userId, firstName, lastName, countryId, cityId);
     }

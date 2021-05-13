@@ -34,7 +34,8 @@ export class AdminCities extends React.Component {
             country: null,
             search: false,
             loadingCities: false,
-            reload: false
+            reload: false,
+            changedPageSize: false
         }
     }
 
@@ -50,7 +51,7 @@ export class AdminCities extends React.Component {
     }
 
     loadCities() {
-        this.setState({loadingCities: true}, () => {
+        this.setState({loadingCities: true, changedPageSize: false}, () => {
             RequestService.getAxios().get(RequestService.ADMIN_URL + '/cities', {
                 params: {
                     page: this.state.page,
@@ -60,7 +61,7 @@ export class AdminCities extends React.Component {
                     countryDirection: this.state.countryDirection,
                     id: this.state.id,
                     title: this.state.title,
-                    country: this.state.country,
+                    country: this.state.country
                 }
             }).then(response => new Promise((resolve) => {
                 this.setState({
@@ -80,7 +81,7 @@ export class AdminCities extends React.Component {
     }
 
     handleChangePageSize(value) {
-        this.setState({size: value}, () => this.loadCities());
+        this.setState({size: value, changedPageSize: true, refreshCount: true});
     }
 
     handleChangeDirection(directionName) {
@@ -162,6 +163,7 @@ export class AdminCities extends React.Component {
                                            handleSubmit={this.handleBlur.bind(this)}
                                            handleButton={this.handleBlur.bind(this)}
                                            button={'🔍'}
+                                           pattern={'[0-9]'}
                                 />
                             </TableRowItem>
                             <TableRowItem>
@@ -172,6 +174,7 @@ export class AdminCities extends React.Component {
                                            handleSubmit={this.handleBlur.bind(this)}
                                            handleButton={this.handleBlur.bind(this)}
                                            button={'🔍'}
+                                           pattern={'[a-zA-Z ]'}
                                 />
                             </TableRowItem>
                             <TableRowItem>
@@ -182,6 +185,7 @@ export class AdminCities extends React.Component {
                                            handleSubmit={this.handleBlur.bind(this)}
                                            handleButton={this.handleBlur.bind(this)}
                                            button={'🔍'}
+                                           pattern={'[a-zA-Z ]'}
                                 />
                             </TableRowItem>
                             <TableRowItem/>
@@ -225,8 +229,12 @@ export class AdminCities extends React.Component {
                             maxButtons={5}
                             handleClick={this.handleClick.bind(this)}
                         />
-                        <TablePageSize handleChange={this.handleChangePageSize.bind(this)}
-                                       value={this.state.size}/>
+                        <TablePageSize
+                            handleChange={this.handleChangePageSize.bind(this)}
+                            value={this.state.size}
+                            handleButton={this.loadCities.bind(this)}
+                            changed={this.state.changedPageSize}
+                        />
                     </TableFooter>
                 </Table>
                 <Switch>

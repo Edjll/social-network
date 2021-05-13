@@ -1,12 +1,9 @@
 package ru.edjll.backend.service;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.edjll.backend.dto.message.*;
 import ru.edjll.backend.entity.Message;
 import ru.edjll.backend.entity.User;
@@ -14,7 +11,6 @@ import ru.edjll.backend.exception.ResponseParameterException;
 import ru.edjll.backend.repository.MessageRepository;
 
 import java.security.Principal;
-import java.util.Collection;
 import java.util.List;
 
 @Service

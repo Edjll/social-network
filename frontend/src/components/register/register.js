@@ -35,7 +35,8 @@ export class Register extends React.Component {
                 lastName: null,
                 password: null
             },
-            loadQueue: 1
+            loadQueue: 1,
+            loading: false
         }
     }
 
@@ -98,23 +99,30 @@ export class Register extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         if (this.validate() === 0) {
-            RequestService.getAxios().post(RequestService.URL + '/users', {
-                username: this.state.username,
-                email: this.state.email,
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                birthday: this.state.birthday,
-                credentials: [{value: this.state.password ? this.state.password : ''}],
-                cityId: this.state.city
-            })
-                .then(() => AuthService.login(this.state.username, this.state.password))
-                .catch(error => this.setState({
-                    errors: {
-                        ...this.state.errors,
-                        ...error.response.data.errors,
-                        password: error.response.data.errors ? error.response.data.errors['credentials[0].value'] : null
-                    }
-                }))
+            this.setState({loading: true}, () => {
+                RequestService.getAxios().post(RequestService.URL + '/users', {
+                    username: this.state.username,
+                    email: this.state.email,
+                    firstName: this.state.firstName,
+                    lastName: this.state.lastName,
+                    birthday: this.state.birthday,
+                    credentials: [{value: this.state.password ? this.state.password : ''}],
+                    cityId: this.state.city
+                })
+                    .then(() => {
+                        AuthService.login(this.state.username, this.state.password)
+                            .then(() => this.setState({loading: false}))
+                            .catch(() => this.setState({loading: false}));
+                    })
+                    .catch(error => this.setState({
+                        errors: {
+                            ...this.state.errors,
+                            ...error.response.data.errors,
+                            password: error.response.data.errors ? error.response.data.errors['credentials[0].value'] : null
+                        },
+                        loading: false
+                    }))
+            });
         }
     }
 
@@ -159,19 +167,43 @@ export class Register extends React.Component {
         if (AuthService.isAuthenticated()) return (<Redirect to={'/'}/>);
         return (
             <div className={"login_form"}>
-                <Form handleSubmit={this.handleSubmit.bind(this)}>
+                <Form handleSubmit={this.handleSubmit.bind(this)} loading={this.state.loading}>
                     <CardHeader>
                         <h1 className={"register__title"}>Registration</h1>
                     </CardHeader>
                     <CardBody>
-                        <FormInput value={this.state.username} title={"username*"} error={this.state.errors.username}
-                                   handleChange={this.handleChangeUsername.bind(this)}/>
-                        <FormInput value={this.state.email} title={"email*"} error={this.state.errors.email}
-                                   handleChange={this.handleChangeEmail.bind(this)}/>
-                        <FormInput value={this.state.firstName} title={"first name*"} error={this.state.errors.firstName}
-                                   handleChange={this.handleChangeFirstName.bind(this)}/>
-                        <FormInput value={this.state.lastName} title={"last name*"} error={this.state.errors.lastName}
-                                   handleChange={this.handleChangeLastName.bind(this)}/>
+                        <FormInput
+                            value={this.state.username}
+                            title={"username*"}
+                            error={this.state.errors.username}
+                            handleChange={this.handleChangeUsername.bind(this)}
+                            pattern={"[a-zA-Z0-9_@-]"}
+                            clearable={true}
+                        />
+                        <FormInput
+                            value={this.state.email}
+                            title={"email*"}
+                            error={this.state.errors.email}
+                            handleChange={this.handleChangeEmail.bind(this)}
+                            pattern={"[a-zA-Z@_.0-9]"}
+                            clearable={true}
+                        />
+                        <FormInput
+                            value={this.state.firstName}
+                            title={"first name*"}
+                            error={this.state.errors.firstName}
+                            handleChange={this.handleChangeFirstName.bind(this)}
+                            pattern={"[a-zA-Zа-яА-Я]"}
+                            clearable={true}
+                        />
+                        <FormInput
+                            value={this.state.lastName}
+                            title={"last name*"}
+                            error={this.state.errors.lastName}
+                            handleChange={this.handleChangeLastName.bind(this)}
+                            pattern={"[a-zA-Zа-яА-Я]"}
+                            clearable={true}
+                        />
                         {
                             this.state.loadQueue === 0
                                 ? <FormSelect title={"country"} options={this.state.countries}
@@ -184,9 +216,20 @@ export class Register extends React.Component {
                                               options={this.state.cities}/>
                                 : ''
                         }
-                        <FormInput value={this.state.birthday} title={"birthday"} handleChange={this.handleChangeBirthday.bind(this)} type={"date"}/>
-                        <FormInput value={this.state.password} title={"password*"} error={this.state.errors.password}
-                                   handleChange={this.handleChangePassword.bind(this)} type={"password"}/>
+                        <FormInput
+                            value={this.state.birthday}
+                            title={"birthday"}
+                            handleChange={this.handleChangeBirthday.bind(this)}
+                            type={"date"}
+                        />
+                        <FormInput
+                            value={this.state.password}
+                            title={"password*"}
+                            error={this.state.errors.password}
+                            handleChange={this.handleChangePassword.bind(this)}
+                            type={"password"}
+                            pattern={"[a-zA-Zа-яА-Я@_0-9]"}
+                        />
                     </CardBody>
                     <CardFooter>
                         <FormButton>Register</FormButton>

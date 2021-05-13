@@ -107,8 +107,22 @@ export class GroupUpdater extends React.Component {
                         <FormClose handleClick={this.handleClose.bind(this)}/>
                     </CardHeader>
                     <CardBody>
-                        <FormInput clearable={true} error={this.state.errors ? this.state.errors.title : null} title={"Title"} handleChange={this.handleTitle.bind(this)} value={this.state.title}/>
-                        <FormInput clearable={true} error={this.state.errors ? this.state.errors.address : null} title={"Address"} handleChange={this.handleAddress.bind(this)} value={this.state.address}/>
+                        <FormInput
+                            clearable={true}
+                            error={this.state.errors ? this.state.errors.title : null}
+                            title={"Title"}
+                            handleChange={this.handleTitle.bind(this)}
+                            value={this.state.title}
+                            pattern={'[a-zA-Zа-яА-Я0-9_- ]'}
+                        />
+                        <FormInput
+                            clearable={true}
+                            error={this.state.errors ? this.state.errors.address : null}
+                            title={"Address"}
+                            handleChange={this.handleAddress.bind(this)}
+                            value={this.state.address}
+                            pattern={'[a-zA-Z0-9_]'}
+                        />
                         <FormTextarea error={this.state.errors ? this.state.errors.description : null} title={"Description"} handleChange={this.handleDescription.bind(this)} value={this.state.description}/>
                     </CardBody>
                     <CardFooter>

@@ -27,7 +27,7 @@
         "notNull": true,
         "minLength": 1,
         "maxLength": 15,
-        "pattern": "^\\w+$"
+        "pattern": "^[a-zA-Zа-яА-Я]+$"
       }
     },
     "lastName": {
@@ -35,7 +35,7 @@
         "notNull": true,
         "minLength": 1,
         "maxLength": 15,
-        "pattern": "^\\w+$"
+        "pattern": "^[a-zA-Zа-яА-Я]+$"
       }
     },
     "password": {
@@ -51,7 +51,8 @@
       "params": {
         "notNull": true,
         "minLength": 5,
-        "maxLength": 40
+        "maxLength": 40,
+        "pattern": "[a-zA-Zа-яА-Я0-9_\\- ]"
       }
     },
     "description": {
@@ -66,7 +67,7 @@
         "notNull": true,
         "minLength": 3,
         "maxLength": 15,
-        "pattern": "^\\w+$"
+        "pattern": "^[a-zA-Z0-9_]+$"
       }
     }
   },
@@ -83,7 +84,8 @@
       "params": {
         "notNull": true,
         "minLength": 1,
-        "maxLength": 20
+        "maxLength": 20,
+        "pattern": "^[a-zA-Zа-яА-Я]+ {0,1}[a-zA-Zа-яА-Я]+$"
       }
     },
     "country": {
@@ -97,7 +99,8 @@
       "params": {
         "notNull": true,
         "minLength": 1,
-        "maxLength": 20
+        "maxLength": 20,
+        "pattern": "^[a-zA-Zа-яА-Я]+ {0,1}[a-zA-Zа-яА-Я]+$"
       }
     }
   },

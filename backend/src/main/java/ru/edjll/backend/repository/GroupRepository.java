@@ -1,16 +1,14 @@
 package ru.edjll.backend.repository;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.edjll.backend.dto.group.GroupDto;
-import ru.edjll.backend.dto.group.GroupDtoForSearch;
-import ru.edjll.backend.dto.user.info.UserInfoDtoForSearch;
-import ru.edjll.backend.entity.Group;
 import ru.edjll.backend.dto.group.GroupDtoForAdminPage;
+import ru.edjll.backend.dto.group.GroupDtoForSearch;
+import ru.edjll.backend.entity.Group;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,14 +43,17 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
                 "gu.id.group.description, " +
                 "false) " +
             "from GroupUser gu join gu.id.group " +
-            "where gu.id.user.id = :id")
+            "where gu.id.user.id = :id and gu.id.group.enabled = true")
     List<GroupDtoForSearch> getDtoByUserId(@Param("id") String id, Pageable pageable);
 
-    @Query("select new ru.edjll.backend.dto.group.GroupDtoForSearch(g.id, g.address, g.title, g.description, false) from Group g where g.enabled = true")
+    @Query( "select new ru.edjll.backend.dto.group.GroupDtoForSearch(g.id, g.address, g.title, g.description, false) " +
+            "from Group g " +
+            "where g.enabled = true")
     List<GroupDtoForSearch> getAll(Pageable pageable);
 
     @Query( "select new ru.edjll.backend.dto.group.GroupDtoForSearch(g.id, g.address, g.title, g.description, case when gu.id.user.id is null then false else true end) " +
-            "from Group g left join g.users gu on gu.id.user.id = :user_id where g.enabled = true")
+            "from Group g left join g.users gu on gu.id.user.id = :user_id " +
+            "where g.enabled = true")
     List<GroupDtoForSearch> getAll(@Param("user_id") String userId, Pageable pageable);
 
     @Query(nativeQuery = true)
