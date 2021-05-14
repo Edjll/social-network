@@ -61,9 +61,10 @@ export class FormSelect extends React.Component {
                            onChange={(e) => this.handleChangeText(e.target.value)}
                            onFocus={this.handleFocus.bind(this)}
                            onBlur={this.handleBlur.bind(this)}
+                           disabled={this.props.disabled}
                     />
                     {
-                        this.state.search !== ""
+                        this.state.search !== "" && !this.props.disabled
                             ?   <div className={"form__select__search__clear"} onClick={this.handleClear.bind(this)}>✕</div>
                             : ''
                     }
@@ -74,7 +75,7 @@ export class FormSelect extends React.Component {
                     }
                 </div>
                 {
-                    this.state.active && this.state.options.length > 0
+                    this.state.active && this.state.options.length > 0 && !this.props.disabled
                         ? <div className="form__select__options">
                             {
                                 this.state.options.map(option => <span key={option.key}

@@ -8,6 +8,7 @@ import validation from "../../services/validation.json";
 import IntersectionObserverService from "../../services/IntersectionObserverService";
 import {MessengerMessage} from "./messenger-message";
 import {FormTextarea} from "../form/form-textarea";
+import {HiddenInfo} from "../hidden-info/hidden-info";
 
 export class MessengerDialog extends React.Component {
 
@@ -217,9 +218,12 @@ export class MessengerDialog extends React.Component {
                         this.state.editing
                             ? <div className={"dialog__form__message-editing"}>
                                 <span className={"dialog__form__message-editing__text"}>Editing message</span>
-                                <div className={"dialog__form__message-editing__button"}
-                                     onClick={this.handleCancelEdit.bind(this)}>✖
-                                </div>
+                                <HiddenInfo
+                                    text={"✕"}
+                                    hidden={"Cancel"}
+                                    button={this.handleCancelEdit.bind(this)}
+                                    className={'dialog__form__message-editing__button'}
+                                />
                             </div>
                             : ""
                     }

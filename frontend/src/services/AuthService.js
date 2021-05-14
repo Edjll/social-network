@@ -35,7 +35,7 @@ export default class AuthService {
     static init(callback) {
         AuthService.#instance = new AuthService();
         const refreshToken = AuthService.getRefreshToken();
-        if (refreshToken !== null) {
+        if (AuthService.getToken() === null && refreshToken !== null) {
             AuthService.#instance
                 .loginByRefreshToken(refreshToken)
                 .then(callback)
@@ -45,7 +45,7 @@ export default class AuthService {
         }
     }
 
-    static login(username, password) {
+    static login(username, password, redirect = document.referrer) {
         const params = new URLSearchParams();
 
         params.append("grant_type", AuthService.GrantType.PASSWORD);
@@ -56,7 +56,7 @@ export default class AuthService {
         return AuthService.#instance
             .loginRequest(params)
             .then(() => {
-                window.location = document.referrer;
+                window.location = redirect;
                 return Promise.resolve();
             })
             .catch(() => {
@@ -65,8 +65,11 @@ export default class AuthService {
             })
     }
 
-    static toLoginPage() {
-        window.location = window.location.origin + '/login';
+    static toLoginPage(history) {
+        if (history)
+            history.push("/login", { prevLocation: history.location.pathname + history.location.search });
+        else
+            window.location = window.location.origin + '/login';
     }
 
     static logout(callback) {
@@ -140,6 +143,8 @@ export default class AuthService {
 
     loginByRefreshToken(refreshToken) {
         const params = new URLSearchParams();
+
+        console.log("token " + refreshToken)
 
         params.append("grant_type", AuthService.GrantType.REFRESH_TOKEN);
         params.append("client_id", AuthService.#clientId);

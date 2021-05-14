@@ -18,7 +18,7 @@ export function PrivateRoute({component: Component, roles, ...rest}) {
                                    </div>
                                </Error>
                        } else {
-                           return <Redirect to={{pathname: '/login',}}/>
+                           return <Redirect to={{pathname: '/login', state: {prevLocation: rest.location ? rest.location.pathname + rest.location.search : rest.path}}}/>
                        }
                    }
                }

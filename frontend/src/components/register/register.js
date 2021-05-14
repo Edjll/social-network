@@ -110,7 +110,7 @@ export class Register extends React.Component {
                     cityId: this.state.city
                 })
                     .then(() => {
-                        AuthService.login(this.state.username, this.state.password)
+                        AuthService.login(this.state.username, this.state.password, `/user/${this.state.username}`)
                             .then(() => this.setState({loading: false}))
                             .catch(() => this.setState({loading: false}));
                     })
@@ -179,6 +179,7 @@ export class Register extends React.Component {
                             handleChange={this.handleChangeUsername.bind(this)}
                             pattern={"[a-zA-Z0-9_@-]"}
                             clearable={true}
+                            disabled={this.state.loading}
                         />
                         <FormInput
                             value={this.state.email}
@@ -187,6 +188,7 @@ export class Register extends React.Component {
                             handleChange={this.handleChangeEmail.bind(this)}
                             pattern={"[a-zA-Z@_.0-9]"}
                             clearable={true}
+                            disabled={this.state.loading}
                         />
                         <FormInput
                             value={this.state.firstName}
@@ -195,6 +197,7 @@ export class Register extends React.Component {
                             handleChange={this.handleChangeFirstName.bind(this)}
                             pattern={"[a-zA-Zа-яА-Я]"}
                             clearable={true}
+                            disabled={this.state.loading}
                         />
                         <FormInput
                             value={this.state.lastName}
@@ -203,6 +206,7 @@ export class Register extends React.Component {
                             handleChange={this.handleChangeLastName.bind(this)}
                             pattern={"[a-zA-Zа-яА-Я]"}
                             clearable={true}
+                            disabled={this.state.loading}
                         />
                         {
                             this.state.loadQueue === 0
@@ -221,6 +225,7 @@ export class Register extends React.Component {
                             title={"birthday"}
                             handleChange={this.handleChangeBirthday.bind(this)}
                             type={"date"}
+                            disabled={this.state.loading}
                         />
                         <FormInput
                             value={this.state.password}
@@ -229,6 +234,8 @@ export class Register extends React.Component {
                             handleChange={this.handleChangePassword.bind(this)}
                             type={"password"}
                             pattern={"[a-zA-Zа-яА-Я@_0-9]"}
+                            disabled={this.state.loading}
+                            clearable={true}
                         />
                     </CardBody>
                     <CardFooter>

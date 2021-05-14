@@ -118,11 +118,13 @@ export class Group extends React.Component {
     }
 
     handleSubscribe() {
-        if (!AuthService.isAuthenticated()) AuthService.login();
-        RequestService
-            .getAxios()
-            .post(RequestService.URL + `/groups/${this.state.info.id}/users`)
-            .then(() => this.setState({subscribed: true}, this.loadUsers.bind(this)));
+        console.log(this.props.history)
+        if (!AuthService.isAuthenticated()) AuthService.toLoginPage(this.props.history);
+        else
+            RequestService
+                .getAxios()
+                .post(RequestService.URL + `/groups/${this.state.info.id}/users`)
+                .then(() => this.setState({subscribed: true}, this.loadUsers.bind(this)));
     }
 
     handleUnsubscribe() {

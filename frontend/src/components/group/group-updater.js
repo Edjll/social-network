@@ -121,7 +121,7 @@ export class GroupUpdater extends React.Component {
                             title={"Address"}
                             handleChange={this.handleAddress.bind(this)}
                             value={this.state.address}
-                            pattern={'[a-zA-Z0-9_]'}
+                            pattern={'[a-z0-9_]'}
                         />
                         <FormTextarea error={this.state.errors ? this.state.errors.description : null} title={"Description"} handleChange={this.handleDescription.bind(this)} value={this.state.description}/>
                     </CardBody>

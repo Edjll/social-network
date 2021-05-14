@@ -35,7 +35,7 @@ export class Login extends React.Component {
     handleLogin() {
         if (this.validate() === 0) {
             AuthService
-                .login(this.state.username, this.state.password)
+                .login(this.state.username, this.state.password, this.props.location.state ? this.props.location.state.prevLocation : '/')
                 .catch(() => {
                     this.setState({info: "invalid username or password"});
                 });

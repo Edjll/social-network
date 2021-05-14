@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.edjll.backend.dto.city.CityDto;
 import ru.edjll.backend.dto.city.CityDtoForSave;
 import ru.edjll.backend.dto.city.CityDtoForUpdate;
 import ru.edjll.backend.entity.City;
@@ -29,13 +30,13 @@ public class AdminCityController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<City> get(
+    public Page<CityDto> get(
             @RequestParam @NotNull @PositiveOrZero Integer page,
             @RequestParam @NotNull @Positive Integer size,
             @RequestParam(required = false) Optional<String> idDirection,
             @RequestParam(required = false) Optional<String> titleDirection,
             @RequestParam(required = false) Optional<String> countryDirection,
-            @RequestParam(defaultValue = "0") Long id,
+            @RequestParam(defaultValue = "-1") Integer id,
             @RequestParam(defaultValue = "") String title,
             @RequestParam(defaultValue = "") String country
     ) {

@@ -13,8 +13,9 @@ export const TablePageSize = (props) => {
                 handleSubmit={props.handleButton}
                 handleButton={props.handleButton}
                 button={'↻'}
-                default={'0'}
+                default={'1'}
                 pattern={'\\d'}
+                removeDefault={false}
             />
         );
     else
@@ -23,8 +24,9 @@ export const TablePageSize = (props) => {
                 className={`table__page-size ${props.className ? props.className : ''}`}
                 value={props.value}
                 handleChange={props.handleChange}
-                default={'0'}
+                default={'1'}
                 pattern={'\\d'}
+                removeDefault={false}
             />
         );
 }

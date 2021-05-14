@@ -21,7 +21,7 @@ public class GroupDtoForUpdate {
     private String description;
 
     @Length(min = 3, max = 15)
-    @Pattern(regexp = "^[a-zA-Z0-9_]+$")
+    @Pattern(regexp = "^[a-z0-9_]+$")
     private String address;
 
     public Group toGroup() {

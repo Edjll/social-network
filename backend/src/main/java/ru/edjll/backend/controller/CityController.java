@@ -3,6 +3,7 @@ package ru.edjll.backend.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.edjll.backend.dto.city.CityDto;
 import ru.edjll.backend.entity.City;
 import ru.edjll.backend.service.CityService;
 
@@ -23,7 +24,7 @@ public class CityController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<City> getCities(
+    public Collection<CityDto> getCities(
             @RequestParam(required = false) Optional<Long> countryId
     ) {
         return cityService.getAll(countryId);
@@ -31,9 +32,9 @@ public class CityController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public City getById(
+    public CityDto getById(
             @PathVariable @Positive Long id
     ) {
-        return cityService.getById(id);
+        return cityService.getDtoById(id);
     }
 }

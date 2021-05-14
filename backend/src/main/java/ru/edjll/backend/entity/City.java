@@ -3,8 +3,10 @@ package ru.edjll.backend.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,6 +30,9 @@ public class City {
     @ManyToOne
     @JoinColumn(name = "country_id", referencedColumnName = "id")
     private Country country;
+
+    @OneToMany(mappedBy = "city", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<UserInfo> users;
 
     public City(Long id) {
         this.id = id;

@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ru.edjll.backend.dto.city.CityDto;
 import ru.edjll.backend.dto.city.CityDtoForSave;
 import ru.edjll.backend.dto.city.CityDtoForUpdate;
 import ru.edjll.backend.entity.City;
@@ -30,10 +31,10 @@ public class CityService {
         return cityRepository.findAll();
     }
 
-    public Page<City> getAll(
+    public Page<CityDto> getAll(
             Integer page, Integer size,
             Optional<String> idDirection, Optional<String> titleDirection, Optional<String> countryDirection,
-            Long id, String title, String country
+            Integer id, String title, String country
     ) {
         List<Sort.Order> orders = new ArrayList<>();
 
@@ -42,15 +43,20 @@ public class CityService {
         titleDirection.ifPresent(s -> orders.add(new Sort.Order(Sort.Direction.fromString(s), "title")));
 
         if (orders.isEmpty()) {
-            return cityRepository.findAllByIdGreaterThanEqualAndTitleStartingWithIgnoreCaseAndCountryTitleStartingWithIgnoreCase(id, title, country, PageRequest.of(page, size));
+            return cityRepository.search(id, title, country, PageRequest.of(page, size));
         } else {
-            return cityRepository.findAllByIdGreaterThanEqualAndTitleStartingWithIgnoreCaseAndCountryTitleStartingWithIgnoreCase(id, title, country, PageRequest.of(page, size, Sort.by(orders)));
+            return cityRepository.search(id, title, country, PageRequest.of(page, size, Sort.by(orders)));
         }
     }
 
-    public Collection<City> getAll(Optional<Long> countryId) {
-        return countryId.map(cityRepository::findAllByCountryId)
-                .orElseGet(this::getAll);
+    public Collection<CityDto> getAll(Optional<Long> countryId) {
+        return countryId.map(cityRepository::findAllDtoByCountryId)
+                .orElseGet(cityRepository::findAllDto);
+    }
+
+    public CityDto getDtoById(Long id) {
+        return cityRepository.findDtoById(id)
+                .orElseThrow(() -> new ResponseParameterException(HttpStatus.NOT_FOUND, "id", id.toString(), "exists"));
     }
 
     public City getById(Long id) {

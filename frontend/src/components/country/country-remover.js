@@ -7,6 +7,8 @@ import {CardBody} from "../card/card-body";
 import {FormInput} from "../form/form-input";
 import {CardFooter} from "../card/card-footer";
 import {FormButton} from "../form/form-button";
+import {Error} from "../error/error";
+import {Toast} from "../toast/toast";
 
 export class CountryRemover extends React.Component {
 
@@ -17,7 +19,8 @@ export class CountryRemover extends React.Component {
             country: {
                 id: null,
                 title: null
-            }
+            },
+            error: false
         }
     }
 
@@ -48,6 +51,11 @@ export class CountryRemover extends React.Component {
             .getAxios()
             .delete(RequestService.ADMIN_URL + `/countries/${this.state.country.id}`)
             .then(() => this.props.history.push("/admin/countries", { update: true }))
+            .catch(() => this.setState({error: true}));
+    }
+
+    handleCloseToast() {
+        this.setState({error: false});
     }
 
     render() {
@@ -67,6 +75,11 @@ export class CountryRemover extends React.Component {
                         <FormButton>Delete</FormButton>
                     </CardFooter>
                 </Form>
+                {
+                    this.state.error
+                        ?   <Toast header={"Error"} body={"Country cannot be deleted"} handleClose={this.handleCloseToast.bind(this)} time={100}/>
+                        :   ''
+                }
             </div>
         );
     }

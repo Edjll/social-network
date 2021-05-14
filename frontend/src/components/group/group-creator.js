@@ -101,7 +101,7 @@ export class GroupCreator extends React.Component {
                             value={this.state.address}
                             title={"Address"}
                             handleChange={this.handleAddress.bind(this)}
-                            pattern={'[a-zA-Z0-9_]'}
+                            pattern={'[a-z0-9_]'}
                         />
                         <FormTextarea error={this.state.errors ? this.state.errors.description : null} value={this.state.description} title={"Description"} handleChange={this.handleDescription.bind(this)}/>
                     </CardBody>

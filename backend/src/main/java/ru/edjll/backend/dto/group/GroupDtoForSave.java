@@ -22,7 +22,7 @@ public class GroupDtoForSave {
     private String description;
 
     @Length(min = 3, max = 15)
-    @Pattern(regexp = "^[a-zA-Z0-9_]+$")
+    @Pattern(regexp = "^[a-z0-9_]+$")
     @Unique(table = "groups", column = "address")
     private String address;
 
