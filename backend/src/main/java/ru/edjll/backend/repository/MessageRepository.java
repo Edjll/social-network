@@ -18,8 +18,8 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
                 "s.id, s.firstName, s.lastName, s.username, " +
                 "r.id, r.firstName, r.lastName, r.username) " +
             "from Message m join m.sender s join m.recipient r " +
-            "where m.sender.id in (:senderId, :recipientId) " +
-            "and m.recipient.id in (:senderId, :recipientId) " +
+            "where (m.sender.id = :senderId and m.recipient.id = :recipientId) " +
+            "or (m.sender.id = :recipientId and m.recipient.id = :senderId) " +
             "order by m.createdDate desc ")
     List<MessageDto> getAllMessageDtoBetweenUsersById(@Param("senderId") String senderId, @Param("recipientId") String recipientId, Pageable pageable);
 
