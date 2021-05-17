@@ -144,8 +144,6 @@ export default class AuthService {
     loginByRefreshToken(refreshToken) {
         const params = new URLSearchParams();
 
-        console.log("token " + refreshToken)
-
         params.append("grant_type", AuthService.GrantType.REFRESH_TOKEN);
         params.append("client_id", AuthService.#clientId);
         params.append("refresh_token", refreshToken);

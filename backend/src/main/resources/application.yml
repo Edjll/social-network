@@ -1,11 +1,11 @@
 server:
-  port: 8085
+  port: ${PORT:8085}
   error:
     include-message: always
 
 spring:
   profiles:
-    active: docker
+    active: ${SPRING_PROFILE:dev}
   security:
     oauth2:
       resourceserver:
@@ -21,8 +21,8 @@ spring:
           validation:
             mode: none
   datasource:
-    username: admin
-    password: admin
+    username: ${SPRING_DATASOURCE_USERNAME:admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:admin}
 
 springdoc:
   swagger-ui:

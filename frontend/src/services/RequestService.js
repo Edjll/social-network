@@ -4,8 +4,8 @@ import SockJS from 'sockjs-client';
 import {Stomp} from '@stomp/stompjs';
 
 const axi = axios.create();
-const URL = 'http://localhost:8085';
-const ADMIN_URL = 'http://localhost:8085/admin';
+const URL = `http://${window.location.hostname}:${8085}`;
+const ADMIN_URL = URL + '/admin';
 
 const configure = () => {
     axi.interceptors.request.use((config) => {

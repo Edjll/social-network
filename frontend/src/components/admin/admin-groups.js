@@ -51,7 +51,7 @@ export class AdminGroups extends React.Component {
             this.loadGroupsCount();
         }
         this.setState({loadingGroups: true, changedPageSize: false}, () => {
-            RequestService.getAxios().get(RequestService.URL + '/admin/groups', {
+            RequestService.getAxios().get(RequestService.ADMIN_URL + '/groups', {
                 params: {
                     page: this.state.page,
                     size: this.state.size,
@@ -77,7 +77,7 @@ export class AdminGroups extends React.Component {
 
     loadGroupsCount() {
         this.setState({loadingGroupsCount: true}, () => {
-            RequestService.getAxios().get(RequestService.URL + '/admin/groups/count', {
+            RequestService.getAxios().get(RequestService.ADMIN_URL + '/groups/count', {
                 params: {
                     id: this.state.id,
                     title: this.state.title,
@@ -140,7 +140,7 @@ export class AdminGroups extends React.Component {
     }
 
     handleChangeEnabled(id, enabled, callback) {
-        RequestService.getAxios().put(RequestService.URL + `/admin/groups/${id}`, {enabled: enabled})
+        RequestService.getAxios().put(RequestService.ADMIN_URL + `/groups/${id}`, {enabled: enabled})
             .then(() => {
                 if (callback) callback(enabled)
             })

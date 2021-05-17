@@ -8,6 +8,8 @@ services:
       - 8085:8085
     volumes:
       - ./wait-for-it:/scripts
+    environment:
+      SPRING_PROFILE: docker
     depends_on:
       - keycloak
     command: bash -c './scripts/wait-for-it.sh keycloak:8080 -t 0 -- sleep 60 && java -jar /app.jar'

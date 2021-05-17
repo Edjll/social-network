@@ -118,7 +118,6 @@ export class Group extends React.Component {
     }
 
     handleSubscribe() {
-        console.log(this.props.history)
         if (!AuthService.isAuthenticated()) AuthService.toLoginPage(this.props.history);
         else
             RequestService

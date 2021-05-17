@@ -52,7 +52,7 @@ export class AdminUsers extends React.Component {
             this.loadUsersCount();
         }
         this.setState({loadingUsers: true, changedPageSize: false}, () => {
-            RequestService.getAxios().get(RequestService.URL + '/admin/users', {
+            RequestService.getAxios().get(RequestService.ADMIN_URL + '/users', {
                 params: {
                     page: this.state.page,
                     size: this.state.size,
@@ -78,7 +78,7 @@ export class AdminUsers extends React.Component {
 
     loadUsersCount() {
         this.setState({loadingUserCount: true}, () => {
-            RequestService.getAxios().get(RequestService.URL + '/admin/users/count', {
+            RequestService.getAxios().get(RequestService.ADMIN_URL + '/users/count', {
                 params: {
                     id: this.state.id,
                     username: this.state.username,
@@ -156,7 +156,7 @@ export class AdminUsers extends React.Component {
     }
 
     handleChangeEnabled(id, enabled, callback) {
-        RequestService.getAxios().put(RequestService.URL + `/admin/users/${id}`, {enabled: enabled})
+        RequestService.getAxios().put(RequestService.ADMIN_URL + `/users/${id}`, {enabled: enabled})
             .then(() => {
                 if (callback) callback(enabled)
             })
