@@ -8,7 +8,7 @@ export default class AuthService {
     #authenticated = false;
     static #clientId = keycloakConfig.clientId;
     static #realm = keycloakConfig.realm;
-    static #url = keycloakConfig.url;
+    static #url = `http://${window.location.hostname}:8080/auth`;
     #publicKey = keycloakConfig["public-key"]
     #token = null;
     #refreshToken = null;
@@ -38,8 +38,7 @@ export default class AuthService {
         if (AuthService.getToken() === null && refreshToken !== null) {
             AuthService.#instance
                 .loginByRefreshToken(refreshToken)
-                .then(callback)
-                .catch(() => AuthService.#instance.clearToken());
+                .then(callback);
         } else {
             callback();
         }
@@ -148,7 +147,11 @@ export default class AuthService {
         params.append("client_id", AuthService.#clientId);
         params.append("refresh_token", refreshToken);
 
-        return this.loginRequest(params);
+        return this.loginRequest(params)
+            .catch(() => {
+                AuthService.#instance.clearToken();
+                AuthService.toLoginPage();
+            });
     }
 
     loginRequest(params) {

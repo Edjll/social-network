@@ -25,12 +25,10 @@ public class UserFriendService {
 
     private final UserService userService;
     private final UserFriendRepository userFriendRepository;
-    private final JdbcTemplate jdbcTemplate;
 
-    public UserFriendService(UserService userService, UserFriendRepository userFriendRepository, JdbcTemplate jdbcTemplate) {
+    public UserFriendService(UserService userService, UserFriendRepository userFriendRepository) {
         this.userService = userService;
         this.userFriendRepository = userFriendRepository;
-        this.jdbcTemplate = jdbcTemplate;
     }
 
     public void save(String userId, Principal principal) {

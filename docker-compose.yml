@@ -10,6 +10,7 @@ services:
       - ./wait-for-it:/scripts
     environment:
       SPRING_PROFILE: docker
+      CORS_URL: http://localhost:3000
     depends_on:
       - keycloak
     command: bash -c './scripts/wait-for-it.sh keycloak:8080 -t 0 -- sleep 60 && java -jar /app.jar'

@@ -1,6 +1,7 @@
 package ru.edjll.backend.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.messaging.Message;
@@ -27,6 +28,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private JwtDecoder jwtDecoder;
     private Converter<Jwt, ? extends AbstractAuthenticationToken> jwtConverter;
 
+    @Value("${cors.url}")
+    private String corsUrl;
+
     public WebSocketConfig(@Qualifier("jwtDecoderByJwkKeySetUri") JwtDecoder jwtDecoder, @Qualifier("jwtAuthenticationConverter") Converter<Jwt, ? extends AbstractAuthenticationToken> jwtConverter) {
         this.jwtDecoder = jwtDecoder;
         this.jwtConverter = jwtConverter;
@@ -42,7 +46,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("http://localhost:3000")
+                .setAllowedOrigins(corsUrl)
                 .withSockJS();
     }
 

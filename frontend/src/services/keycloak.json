@@ -1,6 +1,5 @@
 {
   "realm": "social-network",
-  "url": "http://keycloak:8080/auth",
   "ssl-required": "external",
   "clientId": "spring-boot",
   "public-client": true,
