@@ -28,8 +28,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private JwtDecoder jwtDecoder;
     private Converter<Jwt, ? extends AbstractAuthenticationToken> jwtConverter;
 
-    @Value("${cors.url}")
-    private String corsUrl;
+    @Value("${cors.hostname}")
+    private String corsHostname;
 
     public WebSocketConfig(@Qualifier("jwtDecoderByJwkKeySetUri") JwtDecoder jwtDecoder, @Qualifier("jwtAuthenticationConverter") Converter<Jwt, ? extends AbstractAuthenticationToken> jwtConverter) {
         this.jwtDecoder = jwtDecoder;
@@ -46,7 +46,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOrigins(corsUrl)
+                .setAllowedOrigins("http://" + corsHostname + ":3000")
                 .withSockJS();
     }
 

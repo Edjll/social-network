@@ -10,8 +10,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8080/auth/realms/social-network
-          jwk-set-uri: http://keycloak:8080/auth/realms/social-network/protocol/openid-connect/certs
+          issuer-uri: http://${KEYCLOAK_HOSTNAME:keycloak}:8080/auth/realms/social-network
+          jwk-set-uri: http://${KEYCLOAK_HOSTNAME:keycloak}:8080/auth/realms/social-network/protocol/openid-connect/certs
   jpa:
     hibernate:
       ddl-auto: update
@@ -25,7 +25,7 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:admin}
 
 cors:
-  url: ${CORS_URL:http://localhost:3000}
+  HOSTNAME: ${CORS_HOSTNAME:localhost}
 
 springdoc:
   swagger-ui:

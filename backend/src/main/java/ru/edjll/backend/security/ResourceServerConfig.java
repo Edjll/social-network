@@ -19,8 +19,8 @@ import java.util.Collections;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${cors.url}")
-    private String corsUrl;
+    @Value("${cors.hostname}")
+    private String corsHostname;
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
@@ -48,7 +48,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Collections.singletonList(corsUrl));
+        configuration.setAllowedOrigins(Collections.singletonList("http://" + corsHostname + ":3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
